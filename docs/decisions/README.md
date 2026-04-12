@@ -32,4 +32,4 @@ Proposed | Accepted | Deprecated | Superseded by NNNN
 | # | Title | Status |
 |---|-------|--------|
 | 0001 | Paired views (CLAUDE.md / AGENTS.md) are duplicated manually | Accepted |
-| 0002 | Fifteen-minute budget evidence (AC #10 of the open-scaffold spec) | Proposed |
+| 0002 | Orchestration is agent-mediated, not runtime-native | Accepted |

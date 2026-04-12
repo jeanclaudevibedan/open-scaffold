@@ -12,7 +12,7 @@
 </div>
 
 > [!TIP]
-> **New here?** Skip straight to [🚀 15 minutes to your first plan](#-15-minutes-to-your-first-plan).
+> **New here?** Skip straight to [🚀 Quickstart](#-quickstart).
 > **Want the why?** Start with [💥 The problem](#-the-problem).
 
 ---
@@ -60,7 +60,7 @@ Each phase maps to a concrete file or command. Full phase-to-tool cheat sheet li
 
 ---
 
-## 🚀 15 minutes to your first plan
+## 🚀 Quickstart
 
 ### 1. Create your project from the template
 
@@ -166,7 +166,7 @@ Not an FAQ. These are the actual things a real human thinks when they land on a 
 <details>
 <summary><b>So, does this allow multi-agent automatic orchestration?</b></summary>
 
-> Not by itself. The scaffold is paperwork; orchestration is the runtime's job. What it *does* is give runtimes like OMC a machine-readable structure, so `/team` and `/ultrawork` know how to fan out across the parallel groups declared in your plan's Execution Strategy section. Without a runtime, `./delegate.sh <plan>` generates terminal prompts you paste into separate sessions. The scaffold enables orchestration. It doesn't perform it.
+> Not by itself. The scaffold is paperwork; orchestration is the runtime's job. What it *does* is give an agent a machine-readable structure to act on: an OMC-equipped Claude reads your plan's Execution Strategy section, parses the parallel groups, and dispatches them into `/team` or `/ultrawork` itself. The slash commands don't parse the section natively — the agent does, then dispatches. Without a runtime, `./delegate.sh <plan>` runs the same parser and emits terminal prompts you paste into separate sessions. The scaffold enables orchestration. It doesn't perform it. (See [ADR 0002](docs/decisions/0002-orchestration-is-agent-mediated.md) for why this distinction matters.)
 
 </details>
 
@@ -224,7 +224,7 @@ Not an FAQ. These are the actual things a real human thinks when they land on a 
 <details>
 <summary><b>How much time does this actually save me vs. just winging it?</b></summary>
 
-> Not measured yet, honestly. [ADR 0002](docs/decisions/0002-fifteen-minute-budget-evidence.md) commits to stopwatching the "stranger to first plan in ≤15 minutes" claim on the first real consumer project. Until that evidence is in, treat the time-savings claim as a hypothesis. What *is* observable: fewer "wait, I thought we decided X" moments, and sessions that resume in under a minute instead of fifteen.
+> Not benchmarked, honestly. Treat any specific time-savings number as a hypothesis until you've measured it on your own workflow. What *is* observable: fewer "wait, I thought we decided X" moments, and sessions that resume in under a minute instead of fifteen.
 
 </details>
 
@@ -316,7 +316,7 @@ Not an FAQ. These are the actual things a real human thinks when they land on a 
 <details>
 <summary><b>Is it production-ready, or a toy?</b></summary>
 
-> Production-ready in the **methodology** sense — the rules are stable, the scripts work, the template boots in 15 minutes. Early in the **adoption** sense — very few people are using it yet. Expect the schema to stay backward-compatible; expect the tooling around it to grow.
+> Production-ready in the **methodology** sense — the rules are stable, the scripts work, the template boots in one session. Early in the **adoption** sense — very few people are using it yet. Expect the schema to stay backward-compatible; expect the tooling around it to grow.
 
 </details>
 
