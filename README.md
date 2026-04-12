@@ -65,10 +65,10 @@ Each phase maps to a concrete file or command. Full phase-to-tool cheat sheet li
 > [!TIP]
 > ### 🤖 Let an LLM do it for you
 >
-> Paste this one-liner into any LLM — coding agent (Claude Code, Cursor, Codex CLI) or chat LLM (ChatGPT, Claude.ai, Gemini web). It fetches [`LLM_QUICKSTART.md`](LLM_QUICKSTART.md), detects its own capability, and walks you through clone → bootstrap → verify → handoff.
+> Paste this one-liner into any LLM — coding agent (Claude Code, Cursor, Codex CLI) or chat LLM (ChatGPT, Claude.ai, Gemini web). The agent clones the template, opens [`LLM_QUICKSTART.md`](LLM_QUICKSTART.md) from inside the clone, detects its own capability, and walks you through bootstrap → verify → handoff.
 >
 > ```text
-> Fetch https://raw.githubusercontent.com/jeanclaudevibedan/open-scaffold/main/LLM_QUICKSTART.md and follow it end-to-end.
+> Clone https://github.com/jeanclaudevibedan/open-scaffold into a new project directory, then open LLM_QUICKSTART.md from inside the clone and walk me through it.
 > ```
 >
 > **Prefer to drive it yourself?** The manual steps below do the same thing by hand. ⬇️

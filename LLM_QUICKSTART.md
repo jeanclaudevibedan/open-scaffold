@@ -1,6 +1,6 @@
 # LLM Quickstart — open-scaffold
 
-You are an LLM helping a human bootstrap a new project from the [open-scaffold](https://github.com/jeanclaudevibedan/open-scaffold) template. Follow these instructions end-to-end.
+You are an LLM helping a human bootstrap a new project from the [open-scaffold](https://github.com/jeanclaudevibedan/open-scaffold) template. Walk the human through the steps below interactively — confirm each step with them before proceeding to the next.
 
 ## Capability check
 
