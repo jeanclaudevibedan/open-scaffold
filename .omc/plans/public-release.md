@@ -131,7 +131,7 @@ The interactive bootstrap prompts for three fields:
 
 ## 7. Open questions
 
-1. **OMC/OMX GitHub URLs:** What are the canonical repo URLs for OMC and OMX? The plan assumes `github.com/jeanclaudevibedan/oh-my-claudecode` and `github.com/jeanclaudevibedan/oh-my-codex` but these need confirmation. If wrong, use placeholder URLs marked with `TODO`.
+1. **OMC/OMX GitHub URLs:** What are the canonical repo URLs for OMC and OMX? The plan assumes `github.com/yeachan-heo/oh-my-claudecode` and `github.com/Yeachan-Heo/oh-my-codex` but these need confirmation. If wrong, use placeholder URLs marked with `TODO`.
 
 ---
 

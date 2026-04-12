@@ -37,7 +37,7 @@ The methodology works whether you use it with AI agents, with a team, or solo. T
 
 ## Scaffold vs. runtime
 
-If you already use an orchestration tool — [oh-my-claudecode](https://github.com/jeanclaudevibedan/oh-my-claudecode), [oh-my-codex](https://github.com/jeanclaudevibedan/oh-my-codex), or something else — you might wonder: *why do I need this too?*
+If you already use an orchestration tool — [oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode), [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex), or something else — you might wonder: *why do I need this too?*
 
 **A scaffold is the WHAT.** It's the project-specific structure that defines how plans, decisions, amendments, and handoffs are organized in *your* repo. It's the folder layout, the plan schema, the mission file, the amendment protocol. The scaffold persists across every session and every tool you use.
 
@@ -112,9 +112,9 @@ This README itself was added on day zero via the template's own scope-evolution 
 
 open-scaffold's methodology works standalone — you can follow it manually with any text editor. But it's designed to pair with orchestration runtimes that read the structure and automate the workflow.
 
-**[oh-my-claudecode (OMC)](https://github.com/jeanclaudevibedan/oh-my-claudecode)** — A multi-agent orchestration layer for Claude Code. OMC provides planning skills, autonomous execution, parallel agent coordination, and verification that traces back to your plan files' acceptance criteria. When OMC is installed, the workflow phases in `docs/WORKFLOW.md` map to specific OMC skills.
+**[oh-my-claudecode (OMC)](https://github.com/yeachan-heo/oh-my-claudecode)** — A multi-agent orchestration layer for Claude Code. OMC provides planning skills, autonomous execution, parallel agent coordination, and verification that traces back to your plan files' acceptance criteria. When OMC is installed, the workflow phases in `docs/WORKFLOW.md` map to specific OMC skills.
 
-**[oh-my-codex (OMX)](https://github.com/jeanclaudevibedan/oh-my-codex)** — The same orchestration philosophy for Codex CLI. OMX is the fast-typing cockpit — boilerplate, single-file edits, and straightforward scaffolding where throughput matters more than deep judgment.
+**[oh-my-codex (OMX)](https://github.com/Yeachan-Heo/oh-my-codex)** — The same orchestration philosophy for Codex CLI. OMX is the fast-typing cockpit — boilerplate, single-file edits, and straightforward scaffolding where throughput matters more than deep judgment.
 
 Neither runtime is required. If you use a different tool (Cursor, Windsurf, Aider, or plain CLI agents), the scaffold still works — the plan files, amendment protocol, and session handover practices are just markdown and bash.
 
