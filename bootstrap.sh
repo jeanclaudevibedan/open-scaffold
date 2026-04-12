@@ -23,15 +23,20 @@ if [ -f "$MISSION" ] && grep -Fq 'mission:unset' "$MISSION"; then
     printf '(Press Enter to skip any question and fill it in later.)\n'
     printf '\n'
 
-    printf 'What is this project? (one sentence)\n> '
+    printf 'What is this project? (one sentence)\n'
+    printf 'Example: A recipe book app that saves my family recipes and lets relatives browse them.\n> '
     read -r USER_MISSION
     printf '\n'
 
-    printf 'What should it achieve? (comma-separated goals)\n> '
+    printf 'What should it achieve? (main outcomes — separate multiple with semicolons)\n'
+    printf 'Example: Save recipes with photos; browse by category; share via a link.\n> '
     read -r USER_GOALS
     printf '\n'
 
-    printf 'What is it NOT? (comma-separated non-goals)\n> '
+    printf 'What should this project NOT do? (separate multiple with semicolons)\n'
+    printf 'Good non-goals are adjacent features you could plausibly build but are choosing not to.\n'
+    printf 'That is how scope creep gets prevented later. For a recipe app: not a meal planner;\n'
+    printf 'not a calorie tracker; not a shopping list generator.\n> '
     read -r USER_NONGOALS
     printf '\n'
 
@@ -40,8 +45,8 @@ if [ -f "$MISSION" ] && grep -Fq 'mission:unset' "$MISSION"; then
       # Format goals as bullet list
       GOALS_LIST=""
       if [ -n "$USER_GOALS" ]; then
-        # Split on commas, trim whitespace, format as bullets
-        GOALS_LIST=$(printf '%s' "$USER_GOALS" | tr ',' '\n' | while read -r item; do
+        # Split on commas OR semicolons, trim whitespace, format as bullets
+        GOALS_LIST=$(printf '%s' "$USER_GOALS" | tr ',;' '\n\n' | while read -r item; do
           trimmed=$(printf '%s' "$item" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
           if [ -n "$trimmed" ]; then
             printf '- %s\n' "$trimmed"
@@ -55,7 +60,8 @@ if [ -f "$MISSION" ] && grep -Fq 'mission:unset' "$MISSION"; then
       # Format non-goals as bullet list
       NONGOALS_LIST=""
       if [ -n "$USER_NONGOALS" ]; then
-        NONGOALS_LIST=$(printf '%s' "$USER_NONGOALS" | tr ',' '\n' | while read -r item; do
+        # Split on commas OR semicolons, trim whitespace, format as bullets
+        NONGOALS_LIST=$(printf '%s' "$USER_NONGOALS" | tr ',;' '\n\n' | while read -r item; do
           trimmed=$(printf '%s' "$item" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
           if [ -n "$trimmed" ]; then
             printf '- %s\n' "$trimmed"

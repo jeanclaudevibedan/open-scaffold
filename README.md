@@ -93,8 +93,8 @@ Or hit the green **Use this template** button on GitHub.
 Bootstrap asks three questions and writes your answers into `MISSION.md`:
 
 - **What is this project?** — one sentence
-- **What should it achieve?** — comma-separated goals
-- **What is it NOT?** — comma-separated non-goals
+- **What should it achieve?** — main outcomes (separate multiple with semicolons)
+- **What should this project NOT do?** — adjacent features explicitly out of scope (separate multiple with semicolons)
 
 That's the mission. Everything downstream traces back to it.
 
