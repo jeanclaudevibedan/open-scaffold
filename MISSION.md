@@ -1,10 +1,6 @@
-<!-- mission:unset -->
-
 # Mission
 
-TODO: define mission
-
-Replace this line with one crisp sentence describing what this project is and what outcome defines "done." Then delete the `<!-- mission:unset -->` comment above. Until that comment is removed, verification tooling will treat this project as "mission not yet defined."
+dan-starter is a stack-agnostic GitHub template that front-loads project context for multi-agent development. Done = the template is publicly usable, documented, and self-improving.
 
 ## Goals
 
@@ -24,3 +20,5 @@ Explicit things this project is NOT trying to do. Legitimate scope discipline st
 One-line dated entries for every scope pivot. Format: `YYYY-MM-DD: <one-line pivot description + link to amendment file if applicable>`. Append entries in chronological order. Never rewrite history here.
 
 <!-- append YYYY-MM-DD entries below this line -->
+
+- 2026-04-12: bootstrap run
