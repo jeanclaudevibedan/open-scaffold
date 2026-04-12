@@ -1,0 +1,16 @@
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OMC ephemeral state (regenerated per session)
+.omc/state/
+.omc/research/
