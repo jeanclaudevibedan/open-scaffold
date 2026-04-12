@@ -444,7 +444,7 @@ The scaffold is the load-bearing part. The runtimes amplify it. You can strip th
 
 ## 🐕 Dogfooded
 
-open-scaffold was built using open-scaffold. Every feature in this template — the enforcement layer, the delegation detection, the template/dev separation — shipped as a plan in `.omc/plans/`, went through `verify.sh`, and carries its own amendment trail. Eleven commits, one day, one methodology eating itself.
+open-scaffold was built using open-scaffold.
 
 ---
 
