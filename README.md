@@ -63,6 +63,7 @@ Each phase maps to a concrete file or command. Full phase-to-tool cheat sheet li
 ## 🚀 Quickstart
 
 > [!TIP]
+>
 > ### 🤖 Let an LLM do it for you
 >
 > Paste this one-liner into any LLM — coding agent (Claude Code, Cursor, Codex CLI) or chat LLM (ChatGPT, Claude.ai, Gemini web). The agent clones the template, opens [`LLM_QUICKSTART.md`](LLM_QUICKSTART.md) from inside the clone, detects its own capability, and walks you through bootstrap → verify → handoff.
@@ -237,7 +238,7 @@ Not an FAQ. These are the actual things a real human thinks when they land on a 
 <details>
 <summary><b>Isn't this just Agile / PRD-driven development with new vocabulary?</b></summary>
 
-> Partially. The mission/plan/amendment loop is lifted from disciplined engineering practice — none of it is new. What *is* new: the protocol is designed so an agent can execute it mechanically. Plans are structured so they parse. Amendments are numbered so they order. `verify.sh` is a compliance check, not a process meeting. It's Agile for a workforce that reads markdown faster than it reads faces.
+> Partially. The mission/plan/amendment loop is lifted from disciplined engineering practice — none of it is new. What *is* new: the protocol is designed so an agent can execute it mechanically. Plans are structured so they parse. Amendments are numbered so they order. `verify.sh` is a compliance check, not a process meeting. It's Agile for a workforce that reads markdown.
 
 </details>
 
@@ -336,7 +337,7 @@ Not an FAQ. These are the actual things a real human thinks when they land on a 
 <details>
 <summary><b>Who built this?</b></summary>
 
-> [@jeanclaudevibedan](https://github.com/jeanclaudevibedan). Scoped, planned, implemented, reviewed, and shipped using the scaffold's own methodology — 11 commits in one day, each traceable to a plan file in `.omc-dev/plans/`.
+> [@jeanclaudevibedan](https://github.com/jeanclaudevibedan). Scoped, planned, implemented, reviewed, and shipped using the scaffold's own methodology.
 
 </details>
 
