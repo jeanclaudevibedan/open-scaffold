@@ -21,13 +21,13 @@ open-scaffold has two layers. The **core methodology** (folder discipline, immut
 Before any non-trivial code change, run `./verify.sh --quick --quiet` and check the exit code:
 
 - **Exit 0 (all checks pass) →** Proceed silently. Do not mention verification to the user.
-- **Exit 1 (any check fails) →** Read the failure output, then hard-block:
-  - **Mission undefined →** Stop. Say: "Your mission isn't defined yet. Let's define it now — what is this project?" Guide the user through MISSION.md fill-in (or run `./bootstrap.sh`). Do not proceed until the mission is defined or the user explicitly says to skip.
-  - **No plan file →** Stop. Say: "There's no plan for this work. Let's create one — what are you trying to build?" Create a plan in `.omc/plans/` using the handoff template. Do not proceed until a plan exists or the user explicitly says to skip.
+- **Exit 1 (any check fails) →** Read the failure output, then hard-block on the first failing check:
+  - **Mission undefined →** Stop. Say: "Your mission isn't defined yet. Let's define it now — what is this project?" Guide the user through MISSION.md fill-in (or run `./bootstrap.sh`). Do not proceed until the mission is defined or the user explicitly says to skip. Note: the plan check is gated behind the mission check — it will not appear until the mission is defined (progressive disclosure).
+  - **No plan file →** (only appears after mission is defined) Stop. Say: "There's no plan for this work. Let's create one — what are you trying to build?" Create a plan in `.omc/plans/` using the handoff template. Do not proceed until a plan exists or the user explicitly says to skip.
 
 The `--quiet` flag suppresses output when all checks pass (zero noise on success) but still prints failure details when something is wrong. The user can always override with "skip verification", "just do it", or similar. Respect their autonomy, but the default is to fix violations first.
 
-If you cannot execute shell commands, check directly: `MISSION.md` should not contain `<!-- mission:unset -->`, and `.omc/plans/` should contain at least one `.md` file besides `README.md` and `handoff-template.md`.
+If you cannot execute shell commands, check directly: first check that `MISSION.md` does not contain `<!-- mission:unset -->`. Only if the mission is defined, then check that `.omc/plans/` contains at least one `.md` file besides `README.md` and `handoff-template.md`.
 
 ## How to verify
 

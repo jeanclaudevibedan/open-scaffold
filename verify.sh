@@ -49,32 +49,37 @@ if [ "$QUIET" = false ]; then
 fi
 
 # Check 1: Mission defined
+MISSION_DEFINED=false
 if [ -f "$ROOT/MISSION.md" ]; then
   if grep -Fq 'mission:unset' "$ROOT/MISSION.md"; then
     fail "Mission not defined (MISSION.md contains <!-- mission:unset --> marker)"
   else
     pass "Mission defined"
+    MISSION_DEFINED=true
   fi
 else
   fail "MISSION.md not found"
 fi
 
 # Check 2: At least one plan file exists (beyond template and README)
-PLAN_COUNT=0
-if [ -d "$ROOT/.omc/plans" ]; then
-  for f in "$ROOT"/.omc/plans/*.md; do
-    [ -f "$f" ] || continue
-    basename=$(basename "$f")
-    if [ "$basename" != "README.md" ] && [ "$basename" != "handoff-template.md" ]; then
-      PLAN_COUNT=$((PLAN_COUNT + 1))
-    fi
-  done
-fi
+# Gated on mission: skip plan check until mission is defined (progressive disclosure)
+if [ "$MISSION_DEFINED" = true ]; then
+  PLAN_COUNT=0
+  if [ -d "$ROOT/.omc/plans" ]; then
+    for f in "$ROOT"/.omc/plans/*.md; do
+      [ -f "$f" ] || continue
+      basename=$(basename "$f")
+      if [ "$basename" != "README.md" ] && [ "$basename" != "handoff-template.md" ]; then
+        PLAN_COUNT=$((PLAN_COUNT + 1))
+      fi
+    done
+  fi
 
-if [ "$PLAN_COUNT" -gt 0 ]; then
-  pass "Plan file(s) found ($PLAN_COUNT in .omc/plans/)"
-else
-  fail "No plan files found in .omc/plans/ (only template and README)"
+  if [ "$PLAN_COUNT" -gt 0 ]; then
+    pass "Plan file(s) found ($PLAN_COUNT in .omc/plans/)"
+  else
+    fail "No plan files found in .omc/plans/ (only template and README)"
+  fi
 fi
 
 # ──────────────────────────────────────────
