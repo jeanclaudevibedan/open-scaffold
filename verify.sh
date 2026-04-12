@@ -6,31 +6,47 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-TIER="${1:---standard}"
+TIER="--standard"
+QUIET=false
 PASS_COUNT=0
 FAIL_COUNT=0
 WARN_COUNT=0
 
+# Parse flags (order-independent, bash 3.2 compatible)
+for arg in "$@"; do
+  case "$arg" in
+    --quick|--standard|--strict) TIER="$arg" ;;
+    --quiet) QUIET=true ;;
+    *) printf 'Unknown flag: %s\n' "$arg" >&2; exit 2 ;;
+  esac
+done
+
 pass() {
-  printf '  \033[32mPASS\033[0m  %s\n' "$1"
   PASS_COUNT=$((PASS_COUNT + 1))
+  if [ "$QUIET" = false ]; then
+    printf '  \033[32mPASS\033[0m  %s\n' "$1"
+  fi
 }
 
 fail() {
-  printf '  \033[31mFAIL\033[0m  %s\n' "$1"
   FAIL_COUNT=$((FAIL_COUNT + 1))
+  printf '  \033[31mFAIL\033[0m  %s\n' "$1"
 }
 
 warn() {
-  printf '  \033[33mWARN\033[0m  %s\n' "$1"
   WARN_COUNT=$((WARN_COUNT + 1))
+  if [ "$QUIET" = false ]; then
+    printf '  \033[33mWARN\033[0m  %s\n' "$1"
+  fi
 }
 
 # ──────────────────────────────────────────
 # QUICK tier: mission + plan (2 checks)
 # ──────────────────────────────────────────
 
-printf '\n  open-scaffold compliance check (%s)\n\n' "$TIER"
+if [ "$QUIET" = false ]; then
+  printf '\n  open-scaffold compliance check (%s)\n\n' "$TIER"
+fi
 
 # Check 1: Mission defined
 if [ -f "$ROOT/MISSION.md" ]; then
@@ -185,9 +201,10 @@ fi
 # Summary
 # ──────────────────────────────────────────
 
-printf '\n  ─────────────────────────────────\n'
-printf '  %s pass, %s fail, %s warn\n\n' "$PASS_COUNT" "$FAIL_COUNT" "$WARN_COUNT"
-
+if [ "$QUIET" = false ] || [ "$FAIL_COUNT" -gt 0 ]; then
+  printf '\n  ─────────────────────────────────\n'
+  printf '  %s pass, %s fail, %s warn\n\n' "$PASS_COUNT" "$FAIL_COUNT" "$WARN_COUNT"
+fi
 if [ "$FAIL_COUNT" -gt 0 ]; then
   exit 1
 else

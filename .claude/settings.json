@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./verify.sh:*)",
+      "Bash(./bootstrap.sh)",
+      "Bash(chmod +x ./verify.sh)",
+      "Bash(chmod +x ./bootstrap.sh)",
+      "Bash(git commit -m ':*)",
+      "Bash(git push:*)",
+      "Bash(git log:*)",
+      "Bash(bash --version)"
+    ],
+    "additionalDirectories": [
+      "/tmp"
+    ]
+  }
+}

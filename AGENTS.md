@@ -25,7 +25,7 @@ open-scaffold has two layers. The **core methodology** (folder discipline, immut
 4. **Verification traces to acceptance criteria.** Run `./verify.sh` or OMC `/verify` against the plan's acceptance criteria, not vibes.
 5. **When you "get smarter"** (new information arrives that legitimately changes scope), use the amendment protocol. Do not silently integrate new features; do not refuse legitimate evolution.
 6. **Consult `docs/WORKFLOW.md`** when unsure which phase you're in or which tool fits the task.
-7. **Run compliance checks before non-trivial code changes.** Execute `./verify.sh --quick` and act on failures: if mission is undefined, redirect to defining it; if no plan exists, redirect to creating one. If you cannot execute shell commands, check directly: `MISSION.md` should not contain `<!-- mission:unset -->`, and `.omc/plans/` should contain plan files beyond the template.
+7. **Run compliance checks before non-trivial code changes.** Execute `./verify.sh --quick --quiet` and check the exit code. On exit 0: proceed silently (do not mention verification). On exit 1: read the failure output, hard-block, and redirect — if mission is undefined, redirect to defining it; if no plan exists, redirect to creating one. The `--quiet` flag suppresses output on success but prints failure details when something is wrong. If you cannot execute shell commands, check directly: `MISSION.md` should not contain `<!-- mission:unset -->`, and `.omc/plans/` should contain plan files beyond the template.
 
 ## Scope evolution protocol
 
