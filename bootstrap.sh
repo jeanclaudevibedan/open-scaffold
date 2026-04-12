@@ -8,6 +8,30 @@ ROOT="$(cd "$(dirname "$0")" && pwd)"
 TODAY="$(date +%Y-%m-%d)"   # portable; NOT `date -I` (GNU-only)
 MISSION="$ROOT/MISSION.md"
 
+# Detect template-repo mode. The .omc-dev/ directory is the maintainer's
+# internal workspace — gitignored, so only present in the open-scaffold
+# source repo itself, never in a downstream clone. When detected, skip
+# stamping MISSION.md's changelog so the template ships with an empty
+# changelog per public-release.md AC-16.
+if [ -d "$ROOT/.omc-dev" ]; then
+  IS_TEMPLATE_REPO=1
+else
+  IS_TEMPLATE_REPO=0
+fi
+
+stamp_changelog() {
+  if [ "$IS_TEMPLATE_REPO" = "1" ]; then
+    return 0
+  fi
+  if [ ! -f "$MISSION" ]; then
+    return 0
+  fi
+  STAMP="$TODAY: bootstrap run"
+  if ! grep -Fq "$STAMP" "$MISSION"; then
+    printf '\n- %s\n' "$STAMP" >> "$MISSION"
+  fi
+}
+
 # 1. Create lazy directories (safe to re-run; mkdir -p is idempotent)
 mkdir -p "$ROOT/.omc/research"
 mkdir -p "$ROOT/.omc/state"
@@ -93,34 +117,21 @@ $NONGOALS_LIST
 One-line dated entries for every scope pivot. Format: \`YYYY-MM-DD: <one-line pivot description + link to amendment file if applicable>\`. Append entries in chronological order. Never rewrite history here.
 
 <!-- append YYYY-MM-DD entries below this line -->
-
-- $TODAY: bootstrap run
 MISSION_EOF
 
+      stamp_changelog
       printf 'Mission defined! Your MISSION.md has been updated.\n'
     else
       printf 'No mission entered. You can edit MISSION.md manually later.\n'
-      # Still stamp the changelog
-      STAMP="$TODAY: bootstrap run"
-      if ! grep -Fq "$STAMP" "$MISSION"; then
-        printf '\n- %s\n' "$STAMP" >> "$MISSION"
-      fi
+      stamp_changelog
     fi
   else
     # Non-interactive mode: just stamp the changelog, preserve the marker
-    STAMP="$TODAY: bootstrap run"
-    if ! grep -Fq "$STAMP" "$MISSION"; then
-      printf '\n- %s\n' "$STAMP" >> "$MISSION"
-    fi
+    stamp_changelog
   fi
 else
   # Mission already defined or no MISSION.md — idempotent changelog stamp
-  if [ -f "$MISSION" ]; then
-    STAMP="$TODAY: bootstrap run"
-    if ! grep -Fq "$STAMP" "$MISSION"; then
-      printf '\n- %s\n' "$STAMP" >> "$MISSION"
-    fi
-  fi
+  stamp_changelog
 fi
 
 # 3. Run compliance check (non-blocking — bootstrap completes regardless)

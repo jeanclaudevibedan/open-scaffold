@@ -19,5 +19,3 @@ Explicit things this project is NOT trying to do. Legitimate scope discipline st
 One-line dated entries for every scope pivot. Format: `YYYY-MM-DD: <one-line pivot description + link to amendment file if applicable>`. Append entries in chronological order. Never rewrite history here.
 
 <!-- append YYYY-MM-DD entries below this line -->
-
-- 2026-04-12: bootstrap run
