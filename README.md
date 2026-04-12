@@ -77,14 +77,26 @@ cat docs/WORKFLOW.md
 
 This is your phase-to-tool cheat-sheet. It tells you which phase you're in (Clarify, Plan, Execute, Verify, Amend) and what to reach for at each one.
 
-### 4. Write your first plan
+### 4. Create your first plan
+
+Tell your AI agent what you want to build. If your goal is clear, ask it to write a plan directly:
+
+> *"Write a plan in `.omc/plans/` for \<your first task\> using the handoff template."*
+
+If your goal is fuzzy, let the agent interview you into clarity first:
+
+> **With OMC:** `/deep-interview` asks targeted questions until ambiguity drops below 20%, then generates the plan for you.
+>
+> **With any agent:** *"I want to build \<vague idea\>. Ask me questions until you understand exactly what to build, then write a plan in `.omc/plans/` using the schema in `.omc/plans/handoff-template.md`."*
+
+**Manual fallback** (no agent):
 
 ```bash
 cp .omc/plans/handoff-template.md .omc/plans/<your-first-task>.md
 $EDITOR .omc/plans/<your-first-task>.md
 ```
 
-Fill in the 7 sections: Context, Goal, Constraints, Files to touch, Acceptance criteria, Verification steps, Open questions. Then start building.
+Either way, you end up with a plan file containing 7 sections: Context, Goal, Constraints, Files to touch, Acceptance criteria, Verification steps, Open questions. Then start building.
 
 You now have a project with a defined mission, a documented plan, and a workflow to follow. Every future session — human or agent — starts by reading these files.
 
