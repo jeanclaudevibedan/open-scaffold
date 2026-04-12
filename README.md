@@ -34,7 +34,7 @@ This isn't a tooling problem. It's human nature, amplified by multi-agent workfl
 | 🎯 **Mission-first** | `MISSION.md` defines goals and non-goals before a single line is written. Ships unset on purpose — you fill it in on day one. | [→](MISSION.md) |
 | 🔒 **Immutable plans** | Plans in `.omc/plans/` follow a 7-section schema and become read-only once committed. No silent scope creep. | [→](.omc/plans/handoff-template.md) |
 | 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Traceable, numbered, and stamped in the mission changelog. | [→](.omc/plans/README.md) |
-| 🧭 **Architecture Decision Records** | Two worked ADRs ship in `docs/decisions/` as examples. Short format: Context, Decision, Consequences. | [→](docs/decisions/README.md) |
+| 🧭 **Design choices** | A short page in `docs/decisions/` explains why the scaffold is the way it is — paired views, immutable plans, agent-mediated orchestration. | [→](docs/decisions/README.md) |
 | ✅ **`verify.sh`** | A compliance checker in three tiers (`--quick`, `--standard`, `--strict`). Agents run it automatically before touching code. | [→](verify.sh) |
 | 🔀 **Delegation detection** | Plans can declare parallel groups. Agents propose `/team` or `/ultrawork`; non-agent users run `./delegate.sh` to generate terminal prompts. | [→](delegate.sh) |
 
@@ -166,7 +166,7 @@ Not an FAQ. These are the actual things a real human thinks when they land on a 
 <details>
 <summary><b>So, does this allow multi-agent automatic orchestration?</b></summary>
 
-> Not by itself. The scaffold is paperwork; orchestration is the runtime's job. What it *does* is give an agent a machine-readable structure to act on: an OMC-equipped Claude reads your plan's Execution Strategy section, parses the parallel groups, and dispatches them into `/team` or `/ultrawork` itself. The slash commands don't parse the section natively — the agent does, then dispatches. Without a runtime, `./delegate.sh <plan>` runs the same parser and emits terminal prompts you paste into separate sessions. The scaffold enables orchestration. It doesn't perform it. (See [ADR 0002](docs/decisions/0002-orchestration-is-agent-mediated.md) for why this distinction matters.)
+> Not by itself. The scaffold is paperwork; orchestration is the runtime's job. What it *does* is give an agent a machine-readable structure to act on: an OMC-equipped Claude reads your plan's Execution Strategy section, parses the parallel groups, and dispatches them into `/team` or `/ultrawork` itself. The slash commands don't parse the section natively — the agent does, then dispatches. Without a runtime, `./delegate.sh <plan>` runs the same parser and emits terminal prompts you paste into separate sessions. The scaffold enables orchestration. It doesn't perform it. (See [Design choices](docs/decisions/README.md) for the full reasoning.)
 
 </details>
 
@@ -203,14 +203,14 @@ Not an FAQ. These are the actual things a real human thinks when they land on a 
 <details>
 <summary><b>What's the difference between this and any other framework out there?</b></summary>
 
-> Most "AI dev frameworks" are orchestration runtimes — they're engines. This is the chassis. It treats the problem as **persistence of intent across sessions**, not automation of a single session. The [amendment protocol](.omc/plans/README.md), the immutability rule, the [paired CLAUDE.md/AGENTS.md views](docs/decisions/0001-paired-views-are-duplicated-manually.md) — boring methodology pieces nobody else ships because they're not glamorous. They're also the ones that actually matter six weeks in.
+> Most "AI dev frameworks" are orchestration runtimes — they're engines. This is the chassis. It treats the problem as **persistence of intent across sessions**, not automation of a single session. The [amendment protocol](.omc/plans/README.md), the immutability rule, the [paired CLAUDE.md/AGENTS.md views](docs/decisions/README.md) — boring methodology pieces nobody else ships because they're not glamorous. They're also the ones that actually matter six weeks in.
 
 </details>
 
 <details>
 <summary><b>Why are CLAUDE.md and AGENTS.md hand-duplicated instead of generated from one source?</b></summary>
 
-> Because a build script that breaks in six months is worse than two files that might drift in six months. Drift you notice on the next read; a broken generator rots the template silently. The paired-view header in each file tells you to mirror edits, and if drift happens three times in the first year, we revisit. ([ADR 0001](docs/decisions/0001-paired-views-are-duplicated-manually.md))
+> Because a build script that breaks in six months is worse than two files that might drift in six months. Drift you notice on the next read; a broken generator rots the template silently. The paired-view header in each file tells you to mirror edits, and if drift happens three times in the first year, we revisit. ([Design choices](docs/decisions/README.md))
 
 </details>
 

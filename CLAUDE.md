@@ -1,4 +1,4 @@
-<!-- PAIRED VIEW: this file and AGENTS.md carry the same project facts in formats each tool reads natively. Edits here MUST be mirrored in AGENTS.md. See docs/decisions/0001-paired-views-are-duplicated-manually.md for the rationale and drift trade-off. -->
+<!-- PAIRED VIEW: this file and AGENTS.md carry the same project facts in formats each tool reads natively. Edits here MUST be mirrored in AGENTS.md. See docs/decisions/README.md for the rationale and drift trade-off. -->
 
 # Project Context
 
@@ -12,7 +12,7 @@ open-scaffold has two layers. The **core methodology** (folder discipline, immut
 
 - **`MISSION.md`** — the project's mission, goals, and non-goals. The source of truth for *what* we're building. Contains an explicit `## Changelog` section that records every scope pivot.
 - **`.omc/plans/`** — plan files (one per task or feature slice). Plans are **immutable** once committed. New learnings become amendment files named `<slug>-amendment-<n>.md`. The handoff template in `.omc/plans/handoff-template.md` defines the exact 7-section schema every plan follows.
-- **`docs/decisions/`** — Architecture Decision Records (ADRs). `README.md` holds the index and inline template. Ships with 2 ADRs pre-populated (`0001-paired-views-are-duplicated-manually.md`, `0002-orchestration-is-agent-mediated.md`).
+- **`docs/decisions/`** — `README.md` is the public design-choices page (paired views, immutable plans, agent-mediated orchestration). The full ADR records that back these decisions live internally in `.omc-dev/decisions/` and do not ship with the public template.
 - **`docs/WORKFLOW.md`** — the phase-to-tool-to-command cheat-sheet. Where to reach for which agent/skill at each development phase.
 - **`bootstrap.sh`** — optional idempotent day-one setup. Creates lazy dirs (`.omc/research/`, `.omc/state/`) and stamps MISSION.md's changelog with the bootstrap date.
 

@@ -1,4 +1,4 @@
-<!-- PAIRED VIEW: this file and CLAUDE.md carry the same project facts in formats each tool reads natively. Edits here MUST be mirrored in CLAUDE.md. See docs/decisions/0001-paired-views-are-duplicated-manually.md for the rationale and drift trade-off. -->
+<!-- PAIRED VIEW: this file and CLAUDE.md carry the same project facts in formats each tool reads natively. Edits here MUST be mirrored in CLAUDE.md. See docs/decisions/README.md for the rationale and drift trade-off. -->
 
 # Agent Instructions
 
@@ -13,7 +13,7 @@ open-scaffold has two layers. The **core methodology** (folder discipline, immut
 - **Mission source of truth:** `MISSION.md` — goals, non-goals, and changelog of scope pivots.
 - **Plans directory:** `.omc/plans/` — immutable plan files, one per task/feature slice, conforming to the 7-section schema in `.omc/plans/handoff-template.md`.
 - **Amendments:** new learnings become `<plan-slug>-amendment-<n>.md` in the same directory. Plans are never edited in place.
-- **Decisions directory:** `docs/decisions/` — ADR index and instances. Ships with `0001-paired-views-are-duplicated-manually.md` and `0002-orchestration-is-agent-mediated.md`.
+- **Decisions directory:** `docs/decisions/README.md` — public design-choices page. Full ADR records live internally in `.omc-dev/decisions/` and do not ship publicly.
 - **Workflow map:** `docs/WORKFLOW.md` — phase-to-tool-to-command cheat-sheet.
 - **Bootstrap:** `bootstrap.sh` — optional idempotent setup; creates lazy dirs and stamps MISSION.md changelog.
 
