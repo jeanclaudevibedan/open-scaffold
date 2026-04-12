@@ -122,6 +122,7 @@ open-scaffold ships as a GitHub template with these core files:
 | `docs/decisions/README.md` | Architecture Decision Record (ADR) index and inline template. Ships with 2 examples. |
 | `docs/WORKFLOW.md` | Phase-to-tool reference: Clarify, Plan, Execute, Verify, Amend. |
 | `verify.sh` | Compliance checker: validates mission, plans, amendments, and methodology adherence. |
+| `delegate.sh` | Delegation prompt generator: reads a plan's Execution Strategy section and generates actionable prompts for parallel terminal sessions. |
 | `bootstrap.sh` | Idempotent day-one setup: creates directories, guides you through MISSION.md fill-in. |
 | `README.md` | This file. |
 
@@ -139,6 +140,18 @@ open-scaffold's methodology works standalone — you can follow it manually with
 
 Neither runtime is required. If you use a different tool (Cursor, Windsurf, Aider, or plain CLI agents), the scaffold still works — the plan files, amendment protocol, and session handover practices are just markdown and bash.
 
+### Provider-tier capabilities
+
+What works at each level of tooling:
+
+| Tier | What happens | Delegation support |
+|------|-------------|-------------------|
+| **OMC** (oh-my-claudecode) | Agent reads plan files, proposes delegation automatically | Full — agent suggests `/team` or `/ultrawork` for parallel groups |
+| **Plain Claude Code** (or similar) | Agent reads plan files if instructed via CLAUDE.md | Agent describes parallelism opportunities; you decide |
+| **Local LLM / no agent** | No agent reads plan files | Run `./delegate.sh <plan-path>` to generate terminal prompts |
+
+The scaffold's core methodology works at every tier. Higher tiers add automation; lower tiers get the same structure with manual execution.
+
 ## Glossary
 
 New to agent-orchestrated development? Here are the key terms used throughout this template:
@@ -150,6 +163,8 @@ New to agent-orchestrated development? Here are the key terms used throughout th
 **Amendment Protocol** — The rule that plan files are immutable once committed. When new information changes what you should build (the "I got smarter" case), you write an amendment file (`<slug>-amendment-<n>.md`) instead of editing the plan in place. This creates a traceable history of scope evolution. The full protocol is in `.omc/plans/README.md`.
 
 **Bootstrap (`bootstrap.sh`)** — A script you run once on day one. It creates working directories (`.omc/research/`, `.omc/state/`), walks you through defining your mission in `MISSION.md`, and stamps the changelog. Idempotent (safe to run twice) and optional (the project works without it).
+
+**Delegate (`delegate.sh`)** — The delegation prompt generator. Run `./delegate.sh <plan-path>` to read a plan's Execution Strategy section and generate actionable prompts for each parallel group. Designed for users without OMC or capable agents — paste the output into separate terminal sessions. If the plan has no Execution Strategy section, delegate.sh exits cleanly with a message. See `docs/WORKFLOW.md` for the delegation decision tree.
 
 **OMC (oh-my-claudecode)** — A multi-agent orchestration layer for Claude Code that provides planning, execution, and verification skills. The recommended runtime for this scaffold, but not required. See [Recommended Runtimes](#recommended-runtimes).
 

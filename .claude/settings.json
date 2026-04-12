@@ -2,13 +2,16 @@
   "permissions": {
     "allow": [
       "Bash(./verify.sh:*)",
+      "Bash(./delegate.sh:*)",
       "Bash(./bootstrap.sh)",
       "Bash(chmod +x ./verify.sh)",
       "Bash(chmod +x ./bootstrap.sh)",
+      "Bash(chmod +x ./delegate.sh)",
       "Bash(git commit -m ':*)",
       "Bash(git push:*)",
       "Bash(git log:*)",
-      "Bash(bash --version)"
+      "Bash(bash --version)",
+      "Bash(echo \"Exit: $?\")"
     ],
     "additionalDirectories": [
       "/tmp"

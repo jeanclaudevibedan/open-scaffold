@@ -63,6 +63,33 @@ There is no automatic router between tools. You, the human, decide based on the 
 
 > **With OMC + OMX:** Claude Code + OMC is the *thinking and shipping* cockpit — planning, execution, verification, deep debugging. Codex + OMX is the *typing* cockpit — fast boilerplate where judgment matters less than throughput. Antigravity's Gemini agent is the *IDE-native* cockpit — staying in the editor for UI tweaks and quick inline work.
 
+### Delegation decision tree
+
+When your plan has multiple tasks, use this decision tree to decide how to execute them:
+
+1. **Do any tasks depend on another task's output?** (Data flows, API schemas, generated files)
+   - **Yes →** Those tasks must run sequentially. Group the rest for potential parallelism.
+   - **No →** Continue to step 2.
+
+2. **Do the candidate parallel tasks touch the same files?**
+   - **Yes →** Do NOT parallelize those tasks. Shared files cause merge conflicts and race conditions.
+   - **No →** Safe to parallelize. Continue to step 3.
+
+3. **Do you have a capable agent?** (Can it read plan files and use tools?)
+   - **Yes, with OMC →** The agent reads the plan's Execution Strategy section and proposes `/team` or `/ultrawork` for parallel groups automatically. You approve or adjust.
+   - **Yes, plain Claude Code or similar →** The agent reads the Execution Strategy section and describes the parallelism opportunity. You decide how to act on it.
+   - **No agent, or local LLM →** Run `./delegate.sh <plan-path>` to generate actionable prompts you can paste into separate terminal sessions.
+
+### Provider-tier capabilities
+
+What works at each level of tooling:
+
+| Tier | Agent reads Execution Strategy? | Auto-proposes delegation? | Fallback |
+|------|--------------------------------|--------------------------|----------|
+| **OMC** (oh-my-claudecode) | Yes | Yes — proposes `/team`, `/ultrawork` with specific groups | Full automation |
+| **Plain Claude Code** (or similar capable agent) | Yes, if instructed via CLAUDE.md | Describes the opportunity; human decides | Agent-assisted |
+| **Local LLM / no agent** | No | No | Run `./delegate.sh <plan-path>` for terminal prompts |
+
 ## Session handover
 
 Multi-agent development spans sessions. Without discipline, context is lost between sessions and you start each one from scratch. Here's how to maintain continuity:

@@ -46,6 +46,20 @@ Legitimate scope evolution (the "I got smarter" case — new information changes
 
 Do NOT edit plans in place. Do NOT add features not traceable to a plan file or amendment. If a new requirement arrives, write an amendment first, then implement.
 
+## Delegation detection
+
+When executing a plan from `.omc/plans/`, check whether it contains an `## Execution strategy` section. If present:
+
+1. **Read the parallel groups and dependencies.** Identify which tasks can run concurrently and which must wait for prerequisites.
+2. **Propose delegation to the user:**
+   - **With OMC:** Suggest specific tools — `/team` for coordinated parallel agents across groups, or `/ultrawork` for fan-out within a group. Name the groups and tasks explicitly (e.g., "Group A (T1, T5) can run in parallel with no shared files — consider `/team`").
+   - **Without OMC:** Describe the parallelism opportunity in plain text (e.g., "Tasks T1 and T5 are independent and could be run in separate sessions"). The user decides how to act on it.
+3. **Warn on risky parallelization.** If tasks marked as parallel in the Execution Strategy share files listed in the plan's "Files to touch" section, or if a task's dependency is in the same parallel group, flag the conflict before proceeding.
+
+If the plan has no Execution Strategy section, proceed normally — the section is optional and only present for multi-agent or parallel work.
+
+For users without a capable agent (local LLMs, manual workflows), the `./delegate.sh <plan-path>` script reads the Execution Strategy section and generates actionable prompts that can be pasted into separate terminal sessions.
+
 ## Workflow
 
 See `docs/WORKFLOW.md` for the phase-to-tool cheat-sheet (deep interview, planning, autopilot/ralph, ultrawork/team, `/ccg` escape hatch, Codex+OMX, Antigravity Gemini, verify, amendment capture).

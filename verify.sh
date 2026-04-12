@@ -195,6 +195,39 @@ if [ "$TIER" = "--strict" ]; then
   else
     warn "Plan immutability check skipped (not a git repository or git not available)"
   fi
+
+  # Check 8: Execution Strategy section structure (conditional — only if section is present)
+  # This check validates internal structure, not presence. Plans without an Execution
+  # Strategy section are valid (the section is optional).
+  EXEC_STRATEGY_CHECKED=false
+  EXEC_STRATEGY_OK=true
+  for f in "$ROOT"/.omc/plans/*.md; do
+    [ -f "$f" ] || continue
+    basename=$(basename "$f")
+    # Skip template, README, and amendment files
+    if [ "$basename" = "README.md" ] || [ "$basename" = "handoff-template.md" ]; then
+      continue
+    fi
+    case "$basename" in
+      *-amendment-*) continue ;;
+    esac
+    # Only check if the plan has an Execution Strategy section
+    if grep -qi '^## Execution strategy' "$f"; then
+      EXEC_STRATEGY_CHECKED=true
+      # Verify required sub-headings
+      if ! grep -qi '^### Parallel groups' "$f"; then
+        warn "Plan $basename has Execution Strategy but missing sub-heading: ### Parallel groups"
+        EXEC_STRATEGY_OK=false
+      fi
+      if ! grep -qi '^### Dependencies' "$f"; then
+        warn "Plan $basename has Execution Strategy but missing sub-heading: ### Dependencies"
+        EXEC_STRATEGY_OK=false
+      fi
+    fi
+  done
+  if $EXEC_STRATEGY_CHECKED && $EXEC_STRATEGY_OK; then
+    pass "Execution Strategy section structure valid (where present)"
+  fi
 fi
 
 # ──────────────────────────────────────────

@@ -26,6 +26,7 @@ open-scaffold has two layers. The **core methodology** (folder discipline, immut
 5. **When you "get smarter"** (new information arrives that legitimately changes scope), use the amendment protocol. Do not silently integrate new features; do not refuse legitimate evolution.
 6. **Consult `docs/WORKFLOW.md`** when unsure which phase you're in or which tool fits the task.
 7. **Run compliance checks before non-trivial code changes.** Execute `./verify.sh --quick --quiet` and check the exit code. On exit 0: proceed silently (do not mention verification). On exit 1: read the failure output, hard-block, and redirect — if mission is undefined, redirect to defining it; if no plan exists, redirect to creating one. The `--quiet` flag suppresses output on success but prints failure details when something is wrong. If you cannot execute shell commands, check directly: `MISSION.md` should not contain `<!-- mission:unset -->`, and `.omc/plans/` should contain plan files beyond the template.
+8. **Detect delegation opportunities in plans.** When executing a plan from `.omc/plans/`, check for an `## Execution strategy` section. If present: read the parallel groups and dependencies, propose parallelism to the user (name specific groups and tasks), and warn if tasks marked as parallel share files or have undeclared dependencies. If absent, proceed normally — the section is optional. For setups without capable agents, `./delegate.sh <plan-path>` generates actionable terminal prompts from the Execution Strategy section.
 
 ## Scope evolution protocol
 

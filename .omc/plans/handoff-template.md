@@ -29,6 +29,32 @@ add a one-line entry to MISSION.md's Changelog section.
 - `path/to/file.ext` — <one-line reason>
 - `path/to/other.ext` — <one-line reason>
 
+## Execution strategy
+
+<Include this section when a plan involves 3+ tasks that can be organized into independent parallel batches. Omit for simple single-agent plans.>
+
+### Task decomposition
+
+| ID | Task | Dependencies | Parallel group |
+|----|------|-------------|----------------|
+| T1 | <task description> | None | A |
+| T2 | <task description> | T1 | B |
+| T3 | <task description> | None | A |
+
+### Parallel groups
+
+- **Group A** (<rationale>): T1, T3 — <why these are independent>
+- **Group B** (depends on Group A): T2 — <why this must wait>
+
+### Dependencies
+
+- T2 depends on T1 (<specific reason — e.g., "needs the API schema T1 produces">)
+
+### Delegation notes
+
+- <which groups are suitable for parallel agents or separate terminal sessions>
+- <which groups must wait for earlier groups to complete>
+
 ## Acceptance criteria
 
 - [ ] <testable bullet — something a verifier can check mechanically or with a clear yes/no>
