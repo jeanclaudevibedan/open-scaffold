@@ -6,8 +6,9 @@ Fill every section. Keep each section tight — a reader with no prior context
 should be able to act on the plan after reading it once.
 
 Plans are IMMUTABLE once committed. If new information changes the plan,
-write an amendment file `<slug>-amendment-<n>.md` in this directory and
-add a one-line entry to MISSION.md's Changelog section.
+run `./amend.sh <slug>` from the repo root — it scaffolds the next amendment
+file and stamps MISSION.md's changelog in one shot. Do not hand-edit plan
+files or MISSION.md for amendment bookkeeping.
 -->
 
 ## Context

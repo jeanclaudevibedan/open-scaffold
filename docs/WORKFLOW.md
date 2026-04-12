@@ -40,12 +40,14 @@ Run `./verify.sh` for a methodology compliance report (mission defined, plans ex
 
 New information legitimately changes what you're building? That's fine — but capture it, don't silently drift.
 
-1. Do not edit plan files or MISSION.md in place (beyond the `## Changelog` section).
-2. Write an amendment file in `.omc/plans/<slug>-amendment-<n>.md` following the schema in `.omc/plans/README.md`.
-3. Add a one-line dated entry to MISSION.md's `## Changelog` section.
-4. Agents read the original plan plus all amendments in numeric order.
+1. Do not edit plan files in place. Do not hand-edit MISSION.md's changelog for amendment bookkeeping.
+2. Run `./amend.sh <plan-slug>` from the repo root. The script autonumbers the next amendment file as `.omc/plans/<slug>-amendment-<n>.md`, scaffolds the 5-section schema from `.omc/plans/README.md`, and stamps MISSION.md's `## Changelog` section in one shot.
+3. Fill in the three `TODO:` sections in the new amendment file: **Learning** (what changed and why), **New direction** (the revised goal or criteria), and **Impact on acceptance criteria** (which AC numbers change, how).
+4. Review the diff, then commit. Agents read the original plan plus all amendments in numeric order.
 
-This is the difference between legitimate scope evolution (captured, traceable) and bad scope creep (silent, invisible).
+Optional flags: `--stage` to `git add` both files automatically; `--message "<text>"` to override the default changelog line. See `./amend.sh` at the repo root.
+
+This is the difference between legitimate scope evolution (captured, traceable) and bad scope creep (silent, invisible). The script is the safety net: it makes the mechanical parts of the amendment protocol (autonumbering, schema fidelity, changelog stamping) impossible to get wrong.
 
 > **With OMC:** `/ccg` (tri-model: Claude + Codex + Gemini) is useful when you're stuck or want a second opinion before amending.
 
@@ -97,7 +99,7 @@ Multi-agent development spans sessions. Without discipline, context is lost betw
 ### What to produce at the end of each session
 
 - **A completed or updated plan file** — If you finished a task, its plan should have all ACs checked off. If work remains, the plan documents what's done and what's left.
-- **Amendments for any scope changes** — Anything you learned that changes the plan goes in an amendment file, not in your head.
+- **Amendments for any scope changes** — Anything you learned that changes the plan goes in an amendment file, not in your head. Run `./amend.sh <plan-slug>` to scaffold it.
 - **A changelog entry in MISSION.md** — One line per pivot so the next session (or agent) knows what shifted and why.
 
 ### How to hand off between sessions

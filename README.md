@@ -33,7 +33,7 @@ This isn't a tooling problem. It's human nature, amplified by multi-agent workfl
 |---|---|---|
 | 🎯 **Mission-first** | `MISSION.md` defines goals and non-goals before a single line is written. Ships unset on purpose — you fill it in on day one. | [→](MISSION.md) |
 | 🔒 **Immutable plans** | Plans in `.omc/plans/` follow a 7-section schema and become read-only once committed. No silent scope creep. | [→](.omc/plans/handoff-template.md) |
-| 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Traceable, numbered, and stamped in the mission changelog. | [→](.omc/plans/README.md) |
+| 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Run `./amend.sh <plan-slug>` to autonumber, scaffold, and stamp the changelog in one shot. | [→](.omc/plans/README.md) |
 | 🧭 **Design choices** | A short page in `docs/decisions/` explains why the scaffold is the way it is — paired views, immutable plans, agent-mediated orchestration. | [→](docs/decisions/README.md) |
 | ✅ **`verify.sh`** | A compliance checker in three tiers (`--quick`, `--standard`, `--strict`). Agents run it automatically before touching code. | [→](verify.sh) |
 | 🔀 **Delegation detection** | Plans can declare parallel groups. Agents propose `/team` or `/ultrawork`; non-agent users run `./delegate.sh` to generate terminal prompts. | [→](delegate.sh) |
@@ -217,7 +217,7 @@ Not an FAQ. These are the actual things a real human thinks when they land on a 
 <details>
 <summary><b>Why can't I just edit the plan when something changes?</b></summary>
 
-> Because edits silently rewrite history. Six weeks from now, you won't remember whether the plan said X all along or whether you quietly switched last Tuesday. The amendment protocol is the trade: when the world changes, write `<plan>-amendment-1.md` next to the plan, add a one-line entry to MISSION.md's changelog, and the original plan stays frozen. Slower in the moment, honest forever after. ([How amendments work](.omc/plans/README.md))
+> Because edits silently rewrite history. Six weeks from now, you won't remember whether the plan said X all along or whether you quietly switched last Tuesday. The amendment protocol is the trade: when the world changes, run `./amend.sh <plan-slug>` — it drops a fresh `<plan>-amendment-<n>.md` next to the plan, scaffolds the 5-section schema, and stamps MISSION.md's changelog in one shot. The original plan stays frozen. Slower in the moment, honest forever after. ([How amendments work](.omc/plans/README.md))
 
 </details>
 
@@ -397,6 +397,7 @@ Not an FAQ. These are the actual things a real human thinks when they land on a 
 | [`bootstrap.sh`](bootstrap.sh) | Day-one interactive setup. Idempotent. |
 | [`verify.sh`](verify.sh) | Compliance checker. `--quick`, `--standard`, `--strict`. |
 | [`delegate.sh`](delegate.sh) | Parallel-group prompt generator for non-agent users. |
+| [`amend.sh`](amend.sh) | Amendment scaffolder. Autonumbers the next amendment, scaffolds the 5-section schema, and stamps MISSION.md's changelog. |
 
 </details>
 
@@ -407,7 +408,9 @@ Not an FAQ. These are the actual things a real human thinks when they land on a 
 
 **ADR (Architecture Decision Record)** — A short note explaining *why* a decision was made, not just *what*. Lives in `docs/decisions/`. Future-you (and future-agents) will thank present-you.
 
-**Amendment Protocol** — The rule that plan files are immutable once committed. New learnings become `<slug>-amendment-<n>.md` files instead of silent edits. Full rules in [`.omc/plans/README.md`](.omc/plans/README.md).
+**Amendment Protocol** — The rule that plan files are immutable once committed. New learnings become `<slug>-amendment-<n>.md` files instead of silent edits. Scaffolded by `./amend.sh <plan-slug>`. Full rules in [`.omc/plans/README.md`](.omc/plans/README.md).
+
+**Amend** — `./amend.sh <plan-slug>`. Autonumbers the next amendment file, scaffolds the 5-section schema, and stamps MISSION.md's changelog. Use this instead of hand-writing amendment files.
 
 **Bootstrap** — `./bootstrap.sh`. Interactive, idempotent, optional. Walks you through defining your mission on day one.
 
