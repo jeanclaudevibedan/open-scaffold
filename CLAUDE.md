@@ -16,9 +16,21 @@ open-scaffold has two layers. The **core methodology** (folder discipline, immut
 - **`docs/WORKFLOW.md`** — the phase-to-tool-to-command cheat-sheet. Where to reach for which agent/skill at each development phase.
 - **`bootstrap.sh`** — optional idempotent day-one setup. Creates lazy dirs (`.omc/research/`, `.omc/state/`) and stamps MISSION.md's changelog with the bootstrap date.
 
+## Compliance checks
+
+Before any non-trivial code change, run `./verify.sh --quick` and check the results:
+
+- **Mission undefined →** Stop. Say: "Your mission isn't defined yet. Let's define it now — what is this project?" Guide the user through MISSION.md fill-in (or run `./bootstrap.sh`). Do not proceed until the mission is defined or the user explicitly says to skip.
+- **No plan file →** Stop. Say: "There's no plan for this work. Let's create one — what are you trying to build?" Create a plan in `.omc/plans/` using the handoff template. Do not proceed until a plan exists or the user explicitly says to skip.
+- **All checks pass →** Proceed normally.
+
+The user can always override with "skip verification", "just do it", or similar. Respect their autonomy, but the default is to fix violations first.
+
+If you cannot execute shell commands, check directly: `MISSION.md` should not contain `<!-- mission:unset -->`, and `.omc/plans/` should contain at least one `.md` file besides `README.md` and `handoff-template.md`.
+
 ## How to verify
 
-- Run OMC `/verify` or your preferred verification tool against the MISSION.md + most recent plan file.
+- Run `./verify.sh` (or `./verify.sh --strict` for full compliance) to check methodology adherence. Run OMC `/verify` for acceptance-criteria tracing.
 - MISSION.md ships with the marker `<!-- mission:unset -->` and literal `TODO: define mission`. Verification tooling should treat the presence of either as "mission not yet defined." Remove both only when the real mission is written.
 - For any feature slice, verification must trace back to the acceptance criteria in the plan file under `.omc/plans/`.
 

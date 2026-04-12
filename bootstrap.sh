@@ -117,5 +117,11 @@ else
   fi
 fi
 
-# 3. Point the human at the cheat-sheet
+# 3. Run compliance check (non-blocking — bootstrap completes regardless)
+if [ -x "$ROOT/verify.sh" ]; then
+  printf '\n'
+  "$ROOT/verify.sh" --quick || true
+fi
+
+# 4. Point the human at the cheat-sheet
 printf '\nBootstrap complete.\nRead: %s\n' "$ROOT/docs/WORKFLOW.md"

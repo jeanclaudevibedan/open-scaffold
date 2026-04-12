@@ -100,6 +100,14 @@ Either way, you end up with a plan file containing 7 sections: Context, Goal, Co
 
 You now have a project with a defined mission, a documented plan, and a workflow to follow. Every future session — human or agent — starts by reading these files.
 
+### 5. Check compliance (optional)
+
+```bash
+./verify.sh
+```
+
+This runs a compliance check against the scaffold's methodology: is your mission defined? Do plan files exist? Are amendments sequential? You can run `./verify.sh --quick` for just the essentials, or `./verify.sh --strict` for full checks including plan schema and paired-view drift. If you're using an AI agent, the agent runs `--quick` automatically before any code change.
+
 ## What's inside
 
 open-scaffold ships as a GitHub template with these core files:
@@ -113,6 +121,7 @@ open-scaffold ships as a GitHub template with these core files:
 | `.omc/plans/README.md` | Amendment protocol in under 200 words: plans are immutable; amendments layer on top. |
 | `docs/decisions/README.md` | Architecture Decision Record (ADR) index and inline template. Ships with 2 examples. |
 | `docs/WORKFLOW.md` | Phase-to-tool reference: Clarify, Plan, Execute, Verify, Amend. |
+| `verify.sh` | Compliance checker: validates mission, plans, amendments, and methodology adherence. |
 | `bootstrap.sh` | Idempotent day-one setup: creates directories, guides you through MISSION.md fill-in. |
 | `README.md` | This file. |
 
@@ -149,6 +158,8 @@ New to agent-orchestrated development? Here are the key terms used throughout th
 **Plan Immutability** — Once a plan file in `.omc/plans/` is committed to version control, it is never edited. Changes are captured as amendment files that layer on top. This prevents silent scope creep and creates a traceable history of decisions.
 
 **Scaffold** — The project-specific structure that organizes plans, decisions, amendments, and handoffs in your repo. A scaffold defines the *what* (how your project stays organized); a runtime defines the *how* (the engine that executes within that structure). open-scaffold is a scaffold. OMC/OMX are runtimes.
+
+**verify.sh** — The built-in compliance checker. Run `./verify.sh` to see a PASS/FAIL report of your project's methodology adherence. Supports three tiers: `--quick` (mission defined + plan exists — what agents run automatically), `--standard` (adds amendment numbering + changelog coverage — the default), and `--strict` (adds plan schema validation + paired-view drift detection + plan immutability). Exit code 0 means all checks pass; exit code 1 means at least one failed.
 
 **Session Handover** — The practice of producing explicit deliverables at the end of each work session so the next session (human or agent) can pick up without re-explanation. Handover artifacts include: updated plan files, amendment files for scope changes, and changelog entries in MISSION.md. See `docs/WORKFLOW.md` for the full handover protocol.
 

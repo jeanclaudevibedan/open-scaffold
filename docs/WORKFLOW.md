@@ -32,7 +32,9 @@ Implement what the plan says. Independent tasks can run in parallel. Every chang
 
 Check the plan's acceptance criteria one by one. Run tests. Read the diff. Verification traces to criteria, not vibes.
 
-> **With OMC:** `/oh-my-claudecode:verify` traces back to acceptance criteria in the plan file.
+Run `./verify.sh` for a methodology compliance report (mission defined, plans exist, amendments sequential, changelog coverage). Use `./verify.sh --strict` for full checks including plan schema validation and paired-view drift detection.
+
+> **With OMC:** `/oh-my-claudecode:verify` traces back to acceptance criteria in the plan file. Agents also run `./verify.sh --quick` automatically before non-trivial code changes.
 
 ### 5. Capture amendments (when you "get smarter")
 

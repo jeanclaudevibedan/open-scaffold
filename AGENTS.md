@@ -19,12 +19,13 @@ open-scaffold has two layers. The **core methodology** (folder discipline, immut
 
 ## Operating rules
 
-1. **Read `MISSION.md` before suggesting or writing code.** If it contains the marker `<!-- mission:unset -->` or the literal `TODO: define mission`, treat the mission as undefined and refuse to expand scope until the human writes a real mission.
+1. **Read `MISSION.md` before suggesting or writing code.** If it contains the marker `<!-- mission:unset -->` or the literal `TODO: define mission`, treat the mission as undefined. Redirect the user to define their mission (via `./bootstrap.sh` or direct editing) before proceeding. The user can override with an explicit instruction to skip.
 2. **Every non-trivial change must trace to a plan file** in `.omc/plans/` that follows the handoff template schema.
 3. **Do not edit plans in place.** If new information changes a plan's goal or acceptance criteria, write an amendment file (`<slug>-amendment-<n>.md`) and add a one-line entry to `MISSION.md`'s `## Changelog` section.
-4. **Verification traces to acceptance criteria.** Run OMC `/verify` or equivalent against the plan's acceptance criteria, not vibes.
+4. **Verification traces to acceptance criteria.** Run `./verify.sh` or OMC `/verify` against the plan's acceptance criteria, not vibes.
 5. **When you "get smarter"** (new information arrives that legitimately changes scope), use the amendment protocol. Do not silently integrate new features; do not refuse legitimate evolution.
 6. **Consult `docs/WORKFLOW.md`** when unsure which phase you're in or which tool fits the task.
+7. **Run compliance checks before non-trivial code changes.** Execute `./verify.sh --quick` and act on failures: if mission is undefined, redirect to defining it; if no plan exists, redirect to creating one. If you cannot execute shell commands, check directly: `MISSION.md` should not contain `<!-- mission:unset -->`, and `.omc/plans/` should contain plan files beyond the template.
 
 ## Scope evolution protocol
 
