@@ -1,11 +1,11 @@
-# dan-starter
+# open-scaffold
 
 A stack-agnostic GitHub template repository that front-loads project context for AI coding agents (Claude Code, Codex CLI, Antigravity Gemini) so that any agent can operate in a new project from commit #1 without re-explanation. This README describes the template itself, not any project created from it.
 
 ## Quickstart
 
 ```bash
-gh repo create <your-project> --template jeanclaudevibedan/dan-starter --clone
+gh repo create <your-project> --template jeanclaudevibedan/open-scaffold --clone
 cd <your-project>
 ./bootstrap.sh              # optional; creates lazy dirs + stamps MISSION.md
 $EDITOR MISSION.md          # write the real mission; remove the <!-- mission:unset --> marker

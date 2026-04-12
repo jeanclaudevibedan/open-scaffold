@@ -1,6 +1,6 @@
 # Mission
 
-dan-starter is a stack-agnostic GitHub template that front-loads project context for multi-agent development. Done = the template is publicly usable, documented, and self-improving.
+open-scaffold is a stack-agnostic GitHub template that front-loads project context for multi-agent development. Done = the template is publicly usable, documented, and self-improving.
 
 ## Goals
 

@@ -2,7 +2,7 @@
 
 # Project Context
 
-This project was created from [dan-starter](https://github.com/danimal/dan-starter). It ships with a lightweight agent-orchestration layer that lets Claude Code, Codex, and Gemini operate in this repository from commit #1 without re-explanation. Read this file first, then consult `MISSION.md` for what the project actually is.
+This project was created from [open-scaffold](https://github.com/jeanclaudevibedan/open-scaffold). It ships with a lightweight agent-orchestration layer that lets Claude Code, Codex, and Gemini operate in this repository from commit #1 without re-explanation. Read this file first, then consult `MISSION.md` for what the project actually is.
 
 ## Where things live
 

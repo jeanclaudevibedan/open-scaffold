@@ -2,7 +2,7 @@
 
 # Agent Instructions
 
-This project was created from [dan-starter](https://github.com/danimal/dan-starter). It ships with a lightweight agent-orchestration layer so that any agent (Codex CLI, Antigravity Gemini, Claude Code, or similar) can operate in the repository from commit #1 without re-explanation.
+This project was created from [open-scaffold](https://github.com/jeanclaudevibedan/open-scaffold). It ships with a lightweight agent-orchestration layer so that any agent (Codex CLI, Antigravity Gemini, Claude Code, or similar) can operate in the repository from commit #1 without re-explanation.
 
 ## Project facts
 
@@ -28,4 +28,4 @@ Full rules in `.omc/plans/README.md` (under 200 words). Summary: plans are immut
 
 ## Verification marker convention
 
-`MISSION.md` ships with `<!-- mission:unset -->` as a machine-detectable "mission not yet defined" marker. Verification tooling (OMC `/verify`, custom scripts, code reviewers) should treat its presence as a blocker for any scope-expanding work. dan-starter defines the marker; consuming tools decide how to honor it.
+`MISSION.md` ships with `<!-- mission:unset -->` as a machine-detectable "mission not yet defined" marker. Verification tooling (OMC `/verify`, custom scripts, code reviewers) should treat its presence as a blocker for any scope-expanding work. open-scaffold defines the marker; consuming tools decide how to honor it.

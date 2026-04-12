@@ -1,18 +1,18 @@
-# 0002 — Fifteen-minute budget evidence (AC #10 of the dan-starter spec)
+# 0002 — Fifteen-minute budget evidence (AC #10 of the open-scaffold spec)
 
 ## Status
 Proposed
 
 ## Context
-The dan-starter spec originally asserted a build-time acceptance criterion: "A fresh project can go from `gh repo create` to 'first plan file written and first commit made' in under 15 minutes." Time budgets cannot be asserted; they can only be measured. Amendment 3 to the spec (see `.omc/specs/deep-interview-dan-starter-amendment-3.md`) rewrote the criterion to require a dated stopwatch run on the first real project created from dan-starter, with the result logged to this ADR. This ADR ships with the template in `Status: Proposed` and is promoted (or superseded) after the measurement runs.
+The open-scaffold spec originally asserted a build-time acceptance criterion: "A fresh project can go from `gh repo create` to 'first plan file written and first commit made' in under 15 minutes." Time budgets cannot be asserted; they can only be measured. Amendment 3 to the spec (see `.omc/specs/deep-interview-open-scaffold-amendment-3.md`) rewrote the criterion to require a dated stopwatch run on the first real project created from open-scaffold, with the result logged to this ADR. This ADR ships with the template in `Status: Proposed` and is promoted (or superseded) after the measurement runs.
 
 ## Decision
-Within 7 days of dan-starter being published as a GitHub template, a dated stopwatch run will be performed on the first real consumer project:
+Within 7 days of open-scaffold being published as a GitHub template, a dated stopwatch run will be performed on the first real consumer project:
 
-1. Start timer at `gh repo create <project> --template dan-starter --clone`.
+1. Start timer at `gh repo create <project> --template open-scaffold --clone`.
 2. Stop timer at the first real plan file (following `.omc/plans/handoff-template.md`) committed to the new project.
 3. Record the measured duration, the date of the run, and the project name.
-4. Commit this ADR (or a replacement ADR) to dan-starter with the result.
+4. Commit this ADR (or a replacement ADR) to open-scaffold with the result.
 
 If the measured duration is **≤ 15 minutes**, this ADR's `Status` flips from `Proposed` to `Accepted` and the template's v1.0 release is considered verified against AC #10.
 

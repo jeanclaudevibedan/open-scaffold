@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-The dan-starter template must present the same project facts to multiple agent CLIs (Claude Code, Codex CLI, Antigravity Gemini) in the file format each tool reads natively. Claude Code reads `CLAUDE.md`; Codex and most other agents read `AGENTS.md`. The content is near-identical; only the formatting conventions differ.
+The open-scaffold template must present the same project facts to multiple agent CLIs (Claude Code, Codex CLI, Antigravity Gemini) in the file format each tool reads natively. Claude Code reads `CLAUDE.md`; Codex and most other agents read `AGENTS.md`. The content is near-identical; only the formatting conventions differ.
 
 Three sync mechanisms were considered: (a) manual duplication with a header contract, (b) a generator script that produces AGENTS.md from CLAUDE.md (or vice versa) as a build step, (c) a shared fragment file included into both via markers and hydrated by a build script.
 
@@ -25,6 +25,6 @@ When editing either file, the author is expected to immediately mirror the chang
 - Drift risk relies on human discipline. The first time an author edits one file at 11pm on a Tuesday and forgets the other, the files disagree.
 - There is no automated alarm when drift happens. A reader must notice.
 
-**Trade-off accepted:** Durability-under-neglect beats drift-prevention-with-machinery. This aligns with the dan-starter principle "plain text, plain bash" and "shape over enforcement." The cost of drift is one inconsistent answer from an agent, which is recoverable by re-reading and re-editing. The cost of a broken generator script is silent template bit-rot, which is not.
+**Trade-off accepted:** Durability-under-neglect beats drift-prevention-with-machinery. This aligns with the open-scaffold principle "plain text, plain bash" and "shape over enforcement." The cost of drift is one inconsistent answer from an agent, which is recoverable by re-reading and re-editing. The cost of a broken generator script is silent template bit-rot, which is not.
 
 **Revisit trigger:** if drift occurs three or more times in the first year of using this template, file a new ADR superseding this one and introduce a generator or lint step.

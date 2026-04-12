@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# dan-starter bootstrap
+# open-scaffold bootstrap
 # Tested on macOS system bash (3.2). Avoids GNU-only date flags.
 # Idempotent: safe to run any number of times.
 set -euo pipefail

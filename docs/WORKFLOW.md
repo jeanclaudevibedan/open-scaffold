@@ -33,4 +33,4 @@ This is the difference between legitimate scope evolution (captured, traceable) 
 
 ## Verification marker convention
 
-`MISSION.md` in this project ships with a machine-detectable empty-mission marker: the HTML comment `<!-- mission:unset -->` plus the literal `TODO: define mission`. Verification tooling (OMC `/verify`, custom scripts, code reviewers) should treat the presence of either as **"mission not yet defined"** — a blocker for any scope-expanding work. dan-starter defines the marker; consuming tools decide how to honor it. Remove both markers only when the real mission has been written and committed.
+`MISSION.md` in this project ships with a machine-detectable empty-mission marker: the HTML comment `<!-- mission:unset -->` plus the literal `TODO: define mission`. Verification tooling (OMC `/verify`, custom scripts, code reviewers) should treat the presence of either as **"mission not yet defined"** — a blocker for any scope-expanding work. open-scaffold defines the marker; consuming tools decide how to honor it. Remove both markers only when the real mission has been written and committed.
