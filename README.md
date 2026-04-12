@@ -1,53 +1,66 @@
-# open-scaffold
+<div align="center">
 
-A methodology template for disciplined AI development. open-scaffold gives your project a pre-built structure — mission definitions, immutable plans, amendment protocols, decision records, and session handover practices — so you spend time building, not reinventing how to stay organized across multi-agent sessions.
+# 🧱 open-scaffold
 
-## Table of contents
+**A methodology template for disciplined AI development.**
 
-- [The problem](#the-problem)
-- [Scaffold vs. runtime](#scaffold-vs-runtime)
-- [Your first 15 minutes](#your-first-15-minutes)
-- [What's inside](#whats-inside)
-- [Recommended runtimes](#recommended-runtimes)
-- [Glossary](#glossary)
-- [License](#license)
+[![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](LICENSE)
+[![Template](https://img.shields.io/badge/GitHub-Template-blue.svg)](https://github.com/jeanclaudevibedan/open-scaffold/generate)
+[![Works with](https://img.shields.io/badge/Works%20with-Any%20agent-green.svg)](#-recommended-runtimes)
+[![Built with](https://img.shields.io/badge/Built%20with-itself-ff69b4.svg)](#-dogfooded)
 
----
+</div>
 
-**Want to understand why this exists?** Read [The Problem](#the-problem).
-**Want to start building now?** Jump to [Your First 15 Minutes](#your-first-15-minutes).
+> [!TIP]
+> **New here?** Skip straight to [🚀 15 minutes to your first plan](#-15-minutes-to-your-first-plan).
+> **Want the why?** Start with [💥 The problem](#-the-problem).
 
 ---
 
-## The problem
+## 💥 The problem
 
-You start a project with an AI coding agent. The first session goes great — clean code, clear goals. By the third session, you've forgotten what you decided in the first one. By the fifth, your folder structure has grown organically into something no one can navigate. Plans exist only in conversation history that's long gone. Scope has crept in every direction.
+Your first session with an AI coding agent goes great. Clean code, clear goals. By session three, you've forgotten what you decided in session one. By session five, the folder structure has grown into something nobody can navigate. Plans exist only in chat history that's long gone. Scope crept in every direction and no one noticed.
 
-This is not a tooling problem. It's a human nature problem. Multi-agent development amplifies it because each session starts fresh — the agent doesn't remember your prior decisions, your folder conventions, or the constraints you set last Tuesday. Without a persistent structure that carries context across sessions, every session is a blank slate invitation to drift.
+This isn't a tooling problem. It's human nature, amplified by multi-agent workflows where every session starts on a blank page. The agent doesn't remember last Tuesday's constraints. You barely do either.
 
-open-scaffold is a set of practices encoded as files:
+**open-scaffold fixes this by encoding discipline as files.** Mission, plans, amendments, decisions, and handovers all live on disk — checked into git from commit #1 — so any human or agent walking into the repo tomorrow has the full story without asking.
 
-- **A mission file** that forces you to define scope, goals, and non-goals before writing code
-- **Immutable plan files** that prevent silent scope creep — once committed, a plan is a record, not a draft
-- **An amendment protocol** that channels legitimate "I got smarter" moments into traceable changes instead of invisible drift
-- **Architecture decision records** that explain *why*, not just *what*, so future sessions have the context they need
-- **Session handover discipline** built into the workflow, so nothing lives only in conversation history
+---
 
-The methodology works whether you use it with AI agents, with a team, or solo. The structure is the value.
+## ✨ What you get
 
-## Scaffold vs. runtime
+| | | |
+|---|---|---|
+| 🎯 **Mission-first** | `MISSION.md` defines goals and non-goals before a single line is written. Ships unset on purpose — you fill it in on day one. | [→](MISSION.md) |
+| 🔒 **Immutable plans** | Plans in `.omc/plans/` follow a 7-section schema and become read-only once committed. No silent scope creep. | [→](.omc/plans/handoff-template.md) |
+| 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Traceable, numbered, and stamped in the mission changelog. | [→](.omc/plans/README.md) |
+| 🧭 **Architecture Decision Records** | Two worked ADRs ship in `docs/decisions/` as examples. Short format: Context, Decision, Consequences. | [→](docs/decisions/) |
+| ✅ **`verify.sh`** | A compliance checker in three tiers (`--quick`, `--standard`, `--strict`). Agents run it automatically before touching code. | [→](verify.sh) |
+| 🔀 **Delegation detection** | Plans can declare parallel groups. Agents propose `/team` or `/ultrawork`; non-agent users run `./delegate.sh` to generate terminal prompts. | [→](delegate.sh) |
 
-If you already use an orchestration tool — [oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode), [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex), or something else — you might wonder: *why do I need this too?*
+---
 
-**A scaffold is the WHAT.** It's the project-specific structure that defines how plans, decisions, amendments, and handoffs are organized in *your* repo. It's the folder layout, the plan schema, the mission file, the amendment protocol. The scaffold persists across every session and every tool you use.
+## 🔁 The workflow
 
-**A runtime is the HOW.** It's the engine that executes tasks within that structure — planning skills, parallel agents, verification commands, consensus loops. A runtime operates inside a scaffold; it doesn't replace the need for one.
+Five phases, one per session (or one per feature slice). The amendment loop handles the "I got smarter" case without silent edits.
 
-Think of it this way: a runtime without a scaffold is a powerful engine with no chassis. You can drive fast, but you'll lose parts along the way. A scaffold without a runtime still works — you follow the methodology manually. But a scaffold *with* a runtime is where things click: the runtime reads your plan files, traces verification to acceptance criteria, and enforces the amendment protocol automatically.
+```mermaid
+flowchart LR
+    A["🎯 Clarify"] --> B["📋 Plan"]
+    B --> C["⚙️ Execute"]
+    C --> D["✅ Verify"]
+    D --> E{"ACs pass?"}
+    E -->|yes| F["🤝 Handover"]
+    E -->|no| C
+    F -.->|"new learnings"| G["📝 Amend"]
+    G -.-> B
+```
 
-open-scaffold provides the chassis. Your runtime of choice provides the engine.
+Each phase maps to a concrete file or command. Full phase-to-tool cheat sheet lives in [docs/WORKFLOW.md](docs/WORKFLOW.md).
 
-## Your first 15 minutes
+---
+
+## 🚀 15 minutes to your first plan
 
 ### 1. Create your project from the template
 
@@ -56,128 +69,368 @@ gh repo create <your-project> --template jeanclaudevibedan/open-scaffold --clone
 cd <your-project>
 ```
 
+Or hit the green **Use this template** button on GitHub.
+
 ### 2. Run bootstrap
 
 ```bash
 ./bootstrap.sh
 ```
 
-Bootstrap will ask you three questions:
-- **What is this project?** — one sentence that defines your mission
-- **What should it achieve?** — your goals (comma-separated)
-- **What is it NOT?** — your non-goals (comma-separated)
+Bootstrap asks three questions and writes your answers into `MISSION.md`:
 
-Your answers are written into `MISSION.md`, replacing the placeholder content. This is the methodology's starting point: define scope before writing code.
+- **What is this project?** — one sentence
+- **What should it achieve?** — comma-separated goals
+- **What is it NOT?** — comma-separated non-goals
 
-### 3. Skim the workflow
+That's the mission. Everything downstream traces back to it.
 
-```bash
-cat docs/WORKFLOW.md
-```
+### 3. Write your first plan
 
-This is your phase-to-tool cheat-sheet. It tells you which phase you're in (Clarify, Plan, Execute, Verify, Amend) and what to reach for at each one.
+If your goal is clear, tell your agent:
 
-### 4. Create your first plan
-
-Tell your AI agent what you want to build. If your goal is clear, ask it to write a plan directly:
-
-> *"Write a plan in `.omc/plans/` for \<your first task\> using the handoff template."*
+> *"Write a plan in `.omc/plans/` for \<your task\> using the handoff template."*
 
 If your goal is fuzzy, let the agent interview you into clarity first:
 
-> **With OMC:** `/deep-interview` asks targeted questions until ambiguity drops below 20%, then generates the plan for you.
->
-> **With any agent:** *"I want to build \<vague idea\>. Ask me questions until you understand exactly what to build, then write a plan in `.omc/plans/` using the schema in `.omc/plans/handoff-template.md`."*
-
-**Manual fallback** (no agent):
-
 ```bash
-cp .omc/plans/handoff-template.md .omc/plans/<your-first-task>.md
-$EDITOR .omc/plans/<your-first-task>.md
+# With oh-my-claudecode installed:
+/deep-interview
 ```
 
-Either way, you end up with a plan file containing 7 sections: Context, Goal, Constraints, Files to touch, Acceptance criteria, Verification steps, Open questions. Then start building.
+Without OMC, ask any agent: *"Interview me until you understand exactly what to build, then write a plan in `.omc/plans/` using `.omc/plans/handoff-template.md`."*
 
-You now have a project with a defined mission, a documented plan, and a workflow to follow. Every future session — human or agent — starts by reading these files.
+**Fully manual fallback:**
 
-### 5. Check compliance (optional)
+```bash
+cp .omc/plans/handoff-template.md .omc/plans/my-first-task.md
+$EDITOR .omc/plans/my-first-task.md
+```
+
+Either way you end up with a plan file: Context, Goal, Constraints, Files to touch, Acceptance criteria, Verification steps, Open questions.
+
+### 4. Check compliance (optional but satisfying)
 
 ```bash
 ./verify.sh
 ```
 
-This runs a compliance check against the scaffold's methodology: is your mission defined? Do plan files exist? Are amendments sequential? You can run `./verify.sh --quick` for just the essentials, or `./verify.sh --strict` for full checks including plan schema and paired-view drift. If you're using an AI agent, the agent runs `--quick` automatically before any code change.
+Exit code 0 means your mission is defined, a plan exists, amendments are sequential, and the methodology is intact. Pair it with `--strict` once you have plans shipping.
 
-## What's inside
+---
 
-open-scaffold ships as a GitHub template with these core files:
+## 🧩 Scaffold vs. runtime
+
+> A runtime without a scaffold is a powerful engine with no chassis. You drive fast, but parts fall off along the way.
+
+| | **Scaffold** (what open-scaffold is) | **Runtime** (what OMC/OMX are) |
+|---|---|---|
+| **Defines** | How your project stays organized | How tasks get executed |
+| **Lives in** | `MISSION.md`, `.omc/plans/`, `docs/decisions/` | Your agent's skills and commands |
+| **Persists** | Across every session, agent, and tool | Per session, per invocation |
+| **Required?** | Yes — this is the floor | No — scaffold works solo, runtimes amplify it |
+
+open-scaffold is the chassis. Your runtime is the engine. You need both, but they live in different layers.
+
+---
+
+## 🎚️ Works at every tier
+
+The scaffold runs the same way whether you're on the latest orchestration stack or typing everything yourself. What changes is how much work you do by hand.
+
+| Tier | What happens | Delegation |
+|---|---|---|
+| 🤖 **OMC** ([oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode)) | Agent reads plans, proposes parallel delegation, runs `verify.sh` automatically | Full — `/team`, `/ultrawork`, `/ralph` |
+| 🧠 **Plain Claude Code / Cursor / Codex** | Agent reads plans when told to via `CLAUDE.md` / `AGENTS.md` | Agent describes parallelism; you dispatch |
+| ⌨️ **Local LLM or no agent at all** | You read the plans. The methodology still works. | Run `./delegate.sh <plan>` for copy-pasteable prompts |
+
+Higher tiers automate more. Lower tiers keep every file and protocol intact.
+
+---
+
+## 🛠️ Recommended runtimes
+
+- **[oh-my-claudecode (OMC)](https://github.com/yeachan-heo/oh-my-claudecode)** — multi-agent orchestration for Claude Code. Planning, parallel execution, verification, consensus loops. The heavy-lift runtime.
+- **[oh-my-codex (OMX)](https://github.com/Yeachan-Heo/oh-my-codex)** — same philosophy for Codex CLI. The fast-typing cockpit — boilerplate, single-file edits, throughput over judgment.
+
+Neither is required. Use Cursor, Windsurf, Aider, or a plain terminal — the scaffold is just markdown and bash.
+
+---
+
+## 🤔 Questions you're probably asking
+
+Not an FAQ. These are the actual things a real human thinks when they land on a repo like this. Opinionated answers follow.
+
+### 🤖 Is this a magic wand?
+
+<details>
+<summary><b>So, does this allow multi-agent automatic orchestration?</b></summary>
+
+Not by itself. The scaffold is paperwork; orchestration is the runtime's job. What it *does* is give runtimes like OMC a machine-readable structure, so `/team` and `/ultrawork` know how to fan out across the parallel groups declared in your plan's Execution Strategy section. Without a runtime, `./delegate.sh <plan>` generates terminal prompts you paste into separate sessions. The scaffold enables orchestration. It doesn't perform it.
+
+</details>
+
+<details>
+<summary><b>Can I run this for 5 hours straight and come back to a finished product?</b></summary>
+
+No. Anyone who says their framework does that is selling you something. What you *can* do: write a plan, hand it to an autonomous runtime (OMC's `/autopilot` or `/ralph`), and come back to mostly-done work that traces back to your acceptance criteria. The difference the scaffold makes is **recoverability** — because the plan is on disk, you can read what the agent did, compare against the ACs, and know exactly where to resume. Without it, a 5-hour run is a 5-hour black box.
+
+</details>
+
+<details>
+<summary><b>Does this make my agent smarter, or just more disciplined?</b></summary>
+
+Disciplined. Smarter is the model's job. What changes is that your agent stops forgetting, stops drifting, and stops making the same class of mistake twice — because the constraints are written down where it can re-read them next session.
+
+</details>
+
+<details>
+<summary><b>Does this reduce token usage / cost?</b></summary>
+
+Usually, yes — indirectly. Plans mean less context-stuffing ("remember yesterday when..."). Immutability means no back-and-forth about what was already decided. `verify.sh` catches methodology drift mechanically instead of via a review round. Not benchmarked, so treat it as a hypothesis — but the "wait, we already decided this" loops are the expensive ones, and the scaffold is designed to eliminate them.
+
+</details>
+
+<details>
+<summary><b>Will my agent actually follow the protocol, or will it just ignore the files?</b></summary>
+
+Depends on the agent and how you prompt it. Claude Code and Codex read [CLAUDE.md](CLAUDE.md) and [AGENTS.md](AGENTS.md) automatically. Cursor, Aider, and most others will too if you tell them to once. Compliance holds up because the instructions are direct and `verify.sh` is mechanical — not a judgment call. If your agent is the type that routinely ignores explicit instructions, no scaffold will save you.
+
+</details>
+
+### 🧐 The skeptic pass
+
+<details>
+<summary><b>What's the difference between this and any other framework out there?</b></summary>
+
+Most "AI dev frameworks" are orchestration runtimes — they're engines. This is the chassis. It treats the problem as **persistence of intent across sessions**, not automation of a single session. The amendment protocol, the immutability rule, the paired CLAUDE.md/AGENTS.md views — boring methodology pieces nobody else ships because they're not glamorous. They're also the ones that actually matter six weeks in.
+
+</details>
+
+<details>
+<summary><b>Isn't this just Agile / PRD-driven development with new vocabulary?</b></summary>
+
+Partially. The mission/plan/amendment loop is lifted from disciplined engineering practice — none of it is new. What *is* new: the protocol is designed so an agent can execute it mechanically. Plans are structured so they parse. Amendments are numbered so they order. `verify.sh` is a compliance check, not a process meeting. It's Agile for a workforce that reads markdown faster than it reads faces.
+
+</details>
+
+<details>
+<summary><b>Isn't this over-engineering for a solo side project?</b></summary>
+
+If your side project dies in one session, yes. If it survives to session ten and you've forgotten half the decisions from session two — which is what usually happens — then no, it's the cheapest possible fix. The whole scaffold is 11 files. You can follow it by hand in 15 minutes a week. It's cheaper than the drift it prevents.
+
+</details>
+
+<details>
+<summary><b>How much time does this actually save me vs. just winging it?</b></summary>
+
+Not measured yet, honestly. [ADR 0002](docs/decisions/0002-fifteen-minute-budget-evidence.md) commits to stopwatching the "stranger to first plan in ≤15 minutes" claim on the first real consumer project. Until that evidence is in, treat the time-savings claim as a hypothesis. What *is* observable: fewer "wait, I thought we decided X" moments, and sessions that resume in under a minute instead of fifteen.
+
+</details>
+
+<details>
+<summary><b>What if I'm bad at writing plans? Does this fall apart?</b></summary>
+
+No. The [handoff template](.omc/plans/handoff-template.md) is a fill-in-the-blanks form with 7 sections. If you can answer "what am I trying to do, how will I know it worked, what's out of scope," you can write a plan. If you can't answer those, you probably shouldn't be coding yet — which is exactly the point.
+
+</details>
+
+<details>
+<summary><b>Is this just going to slow me down? I'm used to vibing.</b></summary>
+
+Yes — by about 15 minutes on day one. That's the tax. After that, it speeds you up because session two doesn't start with "OK so where were we..." You trade 15 upfront minutes for zero re-explanation cost forever. For anything you'll work on more than once, the trade is obvious.
+
+</details>
+
+### 🛠️ Will it work for me?
+
+<details>
+<summary><b>Do I need Claude Code or OMC to use this?</b></summary>
+
+No. The core layer is markdown files and three bash scripts. It works with any agent, any editor, or a human typing by hand. OMC and OMX are force-multipliers, not prerequisites.
+
+</details>
+
+<details>
+<summary><b>Does this work with Cursor / Codex / Aider / local LLMs?</b></summary>
+
+Yes to all. Cursor and Aider read [CLAUDE.md](CLAUDE.md) naturally. Codex reads [AGENTS.md](AGENTS.md). Local LLMs usually need you to paste context manually, but the methodology doesn't care — the plan files are for *you* as much as for the agent. The [provider-tier table](#-works-at-every-tier) above breaks down what you get at each level.
+
+</details>
+
+<details>
+<summary><b>Can I adopt this mid-project, or is it only for new repos?</b></summary>
+
+Mid-project works fine. Copy the template files into your existing repo, write a `MISSION.md` describing what the project is *now* (not what it was when you started), and create your first plan for whatever you're working on next. Everything before adoption stays as-is; everything after gets the discipline.
+
+</details>
+
+<details>
+<summary><b>Does this work for non-code projects — writing, research, design?</b></summary>
+
+Yes. Swap "files to touch" for "deliverables" and "acceptance criteria" for "done means" — the rest maps cleanly. Mission definitions, immutable plans, amendments, and session handovers are writing-agnostic. Research projects arguably benefit *more* — their drift problem is worse, not better.
+
+</details>
+
+<details>
+<summary><b>What happens if my agent and the methodology disagree?</b></summary>
+
+The methodology wins, and the agent writes an ADR explaining why it thinks the rule is wrong. If the rule actually *is* wrong, the amendment protocol is how you fix it: propose a change, get it reviewed, write it down. What you don't do is silently ignore the rule.
+
+</details>
+
+<details>
+<summary><b>Can I customize the plan schema / folder layout / amendment rules?</b></summary>
+
+Yes. It's your fork. The handoff template is a starting point, not a law. Add a "Risks" section if your project needs one, rename folders if you want, bring your own ADR format. Just keep the immutability rule — that's the load-bearing one.
+
+</details>
+
+<details>
+<summary><b>Do I have to commit plans to git, or can I keep them local?</b></summary>
+
+You have to commit them. Immutability means "committed to version control." An uncommitted plan is a draft; a committed plan is a record. Uncommitted plans can be edited silently, which is exactly what the protocol exists to prevent.
+
+</details>
+
+### 🔋 Power level check
+
+<details>
+<summary><b>What power level will I achieve when using this?</b></summary>
+
+Over 9000, obviously.
+
+More usefully: you'll stop losing context between sessions, stop re-explaining constraints, and stop waking up to "what did I decide last Tuesday?" For a multi-session project, that's a bigger deal than it sounds.
+
+</details>
+
+### 🧭 Trust and lineage
+
+<details>
+<summary><b>Who built this?</b></summary>
+
+[@jeanclaudevibedan](https://github.com/jeanclaudevibedan). Scoped, planned, implemented, reviewed, and shipped using the scaffold's own methodology — 11 commits in one day, each traceable to a plan file in `.omc-dev/plans/`.
+
+</details>
+
+<details>
+<summary><b>Is it production-ready, or a toy?</b></summary>
+
+Production-ready in the **methodology** sense — the rules are stable, the scripts work, the template boots in 15 minutes. Early in the **adoption** sense — very few people are using it yet. Expect the schema to stay backward-compatible; expect the tooling around it to grow.
+
+</details>
+
+<details>
+<summary><b>Was this built with AI? Isn't that ironic?</b></summary>
+
+Yes, and no. The point is that AI-assisted development needs discipline *more* than traditional development, not less — the failure modes (context loss, silent drift, scope creep) are amplified, not introduced, by AI. Dogfooding the methodology on itself is the tightest possible test loop.
+
+</details>
+
+<details>
+<summary><b>How stable is the methodology? Will the schema change next month?</b></summary>
+
+The core rules — plan immutability, amendment protocol, mission-first gating — are stable and won't break. The plan schema may gain optional sections. The scripts may grow flags. If anything breaks, you'll see it in a CHANGELOG and — because the scaffold eats its own dogfood — in an amendment file to the scaffold's own plans.
+
+</details>
+
+### 🪤 Failure modes (the honest part)
+
+<details>
+<summary><b>When does this actively <i>not</i> help?</b></summary>
+
+Single-session throwaway scripts. One-off bug fixes. Prototypes you'll delete in an hour. Anything where the "drift across sessions" pain doesn't exist. Using open-scaffold for those is like writing a PRD for a grocery list.
+
+</details>
+
+<details>
+<summary><b>What's the "I tried it and it didn't work" story?</b></summary>
+
+The most likely failure mode: you write the mission and the first plan, then never touch the methodology again. The files go stale, the amendment protocol becomes a "later" item, and you're back to winging it with extra paperwork on top. Fix: treat `verify.sh` as a habit, not a ceremony. If the check fails, fix it before moving on. If that sounds like too much work, this isn't for you — and that's a reasonable conclusion to reach.
+
+</details>
+
+<details>
+<summary><b>Do plans get stale and rot over time?</b></summary>
+
+Plans are *supposed* to get stale. That's the point of immutability — they're a record of what you decided *at the time*, not a living document. When the world changes, you write an amendment, not an edit. The mission-level changelog is your map of how the project's understanding has evolved over time.
+
+</details>
+
+<details>
+<summary><b>What if I have to pivot hard and the mission is now wrong?</b></summary>
+
+Rewrite `MISSION.md`, stamp the changelog with a "pivot" entry explaining why, and either amend the outstanding plans or mark them superseded. The protocol handles pivots fine — it just requires you to *document* them instead of silently changing direction. That documentation is the whole feature.
+
+</details>
+
+---
+
+## 📁 What's inside
+
+<details>
+<summary><b>File map</b></summary>
 
 | File | Purpose |
-| ---- | ------- |
-| `MISSION.md` | Source of truth for *what* the project is. Ships with a `<!-- mission:unset -->` marker. |
-| `CLAUDE.md` | Claude Code's entry point — agents read this first to understand the project structure. |
-| `AGENTS.md` | Entry point for Codex, Gemini, and other agents (paired view of CLAUDE.md). |
-| `.omc/plans/handoff-template.md` | The 7-section schema every plan file follows. |
-| `.omc/plans/README.md` | Amendment protocol in under 200 words: plans are immutable; amendments layer on top. |
-| `docs/decisions/README.md` | Architecture Decision Record (ADR) index and inline template. Ships with 2 examples. |
-| `docs/WORKFLOW.md` | Phase-to-tool reference: Clarify, Plan, Execute, Verify, Amend. |
-| `verify.sh` | Compliance checker: validates mission, plans, amendments, and methodology adherence. |
-| `delegate.sh` | Delegation prompt generator: reads a plan's Execution Strategy section and generates actionable prompts for parallel terminal sessions. |
-| `bootstrap.sh` | Idempotent day-one setup: creates directories, guides you through MISSION.md fill-in. |
-| `README.md` | This file. |
+|---|---|
+| [`MISSION.md`](MISSION.md) | Source of truth for what the project is. Ships with an `<!-- mission:unset -->` marker. |
+| [`CLAUDE.md`](CLAUDE.md) | Claude Code's entry point. Agents read this first. |
+| [`AGENTS.md`](AGENTS.md) | Entry point for Codex, Gemini, and other agents (paired view of `CLAUDE.md`). |
+| [`.omc/plans/handoff-template.md`](.omc/plans/handoff-template.md) | The 7-section schema every plan file follows. |
+| [`.omc/plans/README.md`](.omc/plans/README.md) | Amendment protocol in under 200 words. |
+| [`docs/decisions/`](docs/decisions/) | ADR index, template, and two ships-as-examples. |
+| [`docs/WORKFLOW.md`](docs/WORKFLOW.md) | Phase-to-tool cheat sheet. Clarify → Plan → Execute → Verify → Amend. |
+| [`bootstrap.sh`](bootstrap.sh) | Day-one interactive setup. Idempotent. |
+| [`verify.sh`](verify.sh) | Compliance checker. `--quick`, `--standard`, `--strict`. |
+| [`delegate.sh`](delegate.sh) | Parallel-group prompt generator for non-agent users. |
 
-Two ADRs ship in `docs/decisions/` as worked examples: `0001-paired-views-are-duplicated-manually.md` (why CLAUDE.md and AGENTS.md are hand-duplicated instead of auto-synced) and `0002-fifteen-minute-budget-evidence.md` (the measurement protocol for validating onboarding speed).
+</details>
 
-This README itself was added on day zero via the template's own scope-evolution protocol — dogfooding the amendment mechanism on its own specification before any user sees it.
+<details>
+<summary><b>Glossary</b></summary>
 
-## Recommended runtimes
+**AC (Acceptance Criterion)** — A testable yes/no statement that defines "done." Every plan file has them. If they pass, the work is done. If they don't, it isn't.
 
-open-scaffold's methodology works standalone — you can follow it manually with any text editor. But it's designed to pair with orchestration runtimes that read the structure and automate the workflow.
+**ADR (Architecture Decision Record)** — A short note explaining *why* a decision was made, not just *what*. Lives in `docs/decisions/`. Future-you (and future-agents) will thank present-you.
 
-**[oh-my-claudecode (OMC)](https://github.com/yeachan-heo/oh-my-claudecode)** — A multi-agent orchestration layer for Claude Code. OMC provides planning skills, autonomous execution, parallel agent coordination, and verification that traces back to your plan files' acceptance criteria. When OMC is installed, the workflow phases in `docs/WORKFLOW.md` map to specific OMC skills.
+**Amendment Protocol** — The rule that plan files are immutable once committed. New learnings become `<slug>-amendment-<n>.md` files instead of silent edits. Full rules in [`.omc/plans/README.md`](.omc/plans/README.md).
 
-**[oh-my-codex (OMX)](https://github.com/Yeachan-Heo/oh-my-codex)** — The same orchestration philosophy for Codex CLI. OMX is the fast-typing cockpit — boilerplate, single-file edits, and straightforward scaffolding where throughput matters more than deep judgment.
+**Bootstrap** — `./bootstrap.sh`. Interactive, idempotent, optional. Walks you through defining your mission on day one.
 
-Neither runtime is required. If you use a different tool (Cursor, Windsurf, Aider, or plain CLI agents), the scaffold still works — the plan files, amendment protocol, and session handover practices are just markdown and bash.
+**Delegate** — `./delegate.sh <plan>`. Reads a plan's Execution Strategy section and prints prompts you can paste into parallel terminal sessions. Designed for users without an orchestration runtime.
 
-### Provider-tier capabilities
+**OMC / OMX** — [oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode) and [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex). Recommended runtimes, not required.
 
-What works at each level of tooling:
+**Plan Immutability** — Once a plan is committed to git, it is never edited. Changes layer on top as amendments. This is the single rule that prevents silent scope creep.
 
-| Tier | What happens | Delegation support |
-|------|-------------|-------------------|
-| **OMC** (oh-my-claudecode) | Agent reads plan files, proposes delegation automatically | Full — agent suggests `/team` or `/ultrawork` for parallel groups |
-| **Plain Claude Code** (or similar) | Agent reads plan files if instructed via CLAUDE.md | Agent describes parallelism opportunities; you decide |
-| **Local LLM / no agent** | No agent reads plan files | Run `./delegate.sh <plan-path>` to generate terminal prompts |
+**Scaffold** — The project-specific structure that organizes plans, decisions, amendments, and handovers in your repo. open-scaffold is a scaffold. OMC and OMX are runtimes.
 
-The scaffold's core methodology works at every tier. Higher tiers add automation; lower tiers get the same structure with manual execution.
+**Session Handover** — The practice of producing explicit, reviewable deliverables at the end of each work session so the next session (human or agent) starts with context, not questions. See [`docs/WORKFLOW.md`](docs/WORKFLOW.md).
 
-## Glossary
+**verify.sh** — The built-in compliance checker. `--quick` (what agents run automatically), `--standard` (the default), `--strict` (full methodology audit).
 
-New to agent-orchestrated development? Here are the key terms used throughout this template:
+</details>
 
-**AC (Acceptance Criterion)** — A specific, testable statement that defines when a task is "done." Instead of vague goals like "the feature should work," an AC gives you a concrete yes/no check — for example: *"MISSION.md contains the marker `<!-- mission:unset -->`"* is verifiable with a single `grep` command. Every plan file in `.omc/plans/` includes an acceptance criteria section. If the ACs pass, the work is done. If not, it isn't.
+<details>
+<summary><b>Under the hood</b></summary>
 
-**ADR (Architecture Decision Record)** — A short document that records a significant decision and *why* it was made. Not code — a note to future-you (or future-agents) explaining: what problem were we solving, what did we decide, and what trade-offs did we accept? ADRs live in `docs/decisions/` and follow a lightweight format (Title, Status, Context, Decision, Consequences). This template ships with two worked examples.
+open-scaffold has two layers:
 
-**Amendment Protocol** — The rule that plan files are immutable once committed. When new information changes what you should build (the "I got smarter" case), you write an amendment file (`<slug>-amendment-<n>.md`) instead of editing the plan in place. This creates a traceable history of scope evolution. The full protocol is in `.omc/plans/README.md`.
+- **Core methodology** — folder discipline, immutable plans, amendment protocol, ADRs, session handover. Framework-agnostic. Works with any agent or no agent at all.
+- **OMC/OMX-enhanced layer** — orchestration skills that read the scaffold and automate the workflow. Planning, autonomous execution, parallel agents, verification.
 
-**Bootstrap (`bootstrap.sh`)** — A script you run once on day one. It creates working directories (`.omc/research/`, `.omc/state/`), walks you through defining your mission in `MISSION.md`, and stamps the changelog. Idempotent (safe to run twice) and optional (the project works without it).
+The scaffold is the load-bearing part. The runtimes amplify it. You can strip the runtimes away and the methodology still holds.
 
-**Delegate (`delegate.sh`)** — The delegation prompt generator. Run `./delegate.sh <plan-path>` to read a plan's Execution Strategy section and generate actionable prompts for each parallel group. Designed for users without OMC or capable agents — paste the output into separate terminal sessions. If the plan has no Execution Strategy section, delegate.sh exits cleanly with a message. See `docs/WORKFLOW.md` for the delegation decision tree.
+</details>
 
-**OMC (oh-my-claudecode)** — A multi-agent orchestration layer for Claude Code that provides planning, execution, and verification skills. The recommended runtime for this scaffold, but not required. See [Recommended Runtimes](#recommended-runtimes).
+---
 
-**OMX (oh-my-codex)** — The same orchestration philosophy for Codex CLI. Fast boilerplate and single-file edits. See [Recommended Runtimes](#recommended-runtimes).
+## 🐕 Dogfooded
 
-**Plan Immutability** — Once a plan file in `.omc/plans/` is committed to version control, it is never edited. Changes are captured as amendment files that layer on top. This prevents silent scope creep and creates a traceable history of decisions.
+open-scaffold was built using open-scaffold. Every feature in this template — the enforcement layer, the delegation detection, the template/dev separation — shipped as a plan in `.omc/plans/`, went through `verify.sh`, and carries its own amendment trail. Eleven commits, one day, one methodology eating itself.
 
-**Scaffold** — The project-specific structure that organizes plans, decisions, amendments, and handoffs in your repo. A scaffold defines the *what* (how your project stays organized); a runtime defines the *how* (the engine that executes within that structure). open-scaffold is a scaffold. OMC/OMX are runtimes.
+---
 
-**verify.sh** — The built-in compliance checker. Run `./verify.sh` to see a PASS/FAIL report of your project's methodology adherence. Supports three tiers: `--quick` (mission defined + plan exists — what agents run automatically), `--standard` (adds amendment numbering + changelog coverage — the default), and `--strict` (adds plan schema validation + paired-view drift detection + plan immutability). Exit code 0 means all checks pass; exit code 1 means at least one failed.
+## 📜 License
 
-**Session Handover** — The practice of producing explicit deliverables at the end of each work session so the next session (human or agent) can pick up without re-explanation. Handover artifacts include: updated plan files, amendment files for scope changes, and changelog entries in MISSION.md. See `docs/WORKFLOW.md` for the full handover protocol.
-
-## License
-
-[MIT](LICENSE)
+[MIT](LICENSE). Fork it, ship it, rip it apart. Just don't forget to define your mission first.
