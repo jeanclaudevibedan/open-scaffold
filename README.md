@@ -32,8 +32,8 @@ This isn't a tooling problem. It's human nature, amplified by multi-agent workfl
 | | | |
 |---|---|---|
 | 🎯 **Mission-first** | `MISSION.md` defines goals and non-goals before a single line is written. Ships unset on purpose — you fill it in on day one. | [→](MISSION.md) |
-| 🔒 **Immutable plans** | Plans in `.scaffold/plans/` follow a 7-section schema and become read-only once committed. No silent scope creep. | [→](.scaffold/plans/handoff-template.md) |
-| 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Run `./amend.sh <plan-slug>` to autonumber, scaffold, and stamp the changelog in one shot. | [→](.scaffold/plans/README.md) |
+| 🔒 **Immutable plans** | Plans in `.omc/plans/` follow a 7-section schema and become read-only once committed. No silent scope creep. | [→](.omc/plans/handoff-template.md) |
+| 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Run `./amend.sh <plan-slug>` to autonumber, scaffold, and stamp the changelog in one shot. | [→](.omc/plans/README.md) |
 | 🧭 **Design choices** | A short page in `docs/decisions/` explains why the scaffold is the way it is — paired views, immutable plans, agent-mediated orchestration. | [→](docs/decisions/README.md) |
 | ✅ **`verify.sh`** | A compliance checker in three tiers (`--quick`, `--standard`, `--strict`). Agents run it automatically before touching code. | [→](verify.sh) |
 | 🔀 **Delegation detection** | Plans can declare parallel groups. Agents propose `/team` or `/ultrawork`; non-agent users run `./delegate.sh` to generate terminal prompts. | [→](delegate.sh) |
@@ -103,7 +103,7 @@ That's the mission. Everything downstream traces back to it.
 
 If your goal is clear, tell your agent:
 
-> *"Write a plan in `.scaffold/plans/` for \<your task\> using the handoff template."*
+> *"Write a plan in `.omc/plans/` for \<your task\> using the handoff template."*
 
 If your goal is fuzzy, let the agent interview you into clarity first:
 
@@ -112,13 +112,13 @@ If your goal is fuzzy, let the agent interview you into clarity first:
 /deep-interview
 ```
 
-Without OMC, ask any agent: *"Interview me until you understand exactly what to build, then write a plan in `.scaffold/plans/` using `.scaffold/plans/handoff-template.md`."*
+Without OMC, ask any agent: *"Interview me until you understand exactly what to build, then write a plan in `.omc/plans/` using `.omc/plans/handoff-template.md`."*
 
 **Fully manual fallback:**
 
 ```bash
-cp .scaffold/plans/handoff-template.md .scaffold/plans/my-first-task.md
-$EDITOR .scaffold/plans/my-first-task.md
+cp .omc/plans/handoff-template.md .omc/plans/my-first-task.md
+$EDITOR .omc/plans/my-first-task.md
 ```
 
 Either way you end up with a plan file: Context, Goal, Constraints, Files to touch, Acceptance criteria, Verification steps, Open questions.
@@ -140,7 +140,7 @@ Exit code 0 means your mission is defined, a plan exists, amendments are sequent
 | | **Scaffold** (what open-scaffold is) | **Runtime** (what OMC/OMX are) |
 |---|---|---|
 | **Defines** | How your project stays organized | How tasks get executed |
-| **Lives in** | `MISSION.md`, `.scaffold/plans/`, `docs/decisions/` | Your agent's skills and commands |
+| **Lives in** | `MISSION.md`, `.omc/plans/`, `docs/decisions/` | Your agent's skills and commands |
 | **Persists** | Across every session, agent, and tool | Per session, per invocation |
 | **Required?** | Yes — this is the floor | No — scaffold works solo, runtimes amplify it |
 
@@ -192,14 +192,14 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 <details>
 <summary><b>What's the difference between this and any other framework out there?</b></summary>
 
-> Most "AI dev frameworks" are orchestration runtimes — they're engines. This is the chassis. It treats the problem as **persistence of intent across sessions**, not automation of a single session. The [amendment protocol](.scaffold/plans/README.md), the immutability rule, the [paired CLAUDE.md/AGENTS.md views](docs/decisions/README.md) — boring methodology pieces nobody else ships because they're not glamorous. They're also the ones that actually matter six weeks in.
+> Most "AI dev frameworks" are orchestration runtimes — they're engines. This is the chassis. It treats the problem as **persistence of intent across sessions**, not automation of a single session. The [amendment protocol](.omc/plans/README.md), the immutability rule, the [paired CLAUDE.md/AGENTS.md views](docs/decisions/README.md) — boring methodology pieces nobody else ships because they're not glamorous. They're also the ones that actually matter six weeks in.
 
 </details>
 
 <details>
 <summary><b>Why can't I just edit the plan when something changes?</b></summary>
 
-> Because edits silently rewrite history. The amendment protocol is the trade: run `./amend.sh <plan-slug>` — it drops a fresh `<plan>-amendment-<n>.md` next to the plan, scaffolds the 5-section schema, and stamps MISSION.md's changelog. The original plan stays frozen. Slower in the moment, honest forever after. ([How amendments work](.scaffold/plans/README.md))
+> Because edits silently rewrite history. The amendment protocol is the trade: run `./amend.sh <plan-slug>` — it drops a fresh `<plan>-amendment-<n>.md` next to the plan, scaffolds the 5-section schema, and stamps MISSION.md's changelog. The original plan stays frozen. Slower in the moment, honest forever after. ([How amendments work](.omc/plans/README.md))
 
 </details>
 
@@ -243,8 +243,8 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 | [`MISSION.md`](MISSION.md) | Source of truth for what the project is. Ships with an `<!-- mission:unset -->` marker. |
 | [`CLAUDE.md`](CLAUDE.md) | Claude Code's entry point. Agents read this first. |
 | [`AGENTS.md`](AGENTS.md) | Entry point for Codex, Gemini, and other agents (paired view of `CLAUDE.md`). |
-| [`.scaffold/plans/handoff-template.md`](.scaffold/plans/handoff-template.md) | The 7-section schema every plan file follows. |
-| [`.scaffold/plans/README.md`](.scaffold/plans/README.md) | Amendment protocol in under 200 words. |
+| [`.omc/plans/handoff-template.md`](.omc/plans/handoff-template.md) | The 7-section schema every plan file follows. |
+| [`.omc/plans/README.md`](.omc/plans/README.md) | Amendment protocol in under 200 words. |
 | [`docs/decisions/`](docs/decisions/) | ADR index, template, and two ships-as-examples. |
 | [`docs/WORKFLOW.md`](docs/WORKFLOW.md) | Phase-to-tool cheat sheet. Clarify → Plan → Execute → Verify → Amend. |
 | [`bootstrap.sh`](bootstrap.sh) | Day-one interactive setup. Idempotent. |
@@ -261,7 +261,7 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 
 **ADR (Architecture Decision Record)** — A short note explaining *why* a decision was made, not just *what*. Lives in `docs/decisions/`. Future-you (and future-agents) will thank present-you.
 
-**Amendment Protocol** — The rule that plan files are immutable once committed. New learnings become `<slug>-amendment-<n>.md` files instead of silent edits. Scaffolded by `./amend.sh <plan-slug>`. Full rules in [`.scaffold/plans/README.md`](.scaffold/plans/README.md).
+**Amendment Protocol** — The rule that plan files are immutable once committed. New learnings become `<slug>-amendment-<n>.md` files instead of silent edits. Scaffolded by `./amend.sh <plan-slug>`. Full rules in [`.omc/plans/README.md`](.omc/plans/README.md).
 
 **Amend** — `./amend.sh <plan-slug>`. Autonumbers the next amendment file, scaffolds the 5-section schema, and stamps MISSION.md's changelog. Use this instead of hand-writing amendment files.
 

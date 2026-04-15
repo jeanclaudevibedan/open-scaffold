@@ -1,7 +1,7 @@
 # Plan: <slug>
 
 <!--
-Copy this template to `.scaffold/plans/<slug>.md` for each task or feature slice.
+Copy this template to `.omc/plans/<slug>.md` for each task or feature slice.
 Fill every section. Keep each section tight — a reader with no prior context
 should be able to act on the plan after reading it once.
 

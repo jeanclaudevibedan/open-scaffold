@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # open-scaffold amendment scaffolder
 # Autonumbers the next amendment for an existing plan, scaffolds the 5-section
-# schema from .scaffold/plans/README.md, and appends a one-line entry to MISSION.md's
+# schema from .omc/plans/README.md, and appends a one-line entry to MISSION.md's
 # ## Changelog section. Designed to work with zero agent in the loop.
 #
 # Usage: ./amend.sh <plan-slug> [--stage] [--message "<text>"]
@@ -10,7 +10,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-PLANS_DIR="$ROOT/.scaffold/plans"
+PLANS_DIR="$ROOT/.omc/plans"
 MISSION="$ROOT/MISSION.md"
 TODAY="$(date +%Y-%m-%d)"
 
@@ -91,7 +91,7 @@ fi
 
 PARENT="$PLANS_DIR/$SLUG.md"
 if [ ! -f "$PARENT" ]; then
-  printf 'Error: parent plan .scaffold/plans/%s.md not found. Amendments must target an existing plan.\n' "$SLUG" >&2
+  printf 'Error: parent plan .omc/plans/%s.md not found. Amendments must target an existing plan.\n' "$SLUG" >&2
   exit 1
 fi
 
@@ -154,9 +154,9 @@ AMEND_EOF
 # ──────────────────────────────────────────
 
 if [ -n "$MESSAGE" ]; then
-  CHANGELOG_LINE="${TODAY}: ${MESSAGE} — see .scaffold/plans/${AMEND_BASENAME}"
+  CHANGELOG_LINE="${TODAY}: ${MESSAGE} — see .omc/plans/${AMEND_BASENAME}"
 else
-  CHANGELOG_LINE="${TODAY}: amendment ${N} to ${SLUG} — see .scaffold/plans/${AMEND_BASENAME}"
+  CHANGELOG_LINE="${TODAY}: amendment ${N} to ${SLUG} — see .omc/plans/${AMEND_BASENAME}"
 fi
 
 # Idempotent guard: skip if an entry already references this basename
@@ -199,7 +199,7 @@ fi
 # Report
 # ──────────────────────────────────────────
 
-printf 'Created: .scaffold/plans/%s\n' "$AMEND_BASENAME"
+printf 'Created: .omc/plans/%s\n' "$AMEND_BASENAME"
 if [ "$CHANGELOG_STAMPED" = true ]; then
   printf 'Stamped: MISSION.md changelog\n'
 fi

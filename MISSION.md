@@ -10,7 +10,7 @@ TODO: define mission — replace this line and the HTML comment above with your 
 
 ## Non-Goals
 
-Explicit things this project is NOT trying to do. Legitimate scope discipline starts here. When new information arrives that would change what belongs in this list, follow the amendment protocol in `.scaffold/plans/README.md` — do not silently edit the list.
+Explicit things this project is NOT trying to do. Legitimate scope discipline starts here. When new information arrives that would change what belongs in this list, follow the amendment protocol in `.omc/plans/README.md` — do not silently edit the list.
 
 - TODO: define your project's non-goals
 

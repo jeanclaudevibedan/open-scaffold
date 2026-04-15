@@ -47,4 +47,4 @@ The status is the one field in a plan file that IS updated after commit (it trac
 
 ## The specs/ directory
 
-The `.scaffold/specs/` directory holds specification artifacts produced during the Clarify phase (e.g., deep-interview outputs, research notes, domain models). Specs are reference material for plan authors — they inform plans but are not plans themselves. Keep specs lightweight; if a spec grows into actionable work, promote it to a plan file.
+The `.omc/specs/` directory holds specification artifacts produced during the Clarify phase (e.g., deep-interview outputs, research notes, domain models). Specs are reference material for plan authors — they inform plans but are not plans themselves. Keep specs lightweight; if a spec grows into actionable work, promote it to a plan file.

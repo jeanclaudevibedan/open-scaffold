@@ -12,8 +12,8 @@ Desktop.ini
 *~
 
 # OMC ephemeral state (regenerated per session)
-.scaffold/state/
-.scaffold/research/
+.omc/state/
+.omc/research/
 
 # Owner development artifacts (not shipped with template)
 .omc-dev/

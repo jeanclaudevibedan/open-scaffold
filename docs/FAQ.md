@@ -30,7 +30,7 @@ Questions that didn't make the cut for the main README but are still worth answe
 
 ### What if I'm bad at writing plans? Does this fall apart?
 
-> No. The [handoff template](../.scaffold/plans/handoff-template.md) is a fill-in-the-blanks form with 7 sections. If you can answer "what am I trying to do, how will I know it worked, what's out of scope," you can write a plan. If you can't answer those, you probably shouldn't be coding yet — which is exactly the point.
+> No. The [handoff template](../.omc/plans/handoff-template.md) is a fill-in-the-blanks form with 7 sections. If you can answer "what am I trying to do, how will I know it worked, what's out of scope," you can write a plan. If you can't answer those, you probably shouldn't be coding yet — which is exactly the point.
 
 ### Is this just going to slow me down? I'm used to vibing.
 
