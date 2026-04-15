@@ -28,13 +28,26 @@ stamp_changelog() {
   fi
   STAMP="$TODAY: bootstrap run"
   if ! grep -Fq "$STAMP" "$MISSION"; then
-    printf '\n- %s\n' "$STAMP" >> "$MISSION"
+    ANCHOR='<!-- append YYYY-MM-DD entries below this line -->'
+    if grep -Fq "$ANCHOR" "$MISSION"; then
+      # Insert after the anchor line using a temp file (portable)
+      TMPFILE=$(mktemp)
+      while IFS= read -r line || [ -n "$line" ]; do
+        printf '%s\n' "$line"
+        if printf '%s' "$line" | grep -Fq "$ANCHOR"; then
+          printf -- '- %s\n' "$STAMP"
+        fi
+      done < "$MISSION" > "$TMPFILE"
+      mv "$TMPFILE" "$MISSION"
+    else
+      printf -- '- %s\n' "$STAMP" >> "$MISSION"
+    fi
   fi
 }
 
 # 1. Create lazy directories (safe to re-run; mkdir -p is idempotent)
-mkdir -p "$ROOT/.omc/research"
-mkdir -p "$ROOT/.omc/state"
+mkdir -p "$ROOT/.scaffold/research"
+mkdir -p "$ROOT/.scaffold/state"
 
 # 2. Interactive MISSION.md fill-in (only if marker is present and stdin is a terminal)
 if [ -f "$MISSION" ] && grep -Fq 'mission:unset' "$MISSION"; then
@@ -108,7 +121,7 @@ $GOALS_LIST
 
 ## Non-Goals
 
-Explicit things this project is NOT trying to do. Legitimate scope discipline starts here. When new information arrives that would change what belongs in this list, follow the amendment protocol in \`.omc/plans/README.md\` — do not silently edit the list.
+Explicit things this project is NOT trying to do. Legitimate scope discipline starts here. When new information arrives that would change what belongs in this list, follow the amendment protocol in \`.scaffold/plans/README.md\` — do not silently edit the list.
 
 $NONGOALS_LIST
 

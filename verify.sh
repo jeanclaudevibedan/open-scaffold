@@ -65,8 +65,8 @@ fi
 # Gated on mission: skip plan check until mission is defined (progressive disclosure)
 if [ "$MISSION_DEFINED" = true ]; then
   PLAN_COUNT=0
-  if [ -d "$ROOT/.omc/plans" ]; then
-    for f in "$ROOT"/.omc/plans/*.md; do
+  if [ -d "$ROOT/.scaffold/plans" ]; then
+    for f in "$ROOT"/.scaffold/plans/*.md; do
       [ -f "$f" ] || continue
       basename=$(basename "$f")
       if [ "$basename" != "README.md" ] && [ "$basename" != "handoff-template.md" ]; then
@@ -76,9 +76,9 @@ if [ "$MISSION_DEFINED" = true ]; then
   fi
 
   if [ "$PLAN_COUNT" -gt 0 ]; then
-    pass "Plan file(s) found ($PLAN_COUNT in .omc/plans/)"
+    pass "Plan file(s) found ($PLAN_COUNT in .scaffold/plans/)"
   else
-    fail "No plan files found in .omc/plans/ (only template and README)"
+    fail "No plan files found in .scaffold/plans/ (only template and README)"
   fi
 fi
 
@@ -90,7 +90,7 @@ if [ "$TIER" = "--standard" ] || [ "$TIER" = "--strict" ]; then
 
   # Check 3: Amendment numbering is sequential per plan slug
   AMEND_OK=true
-  for f in "$ROOT"/.omc/plans/*-amendment-*.md; do
+  for f in "$ROOT"/.scaffold/plans/*-amendment-*.md; do
     [ -f "$f" ] || continue
     basename=$(basename "$f" .md)
     # Extract the amendment number (last segment after "amendment-")
@@ -99,7 +99,7 @@ if [ "$TIER" = "--standard" ] || [ "$TIER" = "--strict" ]; then
     # Check if previous amendment exists (for n > 1)
     if [ "$num" -gt 1 ]; then
       prev=$((num - 1))
-      if [ ! -f "$ROOT/.omc/plans/${slug}-amendment-${prev}.md" ]; then
+      if [ ! -f "$ROOT/.scaffold/plans/${slug}-amendment-${prev}.md" ]; then
         warn "Amendment gap: ${slug}-amendment-${num}.md exists but ${slug}-amendment-${prev}.md is missing"
         AMEND_OK=false
       fi
@@ -111,7 +111,7 @@ if [ "$TIER" = "--standard" ] || [ "$TIER" = "--strict" ]; then
 
   # Check 4: Changelog entry for each amendment
   CHANGELOG_OK=true
-  for f in "$ROOT"/.omc/plans/*-amendment-*.md; do
+  for f in "$ROOT"/.scaffold/plans/*-amendment-*.md; do
     [ -f "$f" ] || continue
     basename=$(basename "$f")
     if [ -f "$ROOT/MISSION.md" ]; then
@@ -134,8 +134,7 @@ if [ "$TIER" = "--strict" ]; then
 
   # Check 5: Plan files contain all 7 sections from handoff template
   SCHEMA_OK=true
-  SECTIONS="Context Goal Constraints Files to touch Acceptance criteria Verification steps Open questions"
-  for f in "$ROOT"/.omc/plans/*.md; do
+  for f in "$ROOT"/.scaffold/plans/*.md; do
     [ -f "$f" ] || continue
     basename=$(basename "$f")
     # Skip template, README, and amendment files
@@ -177,7 +176,7 @@ if [ "$TIER" = "--strict" ]; then
   # Check 7: Plan immutability — plan files (non-amendment, non-template) not modified after initial commit
   if command -v git > /dev/null 2>&1 && [ -d "$ROOT/.git" ]; then
     IMMUTABLE_OK=true
-    for f in "$ROOT"/.omc/plans/*.md; do
+    for f in "$ROOT"/.scaffold/plans/*.md; do
       [ -f "$f" ] || continue
       basename=$(basename "$f")
       if [ "$basename" = "README.md" ] || [ "$basename" = "handoff-template.md" ]; then
@@ -186,7 +185,7 @@ if [ "$TIER" = "--strict" ]; then
       case "$basename" in
         *-amendment-*) continue ;;
       esac
-      relpath=".omc/plans/$basename"
+      relpath=".scaffold/plans/$basename"
       # Count commits that modified this file (excluding the initial add)
       commit_count=$(git -C "$ROOT" log --oneline --follow -- "$relpath" 2>/dev/null | wc -l | tr -d ' ')
       if [ "$commit_count" -gt 1 ]; then
@@ -206,7 +205,7 @@ if [ "$TIER" = "--strict" ]; then
   # Strategy section are valid (the section is optional).
   EXEC_STRATEGY_CHECKED=false
   EXEC_STRATEGY_OK=true
-  for f in "$ROOT"/.omc/plans/*.md; do
+  for f in "$ROOT"/.scaffold/plans/*.md; do
     [ -f "$f" ] || continue
     basename=$(basename "$f")
     # Skip template, README, and amendment files

@@ -1,7 +1,7 @@
 # Plan: <slug>
 
 <!--
-Copy this template to `.omc/plans/<slug>.md` for each task or feature slice.
+Copy this template to `.scaffold/plans/<slug>.md` for each task or feature slice.
 Fill every section. Keep each section tight — a reader with no prior context
 should be able to act on the plan after reading it once.
 
@@ -10,6 +10,11 @@ run `./amend.sh <slug>` from the repo root — it scaffolds the next amendment
 file and stamps MISSION.md's changelog in one shot. Do not hand-edit plan
 files or MISSION.md for amendment bookkeeping.
 -->
+
+## Status
+
+<!-- One of: active | complete | superseded -->
+active
 
 ## Context
 
