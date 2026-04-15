@@ -28,7 +28,20 @@ stamp_changelog() {
   fi
   STAMP="$TODAY: bootstrap run"
   if ! grep -Fq "$STAMP" "$MISSION"; then
-    printf '\n- %s\n' "$STAMP" >> "$MISSION"
+    ANCHOR='<!-- append YYYY-MM-DD entries below this line -->'
+    if grep -Fq "$ANCHOR" "$MISSION"; then
+      # Insert after the anchor line using a temp file (portable)
+      TMPFILE=$(mktemp)
+      while IFS= read -r line || [ -n "$line" ]; do
+        printf '%s\n' "$line"
+        if printf '%s' "$line" | grep -Fq "$ANCHOR"; then
+          printf -- '- %s\n' "$STAMP"
+        fi
+      done < "$MISSION" > "$TMPFILE"
+      mv "$TMPFILE" "$MISSION"
+    else
+      printf -- '- %s\n' "$STAMP" >> "$MISSION"
+    fi
   fi
 }
 

@@ -127,6 +127,7 @@ GROUP_COUNT=0
 DEPS_TEXT=""
 DELEGATION_TEXT=""
 SECTION_TMPFILE=$(mktemp)
+trap 'rm -f "$SECTION_TMPFILE"' EXIT
 printf '%s\n' "$SECTION_CONTENT" > "$SECTION_TMPFILE"
 
 while IFS= read -r line; do
@@ -205,7 +206,6 @@ $line"
     fi
   fi
 done < "$SECTION_TMPFILE"
-rm -f "$SECTION_TMPFILE"
 
 if [ "$GROUP_COUNT" -eq 0 ]; then
   printf 'No parallel groups found in the Execution Strategy section.\n'

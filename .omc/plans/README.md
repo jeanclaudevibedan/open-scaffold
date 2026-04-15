@@ -34,3 +34,17 @@ Agents and humans read `<slug>.md` first, then `<slug>-amendment-1.md`, `<slug>-
 If you can't run bash for any reason, the manual flow still works: create `<plan-slug>-amendment-<n>.md` by hand using the schema above, then add a one-line entry to `MISSION.md`'s `## Changelog` section containing the amendment's basename. `verify.sh` Checks 3 and 4 enforce sequential numbering and changelog coverage either way.
 
 Amendments are for legitimate scope evolution, not silent drift. They exist so that "I learned something new" propagates cleanly into the plan artifacts instead of living only in someone's head.
+
+## Plan status convention
+
+Every plan file should include a `## Status` section near the top with one of these values:
+
+- **active** — work is in progress or not yet started
+- **complete** — all acceptance criteria have been met
+- **superseded** — replaced by a newer plan (note which one)
+
+The status is the one field in a plan file that IS updated after commit (it tracks lifecycle, not scope). The handoff template includes it by default.
+
+## The specs/ directory
+
+The `.omc/specs/` directory holds specification artifacts produced during the Clarify phase (e.g., deep-interview outputs, research notes, domain models). Specs are reference material for plan authors — they inform plans but are not plans themselves. Keep specs lightweight; if a spec grows into actionable work, promote it to a plan file.

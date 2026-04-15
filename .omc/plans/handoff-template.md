@@ -11,6 +11,11 @@ file and stamps MISSION.md's changelog in one shot. Do not hand-edit plan
 files or MISSION.md for amendment bookkeeping.
 -->
 
+## Status
+
+<!-- One of: active | complete | superseded -->
+active
+
 ## Context
 
 <1-3 sentences: why this plan exists. What happened that made us write it now? What prior plan or decision does it follow from, if any?>

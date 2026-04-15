@@ -150,7 +150,7 @@ TODO: which acceptance criterion numbers change, and how
 AMEND_EOF
 
 # ──────────────────────────────────────────
-# Stamp MISSION.md changelog (chronological append at EOF)
+# Stamp MISSION.md changelog (insert after anchor comment)
 # ──────────────────────────────────────────
 
 if [ -n "$MESSAGE" ]; then
@@ -164,7 +164,22 @@ CHANGELOG_STAMPED=false
 if grep -Fq "$AMEND_BASENAME" "$MISSION"; then
   printf 'Notice: MISSION.md already references %s; skipping changelog stamp.\n' "$AMEND_BASENAME"
 else
-  printf '\n- %s\n' "$CHANGELOG_LINE" >> "$MISSION"
+  ANCHOR='<!-- append YYYY-MM-DD entries below this line -->'
+  if grep -Fq "$ANCHOR" "$MISSION"; then
+    # Insert after the anchor line using a temp file (portable, no sed -i)
+    TMPFILE=$(mktemp)
+    while IFS= read -r line || [ -n "$line" ]; do
+      printf '%s\n' "$line"
+      if printf '%s' "$line" | grep -Fq "$ANCHOR"; then
+        printf '- %s\n' "$CHANGELOG_LINE"
+      fi
+    done < "$MISSION" > "$TMPFILE"
+    mv "$TMPFILE" "$MISSION"
+  else
+    # Fallback: append at EOF if anchor is missing
+    printf 'Warning: MISSION.md is missing the changelog anchor comment. Appending at EOF.\n' >&2
+    printf '\n- %s\n' "$CHANGELOG_LINE" >> "$MISSION"
+  fi
   CHANGELOG_STAMPED=true
 fi
 

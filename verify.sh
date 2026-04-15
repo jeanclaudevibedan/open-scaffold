@@ -134,7 +134,6 @@ if [ "$TIER" = "--strict" ]; then
 
   # Check 5: Plan files contain all 7 sections from handoff template
   SCHEMA_OK=true
-  SECTIONS="Context Goal Constraints Files to touch Acceptance criteria Verification steps Open questions"
   for f in "$ROOT"/.omc/plans/*.md; do
     [ -f "$f" ] || continue
     basename=$(basename "$f")
