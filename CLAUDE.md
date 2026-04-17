@@ -11,12 +11,14 @@ open-scaffold has two layers. The **core methodology** (folder discipline, immut
 ## Where things live
 
 - **`MISSION.md`** — the project's mission, goals, and non-goals. The source of truth for *what* we're building. Contains an explicit `## Changelog` section that records every scope pivot.
-- **`.omc/plans/`** — plan files (one per task or feature slice). Plans are **immutable** once committed. New learnings become amendment files named `<slug>-amendment-<n>.md`. The handoff template in `.omc/plans/handoff-template.md` defines the exact 7-section schema every plan follows.
+- **`.omc/plans/`** — plan files organized in stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`). The folder IS the status. Plans are **immutable** once committed. New learnings become amendment files named `<slug>-amendment-<n>.md` in the same stage folder as the parent. The handoff template in `.omc/plans/handoff-template.md` defines the exact 7-section schema every plan follows. See `.omc/plans/WORKFLOW.md` for movement rules between stage folders.
 - **`docs/decisions/`** — `README.md` is the public design-choices page (paired views, immutable plans, agent-mediated orchestration). The full ADR records that back these decisions live internally in `.omc-dev/decisions/` and do not ship with the public template.
 - **`.omc-dev/`** (gitignored; populated only when working on open-scaffold itself, not in cloned templates) — owner's internal workspace holding `plans/`, `decisions/` (full ADR records), `specs/`, and `snapshots/`. **Before proposing architectural changes to the scaffold itself, read `.omc-dev/plans/` and `.omc-dev/decisions/` first** — many design questions are already investigated there, and re-deriving a rejected decision wastes a session. Grep/Glob tools skip gitignored paths by default; include `.omc-dev/` explicitly when searching.
 - **`docs/WORKFLOW.md`** — the phase-to-tool-to-command cheat-sheet. Where to reach for which agent/skill at each development phase.
 - **`bootstrap.sh`** — optional idempotent day-one setup. Creates lazy dirs (`.omc/research/`, `.omc/state/`) and stamps MISSION.md's changelog with the bootstrap date.
-- **`amend.sh`** — amendment scaffolder. Run `./amend.sh <plan-slug>` to autonumber the next amendment, scaffold the 5-section schema, and stamp MISSION.md's changelog in one shot. Use this instead of hand-editing amendment files or MISSION.md.
+- **`amend.sh`** — amendment scaffolder. Run `./amend.sh <plan-slug>` to autonumber the next amendment, scaffold the 5-section schema, and stamp MISSION.md's changelog in one shot. Use `--backlog` to place in backlog instead of active. Use this instead of hand-editing amendment files or MISSION.md.
+- **`close.sh`** — plan closer. Run `./close.sh <plan-slug>` to move a completed plan and all its amendments to `done/` and stamp MISSION.md's changelog.
+- **`.omc/RULES.md`** — compact non-negotiable principles. Re-read before any major action on project structure.
 
 ## Compliance checks
 
@@ -42,7 +44,7 @@ If you cannot execute shell commands, check directly: first check that `MISSION.
 Legitimate scope evolution (the "I got smarter" case — new information changes what we should build) is captured via the amendment protocol, not silent edits. The full protocol is documented in `.omc/plans/README.md` (under 200 words). Short version:
 
 1. Plans in `.omc/plans/` are immutable once committed.
-2. New learnings become `<plan-slug>-amendment-<n>.md` files in the same directory — **scaffolded by `./amend.sh <plan-slug>`**, not hand-written.
+2. New learnings become `<plan-slug>-amendment-<n>.md` files in the same stage folder as the parent — **scaffolded by `./amend.sh <plan-slug>`**, not hand-written.
 3. MISSION.md's `## Changelog` section gets a one-line entry per amendment — **stamped by `amend.sh`**, not hand-edited.
 4. Agents and humans read the original plan PLUS all amendments in numeric order.
 

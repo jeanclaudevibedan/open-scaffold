@@ -11,9 +11,11 @@ open-scaffold has two layers. The **core methodology** (folder discipline, immut
 ## Project facts
 
 - **Mission source of truth:** `MISSION.md` — goals, non-goals, and changelog of scope pivots.
-- **Plans directory:** `.omc/plans/` — immutable plan files, one per task/feature slice, conforming to the 7-section schema in `.omc/plans/handoff-template.md`.
-- **Amendments:** new learnings become `<plan-slug>-amendment-<n>.md` in the same directory, scaffolded by `./amend.sh <plan-slug>`. Plans are never edited in place; amendment files and MISSION.md's changelog are never hand-written.
-- **Amend helper:** `amend.sh` — run `./amend.sh <plan-slug>` to autonumber the next amendment, scaffold the 5-section schema, and stamp MISSION.md's changelog in one shot.
+- **Plans directory:** `.omc/plans/` — immutable plan files organized in stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`), one per task/feature slice, conforming to the 7-section schema in `.omc/plans/handoff-template.md`. The folder IS the status — see `.omc/plans/WORKFLOW.md` for movement rules.
+- **Amendments:** new learnings become `<plan-slug>-amendment-<n>.md` in the same stage folder as the parent plan, scaffolded by `./amend.sh <plan-slug>`. Plans are never edited in place; amendment files and MISSION.md's changelog are never hand-written.
+- **Amend helper:** `amend.sh` — run `./amend.sh <plan-slug>` to autonumber the next amendment, scaffold the 5-section schema, and stamp MISSION.md's changelog in one shot. Use `--backlog` to place in backlog instead of active.
+- **Close helper:** `close.sh` — run `./close.sh <plan-slug>` to move a completed plan and its amendments to `done/` and stamp MISSION.md's changelog.
+- **Quick rules:** `.omc/RULES.md` — compact non-negotiable principles. Re-read before any major action on project structure.
 - **Decisions directory:** `docs/decisions/README.md` — public design-choices page. Full ADR records live internally in `.omc-dev/decisions/` and do not ship publicly.
 - **Owner workspace:** `.omc-dev/` — gitignored; populated only when working on open-scaffold itself, not in cloned templates. Holds the full decision history in `plans/`, `decisions/`, `specs/`, and `snapshots/`. **Before proposing architectural changes to the scaffold itself, read `.omc-dev/plans/` and `.omc-dev/decisions/` first** — many design questions are already investigated there. Grep/Glob tools skip gitignored paths by default; include `.omc-dev/` explicitly when searching.
 - **Workflow map:** `docs/WORKFLOW.md` — phase-to-tool-to-command cheat-sheet.

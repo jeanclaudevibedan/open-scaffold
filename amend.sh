@@ -4,7 +4,7 @@
 # schema from .omc/plans/README.md, and appends a one-line entry to MISSION.md's
 # ## Changelog section. Designed to work with zero agent in the loop.
 #
-# Usage: ./amend.sh <plan-slug> [--stage] [--message "<text>"]
+# Usage: ./amend.sh <plan-slug> [--stage] [--message "<text>"] [--backlog]
 # Exit 0 = success, 1 = precondition/usage failure, 2 = unknown flag.
 # Tested on macOS system bash (3.2). No GNU-only flags. No external dependencies.
 set -uo pipefail
@@ -19,7 +19,7 @@ TODAY="$(date +%Y-%m-%d)"
 # ──────────────────────────────────────────
 
 usage() {
-  printf 'Usage: ./amend.sh <plan-slug> [--stage] [--message "<text>"]\n' >&2
+  printf 'Usage: ./amend.sh <plan-slug> [--stage] [--message "<text>"] [--backlog]\n' >&2
 }
 
 if [ $# -lt 1 ]; then
@@ -30,6 +30,7 @@ fi
 SLUG=""
 STAGE=false
 MESSAGE=""
+TARGET_STAGE="active"
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -44,6 +45,10 @@ while [ $# -gt 0 ]; do
       fi
       MESSAGE="$2"
       shift 2
+      ;;
+    --backlog)
+      TARGET_STAGE="backlog"
+      shift
       ;;
     --*)
       printf 'Unknown flag: %s\n' "$1" >&2
@@ -89,9 +94,20 @@ if grep -Fq 'mission:unset' "$MISSION"; then
   exit 1
 fi
 
-PARENT="$PLANS_DIR/$SLUG.md"
-if [ ! -f "$PARENT" ]; then
-  printf 'Error: parent plan .omc/plans/%s.md not found. Amendments must target an existing plan.\n' "$SLUG" >&2
+# Find parent plan in any stage subfolder (active/, backlog/, done/, blocked/)
+# or in the plans root for backward compatibility
+PARENT=""
+PARENT_DIR=""
+for dir in "$PLANS_DIR/active" "$PLANS_DIR/backlog" "$PLANS_DIR/blocked" "$PLANS_DIR/done" "$PLANS_DIR"; do
+  if [ -f "$dir/$SLUG.md" ]; then
+    PARENT="$dir/$SLUG.md"
+    PARENT_DIR="$dir"
+    break
+  fi
+done
+
+if [ -z "$PARENT" ]; then
+  printf 'Error: parent plan %s.md not found in any stage folder under .omc/plans/.\n' "$SLUG" >&2
   exit 1
 fi
 
@@ -99,8 +115,9 @@ fi
 # Determine next amendment number
 # ──────────────────────────────────────────
 
+# Search in the same folder as the parent plan
 MAX=0
-for f in "$PLANS_DIR/$SLUG"-amendment-*.md; do
+for f in "$PARENT_DIR/$SLUG"-amendment-*.md; do
   [ -f "$f" ] || continue
   base=$(basename "$f" .md)
   n="${base##*-amendment-}"
@@ -114,7 +131,13 @@ done
 N=$((MAX + 1))
 
 AMEND_BASENAME="${SLUG}-amendment-${N}.md"
-AMEND_FILE="$PLANS_DIR/$AMEND_BASENAME"
+AMEND_FILE="$PARENT_DIR/$AMEND_BASENAME"
+AMEND_RELPATH="$(basename "$PARENT_DIR")/$AMEND_BASENAME"
+
+# If parent is in plans root (backward compat), show flat path
+case "$PARENT_DIR" in
+  "$PLANS_DIR") AMEND_RELPATH="$AMEND_BASENAME" ;;
+esac
 
 if [ -e "$AMEND_FILE" ]; then
   printf 'Error: %s already exists. Refusing to overwrite.\n' "$AMEND_FILE" >&2
@@ -154,9 +177,9 @@ AMEND_EOF
 # ──────────────────────────────────────────
 
 if [ -n "$MESSAGE" ]; then
-  CHANGELOG_LINE="${TODAY}: ${MESSAGE} — see .omc/plans/${AMEND_BASENAME}"
+  CHANGELOG_LINE="${TODAY}: ${MESSAGE} — see .omc/plans/${AMEND_RELPATH}"
 else
-  CHANGELOG_LINE="${TODAY}: amendment ${N} to ${SLUG} — see .omc/plans/${AMEND_BASENAME}"
+  CHANGELOG_LINE="${TODAY}: amendment ${N} to ${SLUG} — see .omc/plans/${AMEND_RELPATH}"
 fi
 
 # Idempotent guard: skip if an entry already references this basename
@@ -199,7 +222,7 @@ fi
 # Report
 # ──────────────────────────────────────────
 
-printf 'Created: .omc/plans/%s\n' "$AMEND_BASENAME"
+printf 'Created: .omc/plans/%s\n' "$AMEND_RELPATH"
 if [ "$CHANGELOG_STAMPED" = true ]; then
   printf 'Stamped: MISSION.md changelog\n'
 fi
