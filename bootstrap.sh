@@ -48,6 +48,10 @@ stamp_changelog() {
 # 1. Create lazy directories (safe to re-run; mkdir -p is idempotent)
 mkdir -p "$ROOT/.omc/research"
 mkdir -p "$ROOT/.omc/state"
+mkdir -p "$ROOT/.omc/plans/active"
+mkdir -p "$ROOT/.omc/plans/backlog"
+mkdir -p "$ROOT/.omc/plans/done"
+mkdir -p "$ROOT/.omc/plans/blocked"
 
 # 2. Interactive MISSION.md fill-in (only if marker is present and stdin is a terminal)
 if [ -f "$MISSION" ] && grep -Fq 'mission:unset' "$MISSION"; then

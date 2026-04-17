@@ -66,12 +66,15 @@ fi
 if [ "$MISSION_DEFINED" = true ]; then
   PLAN_COUNT=0
   if [ -d "$ROOT/.omc/plans" ]; then
-    for f in "$ROOT"/.omc/plans/*.md; do
-      [ -f "$f" ] || continue
-      basename=$(basename "$f")
-      if [ "$basename" != "README.md" ] && [ "$basename" != "handoff-template.md" ]; then
-        PLAN_COUNT=$((PLAN_COUNT + 1))
-      fi
+    for dir in "$ROOT/.omc/plans/active" "$ROOT/.omc/plans/backlog" "$ROOT/.omc/plans/blocked" "$ROOT/.omc/plans/done" "$ROOT/.omc/plans"; do
+      [ -d "$dir" ] || continue
+      for f in "$dir"/*.md; do
+        [ -f "$f" ] || continue
+        basename=$(basename "$f")
+        if [ "$basename" != "README.md" ] && [ "$basename" != "handoff-template.md" ] && [ "$basename" != "WORKFLOW.md" ]; then
+          PLAN_COUNT=$((PLAN_COUNT + 1))
+        fi
+      done
     done
   fi
 
@@ -90,20 +93,21 @@ if [ "$TIER" = "--standard" ] || [ "$TIER" = "--strict" ]; then
 
   # Check 3: Amendment numbering is sequential per plan slug
   AMEND_OK=true
-  for f in "$ROOT"/.omc/plans/*-amendment-*.md; do
-    [ -f "$f" ] || continue
-    basename=$(basename "$f" .md)
-    # Extract the amendment number (last segment after "amendment-")
-    num=$(printf '%s' "$basename" | sed 's/.*-amendment-//')
-    slug=$(printf '%s' "$basename" | sed 's/-amendment-.*//')
-    # Check if previous amendment exists (for n > 1)
-    if [ "$num" -gt 1 ]; then
-      prev=$((num - 1))
-      if [ ! -f "$ROOT/.omc/plans/${slug}-amendment-${prev}.md" ]; then
-        warn "Amendment gap: ${slug}-amendment-${num}.md exists but ${slug}-amendment-${prev}.md is missing"
-        AMEND_OK=false
+  for dir in "$ROOT/.omc/plans/active" "$ROOT/.omc/plans/backlog" "$ROOT/.omc/plans/blocked" "$ROOT/.omc/plans/done" "$ROOT/.omc/plans"; do
+    [ -d "$dir" ] || continue
+    for f in "$dir"/*-amendment-*.md; do
+      [ -f "$f" ] || continue
+      basename=$(basename "$f" .md)
+      num=$(printf '%s' "$basename" | sed 's/.*-amendment-//')
+      slug=$(printf '%s' "$basename" | sed 's/-amendment-.*//')
+      if [ "$num" -gt 1 ]; then
+        prev=$((num - 1))
+        if [ ! -f "$dir/${slug}-amendment-${prev}.md" ]; then
+          warn "Amendment gap: ${slug}-amendment-${num}.md exists but ${slug}-amendment-${prev}.md is missing"
+          AMEND_OK=false
+        fi
       fi
-    fi
+    done
   done
   if $AMEND_OK; then
     pass "Amendment numbering is sequential (no gaps)"
@@ -111,15 +115,18 @@ if [ "$TIER" = "--standard" ] || [ "$TIER" = "--strict" ]; then
 
   # Check 4: Changelog entry for each amendment
   CHANGELOG_OK=true
-  for f in "$ROOT"/.omc/plans/*-amendment-*.md; do
-    [ -f "$f" ] || continue
-    basename=$(basename "$f")
-    if [ -f "$ROOT/MISSION.md" ]; then
-      if ! grep -Fq "$basename" "$ROOT/MISSION.md"; then
-        warn "No changelog entry in MISSION.md for $basename"
-        CHANGELOG_OK=false
+  for dir in "$ROOT/.omc/plans/active" "$ROOT/.omc/plans/backlog" "$ROOT/.omc/plans/blocked" "$ROOT/.omc/plans/done" "$ROOT/.omc/plans"; do
+    [ -d "$dir" ] || continue
+    for f in "$dir"/*-amendment-*.md; do
+      [ -f "$f" ] || continue
+      basename=$(basename "$f")
+      if [ -f "$ROOT/MISSION.md" ]; then
+        if ! grep -Fq "$basename" "$ROOT/MISSION.md"; then
+          warn "No changelog entry in MISSION.md for $basename"
+          CHANGELOG_OK=false
+        fi
       fi
-    fi
+    done
   done
   if $CHANGELOG_OK; then
     pass "Changelog entries match amendment files"
@@ -134,21 +141,24 @@ if [ "$TIER" = "--strict" ]; then
 
   # Check 5: Plan files contain all 7 sections from handoff template
   SCHEMA_OK=true
-  for f in "$ROOT"/.omc/plans/*.md; do
-    [ -f "$f" ] || continue
-    basename=$(basename "$f")
-    # Skip template, README, and amendment files
-    if [ "$basename" = "README.md" ] || [ "$basename" = "handoff-template.md" ]; then
-      continue
-    fi
-    case "$basename" in
-      *-amendment-*) continue ;;
-    esac
-    for section in "Context" "Goal" "Constraints" "Files to touch" "Acceptance criteria" "Verification steps" "Open questions"; do
-      if ! grep -qi "## .*$section" "$f"; then
-        warn "Plan $basename missing section: $section"
-        SCHEMA_OK=false
+  for dir in "$ROOT/.omc/plans/active" "$ROOT/.omc/plans/backlog" "$ROOT/.omc/plans/blocked" "$ROOT/.omc/plans/done" "$ROOT/.omc/plans"; do
+    [ -d "$dir" ] || continue
+    for f in "$dir"/*.md; do
+      [ -f "$f" ] || continue
+      basename=$(basename "$f")
+      # Skip template, README, WORKFLOW, and amendment files
+      if [ "$basename" = "README.md" ] || [ "$basename" = "handoff-template.md" ] || [ "$basename" = "WORKFLOW.md" ]; then
+        continue
       fi
+      case "$basename" in
+        *-amendment-*) continue ;;
+      esac
+      for section in "Context" "Goal" "Constraints" "Files to touch" "Acceptance criteria" "Verification steps" "Open questions"; do
+        if ! grep -qi "## .*$section" "$f"; then
+          warn "Plan $basename missing section: $section"
+          SCHEMA_OK=false
+        fi
+      done
     done
   done
   if $SCHEMA_OK; then
@@ -176,22 +186,25 @@ if [ "$TIER" = "--strict" ]; then
   # Check 7: Plan immutability — plan files (non-amendment, non-template) not modified after initial commit
   if command -v git > /dev/null 2>&1 && [ -d "$ROOT/.git" ]; then
     IMMUTABLE_OK=true
-    for f in "$ROOT"/.omc/plans/*.md; do
-      [ -f "$f" ] || continue
-      basename=$(basename "$f")
-      if [ "$basename" = "README.md" ] || [ "$basename" = "handoff-template.md" ]; then
-        continue
-      fi
-      case "$basename" in
-        *-amendment-*) continue ;;
-      esac
-      relpath=".omc/plans/$basename"
-      # Count commits that modified this file (excluding the initial add)
-      commit_count=$(git -C "$ROOT" log --oneline --follow -- "$relpath" 2>/dev/null | wc -l | tr -d ' ')
-      if [ "$commit_count" -gt 1 ]; then
-        warn "Plan $basename was modified after initial commit ($commit_count commits)"
-        IMMUTABLE_OK=false
-      fi
+    for dir in "$ROOT/.omc/plans/active" "$ROOT/.omc/plans/backlog" "$ROOT/.omc/plans/blocked" "$ROOT/.omc/plans/done" "$ROOT/.omc/plans"; do
+      [ -d "$dir" ] || continue
+      for f in "$dir"/*.md; do
+        [ -f "$f" ] || continue
+        basename=$(basename "$f")
+        if [ "$basename" = "README.md" ] || [ "$basename" = "handoff-template.md" ] || [ "$basename" = "WORKFLOW.md" ]; then
+          continue
+        fi
+        case "$basename" in
+          *-amendment-*) continue ;;
+        esac
+        relpath=$(python3 -c "import os; print(os.path.relpath('$f', '$ROOT'))" 2>/dev/null || printf '%s' "$f" | sed "s|$ROOT/||")
+        # Count commits that modified this file (excluding the initial add)
+        commit_count=$(git -C "$ROOT" log --oneline --follow -- "$relpath" 2>/dev/null | wc -l | tr -d ' ')
+        if [ "$commit_count" -gt 1 ]; then
+          warn "Plan $basename was modified after initial commit ($commit_count commits)"
+          IMMUTABLE_OK=false
+        fi
+      done
     done
     if $IMMUTABLE_OK; then
       pass "Plan immutability intact (no post-commit edits)"
@@ -205,29 +218,31 @@ if [ "$TIER" = "--strict" ]; then
   # Strategy section are valid (the section is optional).
   EXEC_STRATEGY_CHECKED=false
   EXEC_STRATEGY_OK=true
-  for f in "$ROOT"/.omc/plans/*.md; do
-    [ -f "$f" ] || continue
-    basename=$(basename "$f")
-    # Skip template, README, and amendment files
-    if [ "$basename" = "README.md" ] || [ "$basename" = "handoff-template.md" ]; then
-      continue
-    fi
-    case "$basename" in
-      *-amendment-*) continue ;;
-    esac
-    # Only check if the plan has an Execution Strategy section
-    if grep -qi '^## Execution strategy' "$f"; then
-      EXEC_STRATEGY_CHECKED=true
-      # Verify required sub-headings
-      if ! grep -qi '^### Parallel groups' "$f"; then
-        warn "Plan $basename has Execution Strategy but missing sub-heading: ### Parallel groups"
-        EXEC_STRATEGY_OK=false
+  for dir in "$ROOT/.omc/plans/active" "$ROOT/.omc/plans/backlog" "$ROOT/.omc/plans/blocked" "$ROOT/.omc/plans/done" "$ROOT/.omc/plans"; do
+    [ -d "$dir" ] || continue
+    for f in "$dir"/*.md; do
+      [ -f "$f" ] || continue
+      basename=$(basename "$f")
+      # Skip template, README, WORKFLOW, and amendment files
+      if [ "$basename" = "README.md" ] || [ "$basename" = "handoff-template.md" ] || [ "$basename" = "WORKFLOW.md" ]; then
+        continue
       fi
-      if ! grep -qi '^### Dependencies' "$f"; then
-        warn "Plan $basename has Execution Strategy but missing sub-heading: ### Dependencies"
-        EXEC_STRATEGY_OK=false
+      case "$basename" in
+        *-amendment-*) continue ;;
+      esac
+      # Only check if the plan has an Execution Strategy section
+      if grep -qi '^## Execution strategy' "$f"; then
+        EXEC_STRATEGY_CHECKED=true
+        if ! grep -qi '^### Parallel groups' "$f"; then
+          warn "Plan $basename has Execution Strategy but missing sub-heading: ### Parallel groups"
+          EXEC_STRATEGY_OK=false
+        fi
+        if ! grep -qi '^### Dependencies' "$f"; then
+          warn "Plan $basename has Execution Strategy but missing sub-heading: ### Dependencies"
+          EXEC_STRATEGY_OK=false
+        fi
       fi
-    fi
+    done
   done
   if $EXEC_STRATEGY_CHECKED && $EXEC_STRATEGY_OK; then
     pass "Execution Strategy section structure valid (where present)"

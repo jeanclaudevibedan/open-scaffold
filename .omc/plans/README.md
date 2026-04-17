@@ -1,16 +1,16 @@
 # Plans — Amendment Protocol
 
-Plans in this directory are **immutable** once committed. When new information changes a plan's goal, constraints, or acceptance criteria, do NOT edit the plan file in place. Instead, run `./amend.sh <plan-slug>` from the repo root — it handles the mechanical parts so you can focus on the content.
+Plans in this directory and its stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`) are **immutable** once committed. When new information changes a plan's goal, constraints, or acceptance criteria, do NOT edit the plan file in place. Instead, run `./amend.sh <plan-slug>` from the repo root — it handles the mechanical parts so you can focus on the content. To close a completed plan, run `./close.sh <plan-slug>` — it moves the plan and its amendments to `done/` and stamps MISSION.md's changelog. See `.omc/plans/WORKFLOW.md` for the full stage-folder workflow.
 
 ## The helper (recommended path)
 
 ```bash
-./amend.sh <plan-slug> [--stage] [--message "<text>"]
+./amend.sh <plan-slug> [--stage] [--backlog] [--message "<text>"]
 ```
 
 The script:
 
-1. Autonumbers the next amendment file as `<plan-slug>-amendment-<n>.md` in this directory.
+1. Autonumbers the next amendment file as `<plan-slug>-amendment-<n>.md` in the same stage subfolder as the parent plan.
 2. Scaffolds the file with the 5-section schema below (Parent / Date / Learning / New direction / Impact on acceptance criteria), filling Parent and Date automatically and leaving `TODO:` placeholders for the three content sections.
 3. Appends a one-line dated entry to `MISSION.md`'s `## Changelog` section referencing the new amendment filename.
 4. Optionally stages both files with `git add` when `--stage` is passed.
@@ -27,23 +27,17 @@ You then fill in the three `TODO:` sections in the amendment file, review the di
 
 ## Read order rule
 
-Agents and humans read `<slug>.md` first, then `<slug>-amendment-1.md`, `<slug>-amendment-2.md`, ... in numeric order. Later amendments supersede earlier ones where they conflict.
+Agents and humans read `<slug>.md` first, then `<slug>-amendment-1.md`, `<slug>-amendment-2.md`, ... in numeric order. Later amendments supersede earlier ones where they conflict. Plans and their amendments live together in the same stage subfolder — look in `active/`, `backlog/`, `done/`, or `blocked/` as appropriate.
 
 ## Manual fallback
 
-If you can't run bash for any reason, the manual flow still works: create `<plan-slug>-amendment-<n>.md` by hand using the schema above, then add a one-line entry to `MISSION.md`'s `## Changelog` section containing the amendment's basename. `verify.sh` Checks 3 and 4 enforce sequential numbering and changelog coverage either way.
+If you can't run bash for any reason, the manual flow still works: create `<plan-slug>-amendment-<n>.md` by hand in the appropriate stage subfolder using the schema above, then add a one-line entry to `MISSION.md`'s `## Changelog` section containing the amendment's basename. `verify.sh` Checks 3 and 4 enforce sequential numbering and changelog coverage either way.
 
 Amendments are for legitimate scope evolution, not silent drift. They exist so that "I learned something new" propagates cleanly into the plan artifacts instead of living only in someone's head.
 
-## Plan status convention
+## Plan status
 
-Every plan file should include a `## Status` section near the top with one of these values:
-
-- **active** — work is in progress or not yet started
-- **complete** — all acceptance criteria have been met
-- **superseded** — replaced by a newer plan (note which one)
-
-The status is the one field in a plan file that IS updated after commit (it tracks lifecycle, not scope). The handoff template includes it by default.
+Plan status is determined by which stage subfolder the plan lives in — **the folder IS the status**. There is no `## Status` header inside plan files. The four stages are `active/`, `backlog/`, `done/`, and `blocked/`. Use `./close.sh <plan-slug>` to move a plan to `done/` when all acceptance criteria are met. See `.omc/plans/WORKFLOW.md` for movement rules between stages.
 
 ## The specs/ directory
 

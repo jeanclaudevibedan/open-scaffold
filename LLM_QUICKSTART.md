@@ -31,7 +31,7 @@ cd <name>
 
 ## Step 2 — Initialize the scaffolding
 
-Run `./bootstrap.sh`. The script ensures the lazy directories exist (`.omc/state/`, `.omc/research/`) and stamps today's date into MISSION.md's changelog.
+Run `./bootstrap.sh`. The script ensures the lazy directories exist (`.omc/state/`, `.omc/research/`, and stage subfolders `active/`, `backlog/`, `done/`, `blocked/` under `.omc/plans/`) and stamps today's date into MISSION.md's changelog.
 
 **What happens to MISSION.md depends on how bootstrap was invoked:**
 
@@ -64,11 +64,11 @@ Print the matching handoff verbatim, then stop. Each handoff assumes the downstr
 
 | Runtime | Task state | Handoff |
 |---|---|---|
-| OMC | Clear | `Run /autopilot with: "If my MISSION.md is still unset, elicit it from me first (one sentence on what this project is; main outcomes; adjacent features I'm choosing NOT to build). Stamp MISSION.md with my answers. Then write a plan in .omc/plans/ for <task> using .omc/plans/handoff-template.md."` |
-| OMC | Fuzzy | `Run /deep-interview. Tell it your MISSION.md is unset AND your first task is fuzzy — it will cover both in one interview, stamp MISSION.md, and write the plan.` |
-| Plain agent | Clear | `Tell your agent: "My MISSION.md is unset. Ask me three things: (a) what is this project in one sentence, (b) main outcomes, (c) adjacent features I could plausibly build but am choosing not to (good non-goals are adjacent, not unrelated — think 'recipe app: not a meal planner' rather than 'recipe app: not a television'). Update MISSION.md with my answers, then write a plan in .omc/plans/ for <task> using .omc/plans/handoff-template.md."` |
-| Plain agent | Fuzzy | `Tell your agent: "My MISSION.md is unset AND my first task is fuzzy. Interview me until both are clear — mission (what, main outcomes, adjacent non-goals) and task (specific enough for a 7-section plan). Update MISSION.md, then write the plan in .omc/plans/ using .omc/plans/handoff-template.md."` |
-| Manual | Either | `Open MISSION.md in your editor and fill in the three TODO sections by hand (if they are still there — interactive bootstrap may have replaced them). Then run: cp .omc/plans/handoff-template.md .omc/plans/my-first-task.md — open the copy and fill in its 7 sections.` |
+| OMC | Clear | `Run /autopilot with: "If my MISSION.md is still unset, elicit it from me first (one sentence on what this project is; main outcomes; adjacent features I'm choosing NOT to build). Stamp MISSION.md with my answers. Then write a plan in .omc/plans/active/ for <task> using .omc/plans/handoff-template.md."` |
+| OMC | Fuzzy | `Run /deep-interview. Tell it your MISSION.md is unset AND your first task is fuzzy — it will cover both in one interview, stamp MISSION.md, and write the plan in .omc/plans/active/.` |
+| Plain agent | Clear | `Tell your agent: "My MISSION.md is unset. Ask me three things: (a) what is this project in one sentence, (b) main outcomes, (c) adjacent features I could plausibly build but am choosing not to (good non-goals are adjacent, not unrelated — think 'recipe app: not a meal planner' rather than 'recipe app: not a television'). Update MISSION.md with my answers, then write a plan in .omc/plans/active/ for <task> using .omc/plans/handoff-template.md."` |
+| Plain agent | Fuzzy | `Tell your agent: "My MISSION.md is unset AND my first task is fuzzy. Interview me until both are clear — mission (what, main outcomes, adjacent non-goals) and task (specific enough for a 7-section plan). Update MISSION.md, then write the plan in .omc/plans/active/ using .omc/plans/handoff-template.md."` |
+| Manual | Either | `Open MISSION.md in your editor and fill in the three TODO sections by hand (if they are still there — interactive bootstrap may have replaced them). Then run: cp .omc/plans/handoff-template.md .omc/plans/active/my-first-task.md — open the copy and fill in its 7 sections. See .omc/RULES.md for non-negotiable principles, .omc/plans/WORKFLOW.md for stage-folder conventions, and close.sh for marking plans done.` |
 
 ## Stop condition
 

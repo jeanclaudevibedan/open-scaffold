@@ -14,7 +14,7 @@ Ask structured questions until the goal, constraints, and acceptance criteria ar
 
 ### 2. Plan (when the task is non-trivial)
 
-Write a plan file in `.omc/plans/` using the 7-section schema in `.omc/plans/handoff-template.md`. The plan must include acceptance criteria — testable bullets that define success. For risky or multi-file work, get the plan reviewed before executing.
+Write a plan file in `.omc/plans/active/` using the 7-section schema in `.omc/plans/handoff-template.md`. The plan must include acceptance criteria — testable bullets that define success. For risky or multi-file work, get the plan reviewed before executing. See `.omc/plans/WORKFLOW.md` for the stage-folder lifecycle and `.omc/RULES.md` for non-negotiable principles.
 
 > **With OMC/OMX:** `/oh-my-claudecode:plan` or `/ralplan` runs a Planner → Architect → Critic consensus loop.
 
@@ -41,11 +41,11 @@ Run `./verify.sh` for a methodology compliance report (mission defined, plans ex
 New information legitimately changes what you're building? That's fine — but capture it, don't silently drift.
 
 1. Do not edit plan files in place. Do not hand-edit MISSION.md's changelog for amendment bookkeeping.
-2. Run `./amend.sh <plan-slug>` from the repo root. The script autonumbers the next amendment file as `.omc/plans/<slug>-amendment-<n>.md`, scaffolds the 5-section schema from `.omc/plans/README.md`, and stamps MISSION.md's `## Changelog` section in one shot.
+2. Run `./amend.sh <plan-slug>` from the repo root. The script finds the parent plan in whichever stage subfolder it lives in (`active/`, `backlog/`, `done/`, `blocked/`), autonumbers the next amendment file alongside it, scaffolds the 5-section schema from `.omc/plans/README.md`, and stamps MISSION.md's `## Changelog` section in one shot.
 3. Fill in the three `TODO:` sections in the new amendment file: **Learning** (what changed and why), **New direction** (the revised goal or criteria), and **Impact on acceptance criteria** (which AC numbers change, how).
 4. Review the diff, then commit. Agents read the original plan plus all amendments in numeric order.
 
-Optional flags: `--stage` to `git add` both files automatically; `--message "<text>"` to override the default changelog line. See `./amend.sh` at the repo root.
+Optional flags: `--stage` to `git add` both files automatically; `--backlog` to place the amendment in backlog instead of active; `--message "<text>"` to override the default changelog line. See `./amend.sh` at the repo root.
 
 This is the difference between legitimate scope evolution (captured, traceable) and bad scope creep (silent, invisible). The script is the safety net: it makes the mechanical parts of the amendment protocol (autonumbering, schema fidelity, changelog stamping) impossible to get wrong.
 
@@ -99,6 +99,7 @@ Multi-agent development spans sessions. Without discipline, context is lost betw
 ### What to produce at the end of each session
 
 - **A completed or updated plan file** — If you finished a task, its plan should have all ACs checked off. If work remains, the plan documents what's done and what's left.
+- **A closed plan** — If all acceptance criteria are met, run `./close.sh <plan-slug>` to move the plan and its amendments to `done/` and stamp the changelog.
 - **Amendments for any scope changes** — Anything you learned that changes the plan goes in an amendment file, not in your head. Run `./amend.sh <plan-slug>` to scaffold it.
 - **A changelog entry in MISSION.md** — One line per pivot so the next session (or agent) knows what shifted and why.
 
@@ -107,6 +108,8 @@ Multi-agent development spans sessions. Without discipline, context is lost betw
 1. Before ending: review the latest plan + amendments. Is everything captured, or are decisions only in the conversation?
 2. Write down unfinished work as open questions in the plan file (Section 7).
 3. The next session starts by reading MISSION.md → latest plan → amendments in order. This is the full context handoff — no re-explanation needed.
+
+For stage-folder movement rules and lifecycle conventions, see `.omc/plans/WORKFLOW.md`. For non-negotiable principles, see `.omc/RULES.md`.
 
 ### When to parallelize
 

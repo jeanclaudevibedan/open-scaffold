@@ -32,7 +32,7 @@ This isn't a tooling problem. It's human nature, amplified by multi-agent workfl
 | | | |
 |---|---|---|
 | 🎯 **Mission-first** | `MISSION.md` defines goals and non-goals before a single line is written. Ships unset on purpose — you fill it in on day one. | [→](MISSION.md) |
-| 🔒 **Immutable plans** | Plans in `.omc/plans/` follow a 7-section schema and become read-only once committed. No silent scope creep. | [→](.omc/plans/handoff-template.md) |
+| 🔒 **Immutable plans** | Plans in `.omc/plans/` (organized in stage subfolders: `active/`, `backlog/`, `done/`, `blocked/`) follow a 7-section schema and become read-only once committed. No silent scope creep. | [→](.omc/plans/handoff-template.md) |
 | 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Run `./amend.sh <plan-slug>` to autonumber, scaffold, and stamp the changelog in one shot. | [→](.omc/plans/README.md) |
 | 🧭 **Design choices** | A short page in `docs/decisions/` explains why the scaffold is the way it is — paired views, immutable plans, agent-mediated orchestration. | [→](docs/decisions/README.md) |
 | ✅ **`verify.sh`** | A compliance checker in three tiers (`--quick`, `--standard`, `--strict`). Agents run it automatically before touching code. | [→](verify.sh) |
@@ -103,7 +103,7 @@ That's the mission. Everything downstream traces back to it.
 
 If your goal is clear, tell your agent:
 
-> *"Write a plan in `.omc/plans/` for \<your task\> using the handoff template."*
+> *"Write a plan in `.omc/plans/active/` for \<your task\> using the handoff template."*
 
 If your goal is fuzzy, let the agent interview you into clarity first:
 
@@ -112,12 +112,12 @@ If your goal is fuzzy, let the agent interview you into clarity first:
 /deep-interview
 ```
 
-Without OMC, ask any agent: *"Interview me until you understand exactly what to build, then write a plan in `.omc/plans/` using `.omc/plans/handoff-template.md`."*
+Without OMC, ask any agent: *"Interview me until you understand exactly what to build, then write a plan in `.omc/plans/active/` using `.omc/plans/handoff-template.md`."*
 
 **Fully manual fallback:**
 
 ```bash
-cp .omc/plans/handoff-template.md .omc/plans/my-first-task.md
+cp .omc/plans/handoff-template.md .omc/plans/active/my-first-task.md
 $EDITOR .omc/plans/my-first-task.md
 ```
 
@@ -140,7 +140,7 @@ Exit code 0 means your mission is defined, a plan exists, amendments are sequent
 | | **Scaffold** (what open-scaffold is) | **Runtime** (what OMC/OMX are) |
 |---|---|---|
 | **Defines** | How your project stays organized | How tasks get executed |
-| **Lives in** | `MISSION.md`, `.omc/plans/`, `docs/decisions/` | Your agent's skills and commands |
+| **Lives in** | `MISSION.md`, `.omc/plans/` (with `active/`, `backlog/`, `done/`, `blocked/` subfolders), `docs/decisions/` | Your agent's skills and commands |
 | **Persists** | Across every session, agent, and tool | Per session, per invocation |
 | **Required?** | Yes — this is the floor | No — scaffold works solo, runtimes amplify it |
 
@@ -251,6 +251,9 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 | [`verify.sh`](verify.sh) | Compliance checker. `--quick`, `--standard`, `--strict`. |
 | [`delegate.sh`](delegate.sh) | Parallel-group prompt generator for non-agent users. |
 | [`amend.sh`](amend.sh) | Amendment scaffolder. Autonumbers the next amendment, scaffolds the 5-section schema, and stamps MISSION.md's changelog. |
+| [`close.sh`](close.sh) | Plan closer. Moves a completed plan and its amendments to `done/` and stamps MISSION.md's changelog. |
+| [`.omc/RULES.md`](.omc/RULES.md) | Compact non-negotiable principles. Re-read before any major action on project structure. |
+| [`.omc/plans/WORKFLOW.md`](.omc/plans/WORKFLOW.md) | Stage-based plan workflow rules. Defines how plans move between `active/`, `backlog/`, `done/`, and `blocked/`. |
 
 </details>
 
@@ -261,9 +264,11 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 
 **ADR (Architecture Decision Record)** — A short note explaining *why* a decision was made, not just *what*. Lives in `docs/decisions/`. Future-you (and future-agents) will thank present-you.
 
-**Amendment Protocol** — The rule that plan files are immutable once committed. New learnings become `<slug>-amendment-<n>.md` files instead of silent edits. Scaffolded by `./amend.sh <plan-slug>`. Full rules in [`.omc/plans/README.md`](.omc/plans/README.md).
+**Amendment Protocol** — The rule that plan files are immutable once committed. New learnings become `<slug>-amendment-<n>.md` files (in the same stage folder as the parent plan — `active/`, `backlog/`, `done/`, or `blocked/`) instead of silent edits. Scaffolded by `./amend.sh <plan-slug>`. Full rules in [`.omc/plans/README.md`](.omc/plans/README.md).
 
-**Amend** — `./amend.sh <plan-slug>`. Autonumbers the next amendment file, scaffolds the 5-section schema, and stamps MISSION.md's changelog. Use this instead of hand-writing amendment files.
+**Amend** — `./amend.sh <plan-slug>`. Autonumbers the next amendment file, scaffolds the 5-section schema, and stamps MISSION.md's changelog. Use `--backlog` to place the amendment in `backlog/` instead of `active/`. Use this instead of hand-writing amendment files.
+
+**Close** — `./close.sh <plan-slug>`. Moves a completed plan and its amendments from their current stage folder to `done/` and stamps MISSION.md's changelog. Use this when all acceptance criteria pass.
 
 **Bootstrap** — `./bootstrap.sh`. Interactive, idempotent, optional. Walks you through defining your mission on day one.
 

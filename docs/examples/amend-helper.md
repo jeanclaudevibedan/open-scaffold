@@ -1,3 +1,5 @@
+> **Note:** This example plan predates the stage-folder workflow. Plan files now live in stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`) under `.omc/plans/`. See `.omc/plans/WORKFLOW.md` for current conventions.
+
 # Plan: amend-helper
 
 ## Context
