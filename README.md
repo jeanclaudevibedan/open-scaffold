@@ -34,10 +34,10 @@ This isn't a tooling problem. It's human nature, amplified by multi-agent workfl
 | 🎯 **Mission-first** | `MISSION.md` defines goals and non-goals before a single line is written. Ships unset on purpose — you fill it in on day one. | [→](MISSION.md) |
 | 🔒 **Immutable plans** | Plans in `.osc/plans/` (organized in stage subfolders: `active/`, `backlog/`, `done/`, `blocked/`) follow a 7-section schema and become read-only once committed. No silent scope creep. | [→](.osc/plans/handoff-template.md) |
 | 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Run `./amend.sh <plan-slug>` to autonumber, scaffold, and stamp the changelog in one shot. | [→](.osc/plans/README.md) |
-| 🧭 **Design choices** | A short page in `docs/decisions/` explains why the scaffold is the way it is — paired views, immutable plans, agent-mediated orchestration. | [→](docs/decisions/README.md) |
+| 🧭 **Design choices** | A short page in `docs/decisions/` explains why the scaffold is the way it is — paired views, immutable plans, adapter-mediated orchestration. | [→](docs/decisions/README.md) |
 | ✅ **`verify.sh` / `osc verify`** | Compliance checks in shell or CLI form. Agents run the quick check before touching code. | [→](verify.sh) |
 | 🧰 **`osc` CLI** | Runtime-neutral command-line helper. Parses plans, reports status, and writes prompt/artifact bundles under `.osc/runs/` without spawning agents. | [→](package.json) |
-| 🔌 **Adapters** | OMC and OMX live in separate adapter repos. Generic open-scaffold uses `.osc`; OMC uses `.omc`; OMX uses `.omx`. | [→](docs/ADAPTERS.md) |
+| 🔌 **Adapters** | Public runtime adapters exist for OMC and OMX: [`open-scaffold-omc`](https://github.com/jeanclaudevibedan/open-scaffold-omc) uses `.omc`/`osc-omc`; [`open-scaffold-omx`](https://github.com/jeanclaudevibedan/open-scaffold-omx) uses `.omx`/`osc-omx`. | [→](docs/ADAPTERS.md) |
 
 ---
 
@@ -109,11 +109,16 @@ If your goal is clear, tell your agent:
 If your goal is fuzzy, let the agent interview you into clarity first:
 
 ```bash
-# With oh-my-claudecode installed:
+# With OMC / Claude Code:
 /deep-interview
+
+# With OMX / Codex:
+$deep-interview
 ```
 
-Without OMC, ask any agent: *"Interview me until you understand exactly what to build, then write a plan in `.osc/plans/active/` using `.osc/plans/handoff-template.md`."*
+Without an adapter runtime, ask any agent: *"Interview me until you understand exactly what to build, then write a plan in `.osc/plans/active/` using `.osc/plans/handoff-template.md`."*
+
+Want adapter-native folders from day one? Start from [`open-scaffold-omc`](https://github.com/jeanclaudevibedan/open-scaffold-omc) for `.omc`/`osc-omc` or [`open-scaffold-omx`](https://github.com/jeanclaudevibedan/open-scaffold-omx) for `.omx`/`osc-omx`.
 
 **Fully manual fallback:**
 
@@ -145,7 +150,7 @@ Exit code 0 means your mission is defined, a plan exists, amendments are sequent
 | **Persists** | Across every session, agent, and tool | Per session, per invocation |
 | **Required?** | Yes — this is the floor | No — scaffold works solo, runtimes amplify it |
 
-open-scaffold is the chassis. `osc` is the mechanic that prepares prompt/artifact bundles. Your runtime is the engine. Generic open-scaffold uses `.osc/`; adapter repos translate the same contract into runtime-native spaces such as `.omc/` for OMC and `.omx/` for OMX.
+open-scaffold is the chassis. `osc` is the mechanic that prepares prompt/artifact bundles. Your runtime is the engine. Generic open-scaffold uses `.osc/`; the public adapter repos translate the same contract into runtime-native spaces: [`open-scaffold-omc`](https://github.com/jeanclaudevibedan/open-scaffold-omc) uses `.omc`/`osc-omc`, and [`open-scaffold-omx`](https://github.com/jeanclaudevibedan/open-scaffold-omx) uses `.omx`/`osc-omx`.
 
 ---
 
@@ -155,7 +160,8 @@ The scaffold runs the same way whether you're on the latest orchestration stack 
 
 | Tier | What happens | Delegation |
 |---|---|---|
-| 🤖 **OMC** ([oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode)) | Agent reads plans, proposes parallel delegation, runs `verify.sh` automatically | Full — `/team`, `/ultrawork`, `/ralph` |
+| 🤖 **OMC adapter** ([open-scaffold-omc](https://github.com/jeanclaudevibedan/open-scaffold-omc) + [oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode)) | Claude Code reads `.omc/plans`, emits `osc-omc` handoffs, and routes work through OMC | Full — `/team`, `/ultrawork`, `/ralph` |
+| ⚡ **OMX adapter** ([open-scaffold-omx](https://github.com/jeanclaudevibedan/open-scaffold-omx) + [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex)) | Codex reads `.omx/plans`, emits `osc-omx` handoffs, and respects `.omx/state`/Codex conventions | Full — `$team`, `$ralph`, `$deep-interview`, `$ralplan` |
 | 🧠 **Plain Claude Code / Cursor / Codex** | Agent reads plans when told to via `CLAUDE.md` / `AGENTS.md` | Agent describes parallelism; you dispatch |
 | ⌨️ **Local LLM or no agent at all** | You read the plans. The methodology still works. | Run `./delegate.sh <plan>` for copy-pasteable prompts |
 
@@ -165,8 +171,8 @@ Higher tiers automate more. Lower tiers keep every file and protocol intact.
 
 ## 🛠️ Recommended runtimes
 
-- **[oh-my-claudecode (OMC)](https://github.com/yeachan-heo/oh-my-claudecode)** — multi-agent orchestration for Claude Code. Planning, parallel execution, verification, consensus loops. The heavy-lift runtime.
-- **[oh-my-codex (OMX)](https://github.com/Yeachan-Heo/oh-my-codex)** — same philosophy for Codex CLI. The fast-typing cockpit — boilerplate, single-file edits, throughput over judgment.
+- **[open-scaffold-omc](https://github.com/jeanclaudevibedan/open-scaffold-omc)** + **[oh-my-claudecode (OMC)](https://github.com/yeachan-heo/oh-my-claudecode)** — Claude Code adapter using `.omc`/`osc-omc`; planning, parallel execution, verification, consensus loops. The heavy-lift runtime.
+- **[open-scaffold-omx](https://github.com/jeanclaudevibedan/open-scaffold-omx)** + **[oh-my-codex (OMX)](https://github.com/Yeachan-Heo/oh-my-codex)** — Codex adapter using `.omx`/`osc-omx`; `$deep-interview`, `$ralplan`, `$team`, `$ralph`, and `.omx/state` conventions.
 
 Neither is required. Use Cursor, Windsurf, Aider, or a plain terminal — the scaffold is just markdown and bash.
 
@@ -179,7 +185,7 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 <details>
 <summary><b>So, does this allow multi-agent automatic orchestration?</b></summary>
 
-> Not by itself. The scaffold is paperwork; orchestration is the runtime's job. What it *does* is give an agent a machine-readable structure to act on: an OMC-equipped Claude reads your plan's Execution Strategy section, parses the parallel groups, and dispatches them into `/team` or `/ultrawork` itself. Without a runtime, `./delegate.sh <plan>` emits terminal prompts you paste into separate sessions. The scaffold enables orchestration. It doesn't perform it.
+> Not by itself. The scaffold is paperwork; orchestration is the runtime's job. What it *does* is give an agent a machine-readable structure to act on: OMC can route groups into `/team` or `/ultrawork`, and OMX can route them into `$team` or `$ralph`. Without an adapter runtime, `./delegate.sh <plan>` emits terminal prompts you paste into separate sessions. The core scaffold enables orchestration; adapter repos perform runtime-native handoffs/spawning.
 
 </details>
 
@@ -205,7 +211,7 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 </details>
 
 <details>
-<summary><b>Do I need Claude Code or OMC to use this?</b></summary>
+<summary><b>Do I need Claude Code, OMC, or OMX to use this?</b></summary>
 
 > No. The core layer is markdown files and bash scripts. It works with any agent, any editor, or a human typing by hand. OMC and OMX are force-multipliers, not prerequisites.
 
@@ -275,7 +281,7 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 
 **Delegate** — `./delegate.sh <plan>`. Reads a plan's Execution Strategy section and prints prompts you can paste into parallel terminal sessions. Designed for users without an orchestration runtime.
 
-**OMC / OMX** — [oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode) and [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex). Recommended runtimes, not required.
+**OMC / OMX** — Runtime layers: [oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode) and [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex). open-scaffold adapters: [open-scaffold-omc](https://github.com/jeanclaudevibedan/open-scaffold-omc) (`.omc`/`osc-omc`) and [open-scaffold-omx](https://github.com/jeanclaudevibedan/open-scaffold-omx) (`.omx`/`osc-omx`). Recommended, not required.
 
 **Plan Immutability** — Once a plan is committed to git, it is never edited. Changes layer on top as amendments. This is the single rule that prevents silent scope creep.
 
@@ -293,7 +299,7 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 open-scaffold has two layers:
 
 - **Core methodology** — folder discipline, immutable plans, amendment protocol, ADRs, session handover, and the `osc` prompt/artifact CLI. Framework-agnostic. Works with any agent or no agent at all.
-- **Adapter-enhanced layer** — separate OMC/OMX adapter repos that read the `.osc` contract and automate runtime-specific workflows. OMC maps to `.omc`; OMX maps to `.omx`.
+- **Adapter-enhanced layer** — separate public adapter repos that translate the scaffold contract into runtime-native workflows: [open-scaffold-omc](https://github.com/jeanclaudevibedan/open-scaffold-omc) maps to `.omc`/`osc-omc`; [open-scaffold-omx](https://github.com/jeanclaudevibedan/open-scaffold-omx) maps to `.omx`/`osc-omx`.
 
 The scaffold is the load-bearing part. The runtimes amplify it. You can strip the runtimes away and the methodology still holds.
 

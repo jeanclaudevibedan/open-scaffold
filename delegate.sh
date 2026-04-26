@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # open-scaffold delegation prompt generator
 # Reads a plan's Execution Strategy section and generates actionable terminal
-# prompts for each parallel group. Designed for users without OMC or capable
-# agents — paste the output into separate terminal sessions.
+# prompts for each parallel group. Designed for users without an adapter runtime
+# or capable agents — paste the output into separate terminal sessions.
 #
 # Usage: ./delegate.sh <plan-file-path>
 # Exit 0 = success or no Execution Strategy (not an error)

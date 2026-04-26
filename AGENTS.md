@@ -6,7 +6,7 @@ This project was created from [open-scaffold](https://github.com/jeanclaudevibed
 
 ## Layered architecture
 
-open-scaffold has two layers. The **core methodology** (folder discipline, immutable plans, amendment protocol, ADRs, session handover) is framework-agnostic — it works with any agent or no agent at all. The **adapter-enhanced layer** adds orchestration skills (planning, autonomous execution, parallel agents, verification) that read this structure and automate the workflow. If OMC or OMX is installed, consult `docs/WORKFLOW.md` for the skill callouts alongside each development phase.
+open-scaffold has two layers. The **core methodology** (folder discipline, immutable plans, amendment protocol, ADRs, session handover) is framework-agnostic — it works with any agent or no agent at all. The **adapter-enhanced layer** lives in public runtime repos: [`open-scaffold-omc`](https://github.com/jeanclaudevibedan/open-scaffold-omc) for `.omc`/`osc-omc` and [`open-scaffold-omx`](https://github.com/jeanclaudevibedan/open-scaffold-omx) for `.omx`/`osc-omx`. Consult `docs/WORKFLOW.md` for OMC/OMX callouts alongside each development phase.
 
 ## Project facts
 
@@ -26,7 +26,7 @@ open-scaffold has two layers. The **core methodology** (folder discipline, immut
 1. **Read `MISSION.md` before suggesting or writing code.** If it contains the marker `<!-- mission:unset -->` or the literal `TODO: define mission`, treat the mission as undefined. Redirect the user to define their mission (via `./bootstrap.sh` or direct editing) before proceeding. The user can override with an explicit instruction to skip.
 2. **Every non-trivial change must trace to a plan file** in `.osc/plans/` that follows the handoff template schema.
 3. **Do not edit plans in place.** If new information changes a plan's goal or acceptance criteria, run `./amend.sh <plan-slug>` — the script autonumbers the amendment file, scaffolds the 5-section schema, and stamps MISSION.md's changelog. Fill in the `TODO:` sections it leaves behind. Never hand-author amendment files, never hand-edit MISSION.md's changelog for amendments, and never modify the parent plan file.
-4. **Verification traces to acceptance criteria.** Run `./verify.sh` or OMC `/verify` against the plan's acceptance criteria, not vibes.
+4. **Verification traces to acceptance criteria.** Run `./verify.sh` and any adapter-native verification against the plan's acceptance criteria, not vibes.
 5. **When you "get smarter"** (new information arrives that legitimately changes scope), drive the amendment flow conversationally: (a) ask the user what specifically changed and why, (b) summarize it back in their voice, (c) run `./amend.sh <plan-slug>`, (d) fill in the `TODO:` sections of the generated amendment file with their summary, (e) show them the diff for review before staging. Do not silently integrate new features; do not refuse legitimate evolution.
 6. **Consult `docs/WORKFLOW.md`** when unsure which phase you're in or which tool fits the task.
 7. **Run compliance checks before non-trivial code changes.** Execute `./verify.sh --quick --quiet` and check the exit code. On exit 0: proceed silently (do not mention verification). On exit 1: read the failure output, hard-block, and redirect on the first failing check. The checks use progressive disclosure: the mission check runs first; the plan check only activates after the mission is defined. If mission is undefined, redirect to defining it. If mission is defined but no plan exists, redirect to creating one. The `--quiet` flag suppresses output on success but prints failure details when something is wrong. If you cannot execute shell commands, check directly: first verify `MISSION.md` does not contain `<!-- mission:unset -->`; only if the mission is defined, then check that `.osc/plans/` and its stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`) contain at least one plan file beyond the template.
@@ -38,4 +38,4 @@ Full rules in `.osc/plans/README.md` (under 200 words). Summary: plans are immut
 
 ## Verification marker convention
 
-`MISSION.md` ships with `<!-- mission:unset -->` as a machine-detectable "mission not yet defined" marker. Verification tooling (OMC `/verify`, custom scripts, code reviewers) should treat its presence as a blocker for any scope-expanding work. open-scaffold defines the marker; consuming tools decide how to honor it.
+`MISSION.md` ships with `<!-- mission:unset -->` as a machine-detectable "mission not yet defined" marker. Verification tooling (adapter-native commands, custom scripts, code reviewers) should treat its presence as a blocker for any scope-expanding work. open-scaffold defines the marker; consuming tools decide how to honor it.
