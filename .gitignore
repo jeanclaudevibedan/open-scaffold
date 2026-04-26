@@ -11,6 +11,9 @@ Desktop.ini
 *.swo
 *~
 
+# Runtime/editor local configuration
+.claude/
+
 # Open Scaffold generated/ephemeral state
 .osc/state/
 .osc/research/
