@@ -65,8 +65,8 @@ fi
 # Gated on mission: skip plan check until mission is defined (progressive disclosure)
 if [ "$MISSION_DEFINED" = true ]; then
   PLAN_COUNT=0
-  if [ -d "$ROOT/.omc/plans" ]; then
-    for dir in "$ROOT/.omc/plans/active" "$ROOT/.omc/plans/backlog" "$ROOT/.omc/plans/blocked" "$ROOT/.omc/plans/done" "$ROOT/.omc/plans"; do
+  if [ -d "$ROOT/.osc/plans" ]; then
+    for dir in "$ROOT/.osc/plans/active" "$ROOT/.osc/plans/backlog" "$ROOT/.osc/plans/blocked" "$ROOT/.osc/plans/done" "$ROOT/.osc/plans"; do
       [ -d "$dir" ] || continue
       for f in "$dir"/*.md; do
         [ -f "$f" ] || continue
@@ -79,9 +79,9 @@ if [ "$MISSION_DEFINED" = true ]; then
   fi
 
   if [ "$PLAN_COUNT" -gt 0 ]; then
-    pass "Plan file(s) found ($PLAN_COUNT in .omc/plans/)"
+    pass "Plan file(s) found ($PLAN_COUNT in .osc/plans/)"
   else
-    fail "No plan files found in .omc/plans/ (only template and README)"
+    fail "No plan files found in .osc/plans/ (only template and README)"
   fi
 fi
 
@@ -93,7 +93,7 @@ if [ "$TIER" = "--standard" ] || [ "$TIER" = "--strict" ]; then
 
   # Check 3: Amendment numbering is sequential per plan slug
   AMEND_OK=true
-  for dir in "$ROOT/.omc/plans/active" "$ROOT/.omc/plans/backlog" "$ROOT/.omc/plans/blocked" "$ROOT/.omc/plans/done" "$ROOT/.omc/plans"; do
+  for dir in "$ROOT/.osc/plans/active" "$ROOT/.osc/plans/backlog" "$ROOT/.osc/plans/blocked" "$ROOT/.osc/plans/done" "$ROOT/.osc/plans"; do
     [ -d "$dir" ] || continue
     for f in "$dir"/*-amendment-*.md; do
       [ -f "$f" ] || continue
@@ -115,7 +115,7 @@ if [ "$TIER" = "--standard" ] || [ "$TIER" = "--strict" ]; then
 
   # Check 4: Changelog entry for each amendment
   CHANGELOG_OK=true
-  for dir in "$ROOT/.omc/plans/active" "$ROOT/.omc/plans/backlog" "$ROOT/.omc/plans/blocked" "$ROOT/.omc/plans/done" "$ROOT/.omc/plans"; do
+  for dir in "$ROOT/.osc/plans/active" "$ROOT/.osc/plans/backlog" "$ROOT/.osc/plans/blocked" "$ROOT/.osc/plans/done" "$ROOT/.osc/plans"; do
     [ -d "$dir" ] || continue
     for f in "$dir"/*-amendment-*.md; do
       [ -f "$f" ] || continue
@@ -141,7 +141,7 @@ if [ "$TIER" = "--strict" ]; then
 
   # Check 5: Plan files contain all 7 sections from handoff template
   SCHEMA_OK=true
-  for dir in "$ROOT/.omc/plans/active" "$ROOT/.omc/plans/backlog" "$ROOT/.omc/plans/blocked" "$ROOT/.omc/plans/done" "$ROOT/.omc/plans"; do
+  for dir in "$ROOT/.osc/plans/active" "$ROOT/.osc/plans/backlog" "$ROOT/.osc/plans/blocked" "$ROOT/.osc/plans/done" "$ROOT/.osc/plans"; do
     [ -d "$dir" ] || continue
     for f in "$dir"/*.md; do
       [ -f "$f" ] || continue
@@ -186,7 +186,7 @@ if [ "$TIER" = "--strict" ]; then
   # Check 7: Plan immutability — plan files (non-amendment, non-template) not modified after initial commit
   if command -v git > /dev/null 2>&1 && [ -d "$ROOT/.git" ]; then
     IMMUTABLE_OK=true
-    for dir in "$ROOT/.omc/plans/active" "$ROOT/.omc/plans/backlog" "$ROOT/.omc/plans/blocked" "$ROOT/.omc/plans/done" "$ROOT/.omc/plans"; do
+    for dir in "$ROOT/.osc/plans/active" "$ROOT/.osc/plans/backlog" "$ROOT/.osc/plans/blocked" "$ROOT/.osc/plans/done" "$ROOT/.osc/plans"; do
       [ -d "$dir" ] || continue
       for f in "$dir"/*.md; do
         [ -f "$f" ] || continue
@@ -218,7 +218,7 @@ if [ "$TIER" = "--strict" ]; then
   # Strategy section are valid (the section is optional).
   EXEC_STRATEGY_CHECKED=false
   EXEC_STRATEGY_OK=true
-  for dir in "$ROOT/.omc/plans/active" "$ROOT/.omc/plans/backlog" "$ROOT/.omc/plans/blocked" "$ROOT/.omc/plans/done" "$ROOT/.omc/plans"; do
+  for dir in "$ROOT/.osc/plans/active" "$ROOT/.osc/plans/backlog" "$ROOT/.osc/plans/blocked" "$ROOT/.osc/plans/done" "$ROOT/.osc/plans"; do
     [ -d "$dir" ] || continue
     for f in "$dir"/*.md; do
       [ -f "$f" ] || continue

@@ -10,11 +10,11 @@ Every task moves through a natural progression. You do not need to use every pha
 
 Ask structured questions until the goal, constraints, and acceptance criteria are concrete. Don't start building until you can state in one sentence what "done" looks like.
 
-> **With OMC/OMX:** `/oh-my-claudecode:deep-interview` runs Socratic Q&A until ambiguity drops below 20%, producing a spec at `.omc/specs/`.
+> **With OMC/OMX:** `/oh-my-claudecode:deep-interview` runs Socratic Q&A until ambiguity drops below 20%, producing a spec at `.osc/specs/`.
 
 ### 2. Plan (when the task is non-trivial)
 
-Write a plan file in `.omc/plans/active/` using the 7-section schema in `.omc/plans/handoff-template.md`. The plan must include acceptance criteria — testable bullets that define success. For risky or multi-file work, get the plan reviewed before executing. See `.omc/plans/WORKFLOW.md` for the stage-folder lifecycle and `.omc/RULES.md` for non-negotiable principles.
+Write a plan file in `.osc/plans/active/` using the 7-section schema in `.osc/plans/handoff-template.md`. The plan must include acceptance criteria — testable bullets that define success. For risky or multi-file work, get the plan reviewed before executing. See `.osc/plans/WORKFLOW.md` for the stage-folder lifecycle and `.osc/RULES.md` for non-negotiable principles.
 
 > **With OMC/OMX:** `/oh-my-claudecode:plan` or `/ralplan` runs a Planner → Architect → Critic consensus loop.
 
@@ -41,7 +41,7 @@ Run `./verify.sh` for a methodology compliance report (mission defined, plans ex
 New information legitimately changes what you're building? That's fine — but capture it, don't silently drift.
 
 1. Do not edit plan files in place. Do not hand-edit MISSION.md's changelog for amendment bookkeeping.
-2. Run `./amend.sh <plan-slug>` from the repo root. The script finds the parent plan in whichever stage subfolder it lives in (`active/`, `backlog/`, `done/`, `blocked/`), autonumbers the next amendment file alongside it, scaffolds the 5-section schema from `.omc/plans/README.md`, and stamps MISSION.md's `## Changelog` section in one shot.
+2. Run `./amend.sh <plan-slug>` from the repo root. The script finds the parent plan in whichever stage subfolder it lives in (`active/`, `backlog/`, `done/`, `blocked/`), autonumbers the next amendment file alongside it, scaffolds the 5-section schema from `.osc/plans/README.md`, and stamps MISSION.md's `## Changelog` section in one shot.
 3. Fill in the three `TODO:` sections in the new amendment file: **Learning** (what changed and why), **New direction** (the revised goal or criteria), and **Impact on acceptance criteria** (which AC numbers change, how).
 4. Review the diff, then commit. Agents read the original plan plus all amendments in numeric order.
 
@@ -109,7 +109,7 @@ Multi-agent development spans sessions. Without discipline, context is lost betw
 2. Write down unfinished work as open questions in the plan file (Section 7).
 3. The next session starts by reading MISSION.md → latest plan → amendments in order. This is the full context handoff — no re-explanation needed.
 
-For stage-folder movement rules and lifecycle conventions, see `.omc/plans/WORKFLOW.md`. For non-negotiable principles, see `.omc/RULES.md`.
+For stage-folder movement rules and lifecycle conventions, see `.osc/plans/WORKFLOW.md`. For non-negotiable principles, see `.osc/RULES.md`.
 
 ### When to parallelize
 

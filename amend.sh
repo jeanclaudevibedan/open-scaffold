@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # open-scaffold amendment scaffolder
 # Autonumbers the next amendment for an existing plan, scaffolds the 5-section
-# schema from .omc/plans/README.md, and appends a one-line entry to MISSION.md's
+# schema from .osc/plans/README.md, and appends a one-line entry to MISSION.md's
 # ## Changelog section. Designed to work with zero agent in the loop.
 #
 # Usage: ./amend.sh <plan-slug> [--stage] [--message "<text>"] [--backlog]
@@ -10,7 +10,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-PLANS_DIR="$ROOT/.omc/plans"
+PLANS_DIR="$ROOT/.osc/plans"
 MISSION="$ROOT/MISSION.md"
 TODAY="$(date +%Y-%m-%d)"
 
@@ -107,7 +107,7 @@ for dir in "$PLANS_DIR/active" "$PLANS_DIR/backlog" "$PLANS_DIR/blocked" "$PLANS
 done
 
 if [ -z "$PARENT" ]; then
-  printf 'Error: parent plan %s.md not found in any stage folder under .omc/plans/.\n' "$SLUG" >&2
+  printf 'Error: parent plan %s.md not found in any stage folder under .osc/plans/.\n' "$SLUG" >&2
   exit 1
 fi
 
@@ -177,9 +177,9 @@ AMEND_EOF
 # ──────────────────────────────────────────
 
 if [ -n "$MESSAGE" ]; then
-  CHANGELOG_LINE="${TODAY}: ${MESSAGE} — see .omc/plans/${AMEND_RELPATH}"
+  CHANGELOG_LINE="${TODAY}: ${MESSAGE} — see .osc/plans/${AMEND_RELPATH}"
 else
-  CHANGELOG_LINE="${TODAY}: amendment ${N} to ${SLUG} — see .omc/plans/${AMEND_RELPATH}"
+  CHANGELOG_LINE="${TODAY}: amendment ${N} to ${SLUG} — see .osc/plans/${AMEND_RELPATH}"
 fi
 
 # Idempotent guard: skip if an entry already references this basename
@@ -222,7 +222,7 @@ fi
 # Report
 # ──────────────────────────────────────────
 
-printf 'Created: .omc/plans/%s\n' "$AMEND_RELPATH"
+printf 'Created: .osc/plans/%s\n' "$AMEND_RELPATH"
 if [ "$CHANGELOG_STAMPED" = true ]; then
   printf 'Stamped: MISSION.md changelog\n'
 fi

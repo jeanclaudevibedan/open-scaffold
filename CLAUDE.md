@@ -6,19 +6,19 @@ This project was created from [open-scaffold](https://github.com/jeanclaudevibed
 
 ## Layered architecture
 
-open-scaffold has two layers. The **core methodology** (folder discipline, immutable plans, amendment protocol, ADRs, session handover) is framework-agnostic — it works with any agent or no agent at all. The **OMC/OMX-enhanced layer** adds orchestration skills (planning, autonomous execution, parallel agents, verification) that read this structure and automate the workflow. If OMC or OMX is installed, consult `docs/WORKFLOW.md` for the OMC skill callouts alongside each development phase.
+open-scaffold has two layers. The **core methodology** (folder discipline, immutable plans, amendment protocol, ADRs, session handover) is framework-agnostic — it works with any agent or no agent at all. The **adapter-enhanced layer** adds orchestration skills (planning, autonomous execution, parallel agents, verification) that read this structure and automate the workflow. If OMC or OMX is installed, consult `docs/WORKFLOW.md` for the OMC skill callouts alongside each development phase.
 
 ## Where things live
 
 - **`MISSION.md`** — the project's mission, goals, and non-goals. The source of truth for *what* we're building. Contains an explicit `## Changelog` section that records every scope pivot.
-- **`.omc/plans/`** — plan files organized in stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`). The folder IS the status. Plans are **immutable** once committed. New learnings become amendment files named `<slug>-amendment-<n>.md` in the same stage folder as the parent. The handoff template in `.omc/plans/handoff-template.md` defines the exact 7-section schema every plan follows. See `.omc/plans/WORKFLOW.md` for movement rules between stage folders.
-- **`docs/decisions/`** — `README.md` is the public design-choices page (paired views, immutable plans, agent-mediated orchestration). The full ADR records that back these decisions live internally in `.omc-dev/decisions/` and do not ship with the public template.
-- **`.omc-dev/`** (gitignored; populated only when working on open-scaffold itself, not in cloned templates) — owner's internal workspace holding `plans/`, `decisions/` (full ADR records), `specs/`, and `snapshots/`. **Before proposing architectural changes to the scaffold itself, read `.omc-dev/plans/` and `.omc-dev/decisions/` first** — many design questions are already investigated there, and re-deriving a rejected decision wastes a session. Grep/Glob tools skip gitignored paths by default; include `.omc-dev/` explicitly when searching.
+- **`.osc/plans/`** — plan files organized in stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`). The folder IS the status. Plans are **immutable** once committed. New learnings become amendment files named `<slug>-amendment-<n>.md` in the same stage folder as the parent. The handoff template in `.osc/plans/handoff-template.md` defines the exact 7-section schema every plan follows. See `.osc/plans/WORKFLOW.md` for movement rules between stage folders.
+- **`docs/decisions/`** — `README.md` is the public design-choices page (paired views, immutable plans, agent-mediated orchestration). The full ADR records that back these decisions live internally in `.osc-dev/decisions/` and do not ship with the public template.
+- **`.osc-dev/`** (gitignored; populated only when working on open-scaffold itself, not in cloned templates) — owner's internal workspace holding `plans/`, `decisions/` (full ADR records), `specs/`, and `snapshots/`. **Before proposing architectural changes to the scaffold itself, read `.osc-dev/plans/` and `.osc-dev/decisions/` first** — many design questions are already investigated there, and re-deriving a rejected decision wastes a session. Grep/Glob tools skip gitignored paths by default; include `.osc-dev/` explicitly when searching.
 - **`docs/WORKFLOW.md`** — the phase-to-tool-to-command cheat-sheet. Where to reach for which agent/skill at each development phase.
-- **`bootstrap.sh`** — optional idempotent day-one setup. Creates lazy dirs (`.omc/research/`, `.omc/state/`) and stamps MISSION.md's changelog with the bootstrap date.
+- **`bootstrap.sh`** — optional idempotent day-one setup. Creates lazy dirs (`.osc/research/`, `.osc/state/`) and stamps MISSION.md's changelog with the bootstrap date.
 - **`amend.sh`** — amendment scaffolder. Run `./amend.sh <plan-slug>` to autonumber the next amendment, scaffold the 5-section schema, and stamp MISSION.md's changelog in one shot. Use `--backlog` to place in backlog instead of active. Use this instead of hand-editing amendment files or MISSION.md.
 - **`close.sh`** — plan closer. Run `./close.sh <plan-slug>` to move a completed plan and all its amendments to `done/` and stamp MISSION.md's changelog.
-- **`.omc/RULES.md`** — compact non-negotiable principles. Re-read before any major action on project structure.
+- **`.osc/RULES.md`** — compact non-negotiable principles. Re-read before any major action on project structure.
 
 ## Compliance checks
 
@@ -27,23 +27,23 @@ Before any non-trivial code change, run `./verify.sh --quick --quiet` and check 
 - **Exit 0 (all checks pass) →** Proceed silently. Do not mention verification to the user.
 - **Exit 1 (any check fails) →** Read the failure output, then hard-block on the first failing check:
   - **Mission undefined →** Stop. Say: "Your mission isn't defined yet. Let's define it now — what is this project?" Guide the user through MISSION.md fill-in (or run `./bootstrap.sh`). Do not proceed until the mission is defined or the user explicitly says to skip. Note: the plan check is gated behind the mission check — it will not appear until the mission is defined (progressive disclosure).
-  - **No plan file →** (only appears after mission is defined) Stop. Say: "There's no plan for this work. Let's create one — what are you trying to build?" Create a plan in `.omc/plans/` using the handoff template. Do not proceed until a plan exists or the user explicitly says to skip.
+  - **No plan file →** (only appears after mission is defined) Stop. Say: "There's no plan for this work. Let's create one — what are you trying to build?" Create a plan in `.osc/plans/` using the handoff template. Do not proceed until a plan exists or the user explicitly says to skip.
 
 The `--quiet` flag suppresses output when all checks pass (zero noise on success) but still prints failure details when something is wrong. The user can always override with "skip verification", "just do it", or similar. Respect their autonomy, but the default is to fix violations first.
 
-If you cannot execute shell commands, check directly: first check that `MISSION.md` does not contain `<!-- mission:unset -->`. Only if the mission is defined, then check that `.omc/plans/` and its stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`) contain at least one `.md` plan file besides `README.md` and `handoff-template.md`.
+If you cannot execute shell commands, check directly: first check that `MISSION.md` does not contain `<!-- mission:unset -->`. Only if the mission is defined, then check that `.osc/plans/` and its stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`) contain at least one `.md` plan file besides `README.md` and `handoff-template.md`.
 
 ## How to verify
 
 - Run `./verify.sh` (or `./verify.sh --strict` for full compliance) to check methodology adherence. Run OMC `/verify` for acceptance-criteria tracing.
 - MISSION.md ships with the marker `<!-- mission:unset -->` and literal `TODO: define mission`. Verification tooling should treat the presence of either as "mission not yet defined." Remove both only when the real mission is written.
-- For any feature slice, verification must trace back to the acceptance criteria in the plan file under `.omc/plans/`.
+- For any feature slice, verification must trace back to the acceptance criteria in the plan file under `.osc/plans/`.
 
 ## Scope evolution protocol
 
-Legitimate scope evolution (the "I got smarter" case — new information changes what we should build) is captured via the amendment protocol, not silent edits. The full protocol is documented in `.omc/plans/README.md` (under 200 words). Short version:
+Legitimate scope evolution (the "I got smarter" case — new information changes what we should build) is captured via the amendment protocol, not silent edits. The full protocol is documented in `.osc/plans/README.md` (under 200 words). Short version:
 
-1. Plans in `.omc/plans/` are immutable once committed.
+1. Plans in `.osc/plans/` are immutable once committed.
 2. New learnings become `<plan-slug>-amendment-<n>.md` files in the same stage folder as the parent — **scaffolded by `./amend.sh <plan-slug>`**, not hand-written.
 3. MISSION.md's `## Changelog` section gets a one-line entry per amendment — **stamped by `amend.sh`**, not hand-edited.
 4. Agents and humans read the original plan PLUS all amendments in numeric order.
@@ -62,7 +62,7 @@ When the user signals an "I got smarter" moment (new information changes a plan'
 
 ## Delegation detection
 
-When executing a plan from `.omc/plans/`, check whether it contains an `## Execution strategy` section. If present:
+When executing a plan from `.osc/plans/`, check whether it contains an `## Execution strategy` section. If present:
 
 1. **Read the parallel groups and dependencies.** Identify which tasks can run concurrently and which must wait for prerequisites.
 2. **Propose delegation to the user:**

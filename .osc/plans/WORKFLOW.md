@@ -30,7 +30,7 @@ Plans move between stage folders. The folder IS the status. File numbering (NNN-
 Before starting any substantive work in this project:
 
 1. Read `MISSION.md`.
-2. Check `.omc/plans/active/` — is there work in flight?
+2. Check `.osc/plans/active/` — is there work in flight?
 3. If yes, continue that work unless explicitly told otherwise.
 4. If no, check `backlog/` for the next priority item and move it to `active/`.
-5. Re-read `.omc/RULES.md` if you are unsure about conventions.
+5. Re-read `.osc/RULES.md` if you are unsure about conventions.
