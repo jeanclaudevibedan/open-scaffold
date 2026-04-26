@@ -32,7 +32,7 @@ fi
 
 if ! grep -qi '^## Execution strategy' "$PLAN_FILE"; then
   printf 'No Execution Strategy section found in %s.\n' "$PLAN_FILE"
-  printf 'This section is optional — see .omc/plans/handoff-template.md for the schema.\n'
+  printf 'This section is optional — see .osc/plans/handoff-template.md for the schema.\n'
   exit 0
 fi
 

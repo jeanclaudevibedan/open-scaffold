@@ -1,6 +1,6 @@
 # Plans — Amendment Protocol
 
-Plans in this directory and its stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`) are **immutable** once committed. When new information changes a plan's goal, constraints, or acceptance criteria, do NOT edit the plan file in place. Instead, run `./amend.sh <plan-slug>` from the repo root — it handles the mechanical parts so you can focus on the content. To close a completed plan, run `./close.sh <plan-slug>` — it moves the plan and its amendments to `done/` and stamps MISSION.md's changelog. See `.omc/plans/WORKFLOW.md` for the full stage-folder workflow.
+Plans in this directory and its stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`) are **immutable** once committed. When new information changes a plan's goal, constraints, or acceptance criteria, do NOT edit the plan file in place. Instead, run `./amend.sh <plan-slug>` from the repo root — it handles the mechanical parts so you can focus on the content. To close a completed plan, run `./close.sh <plan-slug>` — it moves the plan and its amendments to `done/` and stamps MISSION.md's changelog. See `.osc/plans/WORKFLOW.md` for the full stage-folder workflow.
 
 ## The helper (recommended path)
 
@@ -37,8 +37,8 @@ Amendments are for legitimate scope evolution, not silent drift. They exist so t
 
 ## Plan status
 
-Plan status is determined by which stage subfolder the plan lives in — **the folder IS the status**. There is no `## Status` header inside plan files. The four stages are `active/`, `backlog/`, `done/`, and `blocked/`. Use `./close.sh <plan-slug>` to move a plan to `done/` when all acceptance criteria are met. See `.omc/plans/WORKFLOW.md` for movement rules between stages.
+Plan status is determined by which stage subfolder the plan lives in — **the folder IS the status**. There is no `## Status` header inside plan files. The four stages are `active/`, `backlog/`, `done/`, and `blocked/`. Use `./close.sh <plan-slug>` to move a plan to `done/` when all acceptance criteria are met. See `.osc/plans/WORKFLOW.md` for movement rules between stages.
 
 ## The specs/ directory
 
-The `.omc/specs/` directory holds specification artifacts produced during the Clarify phase (e.g., deep-interview outputs, research notes, domain models). Specs are reference material for plan authors — they inform plans but are not plans themselves. Keep specs lightweight; if a spec grows into actionable work, promote it to a plan file.
+The `.osc/specs/` directory holds specification artifacts produced during the Clarify phase (e.g., deep-interview outputs, research notes, domain models). Specs are reference material for plan authors — they inform plans but are not plans themselves. Keep specs lightweight; if a spec grows into actionable work, promote it to a plan file.

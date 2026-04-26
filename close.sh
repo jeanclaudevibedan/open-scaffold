@@ -8,7 +8,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-PLANS_DIR="$ROOT/.omc/plans"
+PLANS_DIR="$ROOT/.osc/plans"
 DONE_DIR="$PLANS_DIR/done"
 MISSION="$ROOT/MISSION.md"
 TODAY="$(date +%Y-%m-%d)"

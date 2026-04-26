@@ -11,9 +11,16 @@ Desktop.ini
 *.swo
 *~
 
-# OMC ephemeral state (regenerated per session)
-.omc/state/
-.omc/research/
+# Open Scaffold generated/ephemeral state
+.osc/state/
+.osc/research/
+.osc/runs/
+.osc/reviews/.tmp/
+
+# Node/TypeScript CLI artifacts
+node_modules/
+dist/
+coverage/
 
 # Owner development artifacts (not shipped with template)
-.omc-dev/
+.osc-dev/

@@ -32,11 +32,12 @@ This isn't a tooling problem. It's human nature, amplified by multi-agent workfl
 | | | |
 |---|---|---|
 | 🎯 **Mission-first** | `MISSION.md` defines goals and non-goals before a single line is written. Ships unset on purpose — you fill it in on day one. | [→](MISSION.md) |
-| 🔒 **Immutable plans** | Plans in `.omc/plans/` (organized in stage subfolders: `active/`, `backlog/`, `done/`, `blocked/`) follow a 7-section schema and become read-only once committed. No silent scope creep. | [→](.omc/plans/handoff-template.md) |
-| 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Run `./amend.sh <plan-slug>` to autonumber, scaffold, and stamp the changelog in one shot. | [→](.omc/plans/README.md) |
+| 🔒 **Immutable plans** | Plans in `.osc/plans/` (organized in stage subfolders: `active/`, `backlog/`, `done/`, `blocked/`) follow a 7-section schema and become read-only once committed. No silent scope creep. | [→](.osc/plans/handoff-template.md) |
+| 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Run `./amend.sh <plan-slug>` to autonumber, scaffold, and stamp the changelog in one shot. | [→](.osc/plans/README.md) |
 | 🧭 **Design choices** | A short page in `docs/decisions/` explains why the scaffold is the way it is — paired views, immutable plans, agent-mediated orchestration. | [→](docs/decisions/README.md) |
-| ✅ **`verify.sh`** | A compliance checker in three tiers (`--quick`, `--standard`, `--strict`). Agents run it automatically before touching code. | [→](verify.sh) |
-| 🔀 **Delegation detection** | Plans can declare parallel groups. Agents propose `/team` or `/ultrawork`; non-agent users run `./delegate.sh` to generate terminal prompts. | [→](delegate.sh) |
+| ✅ **`verify.sh` / `osc verify`** | Compliance checks in shell or CLI form. Agents run the quick check before touching code. | [→](verify.sh) |
+| 🧰 **`osc` CLI** | Runtime-neutral command-line helper. Parses plans, reports status, and writes prompt/artifact bundles under `.osc/runs/` without spawning agents. | [→](package.json) |
+| 🔌 **Adapters** | OMC and OMX live in separate adapter repos. Generic open-scaffold uses `.osc`; OMC uses `.omc`; OMX uses `.omx`. | [→](docs/ADAPTERS.md) |
 
 ---
 
@@ -103,7 +104,7 @@ That's the mission. Everything downstream traces back to it.
 
 If your goal is clear, tell your agent:
 
-> *"Write a plan in `.omc/plans/active/` for \<your task\> using the handoff template."*
+> *"Write a plan in `.osc/plans/active/` for \<your task\> using the handoff template."*
 
 If your goal is fuzzy, let the agent interview you into clarity first:
 
@@ -112,13 +113,13 @@ If your goal is fuzzy, let the agent interview you into clarity first:
 /deep-interview
 ```
 
-Without OMC, ask any agent: *"Interview me until you understand exactly what to build, then write a plan in `.omc/plans/active/` using `.omc/plans/handoff-template.md`."*
+Without OMC, ask any agent: *"Interview me until you understand exactly what to build, then write a plan in `.osc/plans/active/` using `.osc/plans/handoff-template.md`."*
 
 **Fully manual fallback:**
 
 ```bash
-cp .omc/plans/handoff-template.md .omc/plans/active/my-first-task.md
-$EDITOR .omc/plans/my-first-task.md
+cp .osc/plans/handoff-template.md .osc/plans/active/my-first-task.md
+$EDITOR .osc/plans/my-first-task.md
 ```
 
 Either way you end up with a plan file: Context, Goal, Constraints, Files to touch, Acceptance criteria, Verification steps, Open questions.
@@ -140,11 +141,11 @@ Exit code 0 means your mission is defined, a plan exists, amendments are sequent
 | | **Scaffold** (what open-scaffold is) | **Runtime** (what OMC/OMX are) |
 |---|---|---|
 | **Defines** | How your project stays organized | How tasks get executed |
-| **Lives in** | `MISSION.md`, `.omc/plans/` (with `active/`, `backlog/`, `done/`, `blocked/` subfolders), `docs/decisions/` | Your agent's skills and commands |
+| **Lives in** | `MISSION.md`, `.osc/plans/` (with `active/`, `backlog/`, `done/`, `blocked/` subfolders), `docs/decisions/` | Your agent's skills and commands |
 | **Persists** | Across every session, agent, and tool | Per session, per invocation |
 | **Required?** | Yes — this is the floor | No — scaffold works solo, runtimes amplify it |
 
-open-scaffold is the chassis. Your runtime is the engine. You need both, but they live in different layers.
+open-scaffold is the chassis. `osc` is the mechanic that prepares prompt/artifact bundles. Your runtime is the engine. Generic open-scaffold uses `.osc/`; adapter repos translate the same contract into runtime-native spaces such as `.omc/` for OMC and `.omx/` for OMX.
 
 ---
 
@@ -192,14 +193,14 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 <details>
 <summary><b>What's the difference between this and any other framework out there?</b></summary>
 
-> Most "AI dev frameworks" are orchestration runtimes — they're engines. This is the chassis. It treats the problem as **persistence of intent across sessions**, not automation of a single session. The [amendment protocol](.omc/plans/README.md), the immutability rule, the [paired CLAUDE.md/AGENTS.md views](docs/decisions/README.md) — boring methodology pieces nobody else ships because they're not glamorous. They're also the ones that actually matter six weeks in.
+> Most "AI dev frameworks" are orchestration runtimes — they're engines. This is the chassis. It treats the problem as **persistence of intent across sessions**, not automation of a single session. The [amendment protocol](.osc/plans/README.md), the immutability rule, the [paired CLAUDE.md/AGENTS.md views](docs/decisions/README.md) — boring methodology pieces nobody else ships because they're not glamorous. They're also the ones that actually matter six weeks in.
 
 </details>
 
 <details>
 <summary><b>Why can't I just edit the plan when something changes?</b></summary>
 
-> Because edits silently rewrite history. The amendment protocol is the trade: run `./amend.sh <plan-slug>` — it drops a fresh `<plan>-amendment-<n>.md` next to the plan, scaffolds the 5-section schema, and stamps MISSION.md's changelog. The original plan stays frozen. Slower in the moment, honest forever after. ([How amendments work](.omc/plans/README.md))
+> Because edits silently rewrite history. The amendment protocol is the trade: run `./amend.sh <plan-slug>` — it drops a fresh `<plan>-amendment-<n>.md` next to the plan, scaffolds the 5-section schema, and stamps MISSION.md's changelog. The original plan stays frozen. Slower in the moment, honest forever after. ([How amendments work](.osc/plans/README.md))
 
 </details>
 
@@ -243,8 +244,8 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 | [`MISSION.md`](MISSION.md) | Source of truth for what the project is. Ships with an `<!-- mission:unset -->` marker. |
 | [`CLAUDE.md`](CLAUDE.md) | Claude Code's entry point. Agents read this first. |
 | [`AGENTS.md`](AGENTS.md) | Entry point for Codex, Gemini, and other agents (paired view of `CLAUDE.md`). |
-| [`.omc/plans/handoff-template.md`](.omc/plans/handoff-template.md) | The 7-section schema every plan file follows. |
-| [`.omc/plans/README.md`](.omc/plans/README.md) | Amendment protocol in under 200 words. |
+| [`.osc/plans/handoff-template.md`](.osc/plans/handoff-template.md) | The 7-section schema every plan file follows. |
+| [`.osc/plans/README.md`](.osc/plans/README.md) | Amendment protocol in under 200 words. |
 | [`docs/decisions/`](docs/decisions/) | ADR index, template, and two ships-as-examples. |
 | [`docs/WORKFLOW.md`](docs/WORKFLOW.md) | Phase-to-tool cheat sheet. Clarify → Plan → Execute → Verify → Amend. |
 | [`bootstrap.sh`](bootstrap.sh) | Day-one interactive setup. Idempotent. |
@@ -252,8 +253,8 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 | [`delegate.sh`](delegate.sh) | Parallel-group prompt generator for non-agent users. |
 | [`amend.sh`](amend.sh) | Amendment scaffolder. Autonumbers the next amendment, scaffolds the 5-section schema, and stamps MISSION.md's changelog. |
 | [`close.sh`](close.sh) | Plan closer. Moves a completed plan and its amendments to `done/` and stamps MISSION.md's changelog. |
-| [`.omc/RULES.md`](.omc/RULES.md) | Compact non-negotiable principles. Re-read before any major action on project structure. |
-| [`.omc/plans/WORKFLOW.md`](.omc/plans/WORKFLOW.md) | Stage-based plan workflow rules. Defines how plans move between `active/`, `backlog/`, `done/`, and `blocked/`. |
+| [`.osc/RULES.md`](.osc/RULES.md) | Compact non-negotiable principles. Re-read before any major action on project structure. |
+| [`.osc/plans/WORKFLOW.md`](.osc/plans/WORKFLOW.md) | Stage-based plan workflow rules. Defines how plans move between `active/`, `backlog/`, `done/`, and `blocked/`. |
 
 </details>
 
@@ -264,7 +265,7 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 
 **ADR (Architecture Decision Record)** — A short note explaining *why* a decision was made, not just *what*. Lives in `docs/decisions/`. Future-you (and future-agents) will thank present-you.
 
-**Amendment Protocol** — The rule that plan files are immutable once committed. New learnings become `<slug>-amendment-<n>.md` files (in the same stage folder as the parent plan — `active/`, `backlog/`, `done/`, or `blocked/`) instead of silent edits. Scaffolded by `./amend.sh <plan-slug>`. Full rules in [`.omc/plans/README.md`](.omc/plans/README.md).
+**Amendment Protocol** — The rule that plan files are immutable once committed. New learnings become `<slug>-amendment-<n>.md` files (in the same stage folder as the parent plan — `active/`, `backlog/`, `done/`, or `blocked/`) instead of silent edits. Scaffolded by `./amend.sh <plan-slug>`. Full rules in [`.osc/plans/README.md`](.osc/plans/README.md).
 
 **Amend** — `./amend.sh <plan-slug>`. Autonumbers the next amendment file, scaffolds the 5-section schema, and stamps MISSION.md's changelog. Use `--backlog` to place the amendment in `backlog/` instead of `active/`. Use this instead of hand-writing amendment files.
 
@@ -291,8 +292,8 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 
 open-scaffold has two layers:
 
-- **Core methodology** — folder discipline, immutable plans, amendment protocol, ADRs, session handover. Framework-agnostic. Works with any agent or no agent at all.
-- **OMC/OMX-enhanced layer** — orchestration skills that read the scaffold and automate the workflow. Planning, autonomous execution, parallel agents, verification.
+- **Core methodology** — folder discipline, immutable plans, amendment protocol, ADRs, session handover, and the `osc` prompt/artifact CLI. Framework-agnostic. Works with any agent or no agent at all.
+- **Adapter-enhanced layer** — separate OMC/OMX adapter repos that read the `.osc` contract and automate runtime-specific workflows. OMC maps to `.omc`; OMX maps to `.omx`.
 
 The scaffold is the load-bearing part. The runtimes amplify it. You can strip the runtimes away and the methodology still holds.
 
