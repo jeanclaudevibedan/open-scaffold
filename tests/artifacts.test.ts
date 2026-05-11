@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mkdtempSync, mkdirSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRunArtifacts } from '../src/artifacts.js';
@@ -30,6 +30,15 @@ const plan = {
   },
 };
 
+const ambiguousPlan = {
+  ...plan,
+  slug: '002-ambiguous',
+  goal: '',
+  acceptanceCriteria: [],
+  verificationSteps: [],
+  openQuestions: ['BLOCKING: Which runtime should execute this?'],
+};
+
 describe('run artifact generation', () => {
   it('creates a run directory with manifest and prompt files without spawning agents', () => {
     const root = tempRepo();
@@ -41,4 +50,70 @@ describe('run artifact generation', () => {
     expect(existsSync(join(run.runDir, 'prompts/group-a.md'))).toBe(true);
     expect(readdirSync(join(run.runDir, 'prompts'))).toEqual(['group-a.md']);
   });
+
+  it('records canonical task/run bindings for a harness dispatch package', () => {
+    const root = tempRepo();
+
+    const run = createRunArtifacts(root, plan as any, 'run', {
+      taskId: 'TASK-2026-0511-demo',
+      sourceRef: ['kanban:card-123', 'github:issue/42'],
+      executor: 'omx-codex',
+      harnessSkill: '$ralplan',
+      repo: '/tmp/demo-repo',
+      worktree: '/tmp/demo-worktree',
+      branch: 'feat/demo',
+      operatorSurface: 'discord',
+      operatorThread: 'thread-456',
+      issue: '42',
+      commitPolicy: 'no commit without approval',
+    });
+
+    const manifest = JSON.parse(readFileSync(run.manifestPath, 'utf8'));
+    expect(manifest.schemaVersion).toBe('open-scaffold.run.v1');
+    expect(manifest.taskId).toBe('TASK-2026-0511-demo');
+    expect(manifest.status).toBe('created');
+    expect(manifest.executor).toMatchObject({ lane: 'omx-codex', harnessSkill: '$ralplan', spawning: false });
+    expect(manifest.bindings).toMatchObject({ operatorSurface: 'discord', operatorThreadId: 'thread-456', githubIssue: '42' });
+    expect(manifest.runtime).toMatchObject({ repoPath: '/tmp/demo-repo', worktreePath: '/tmp/demo-worktree', branch: 'feat/demo' });
+    expect(manifest.sourceRefs).toContain('kanban:card-123');
+    expect(manifest.sourceRefs).toContain('github:issue/42');
+    expect(manifest.sourceRefs).toContain('task:TASK-2026-0511-demo');
+    expect(manifest.lifecycleStates).toContain('waiting_on_operator');
+    expect(manifest.packageQuality.executable).toBe(true);
+
+    const prompt = readFileSync(run.promptPaths[0], 'utf8');
+    expect(prompt).toContain(`Run ID: ${run.runId}`);
+    expect(prompt).toContain('Task ID: TASK-2026-0511-demo');
+    expect(prompt).toContain('## Execution lane');
+    expect(prompt).toContain('- Executor: omx-codex');
+  });
+
+  it('marks packages with missing executable context as requiring clarification before dispatch', () => {
+    const root = tempRepo();
+
+    const run = createRunArtifacts(root, ambiguousPlan as any, 'run', { executor: 'omc-claude', harnessSkill: '/deep-interview' });
+    const manifest = JSON.parse(readFileSync(run.manifestPath, 'utf8'));
+
+    expect(manifest.packageQuality.executable).toBe(false);
+    expect(manifest.packageQuality.requiredAction).toBe('clarify-or-deep-interview-before-dispatch');
+    expect(manifest.packageQuality.blockers).toContain('missing goal');
+    expect(manifest.packageQuality.blockers).toContain('missing acceptance criteria');
+    expect(manifest.packageQuality.blockers).toContain('missing verification steps');
+    expect(manifest.packageQuality.blockers).toContain('blocking open questions present');
+  });
+
+  it('allows non-blocking open questions while only blocking explicit BLOCKING questions', () => {
+    const root = tempRepo();
+    const planWithFutureQuestion = {
+      ...plan,
+      openQuestions: ['Future: should this become a GitHub Action later?'],
+    };
+
+    const run = createRunArtifacts(root, planWithFutureQuestion as any, 'run');
+    const manifest = JSON.parse(readFileSync(run.manifestPath, 'utf8'));
+
+    expect(manifest.packageQuality.executable).toBe(true);
+    expect(manifest.packageQuality.blockers).toEqual([]);
+  });
+
 });

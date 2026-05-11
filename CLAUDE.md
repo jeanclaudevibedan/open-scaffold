@@ -6,13 +6,15 @@ This project is [open-scaffold](https://github.com/jeanclaudevibedan/open-scaffo
 
 ## Layered architecture
 
-open-scaffold has multiple layers. The **core system** is framework-agnostic repo discipline: mission, roadmap, plans, amendments, evidence, run packets, operator reports, and handover. **Orchestrators/agents** such as Hermes, Claw/OpenClaw, Claude Code, Codex, and Gemini can operate against that substrate. **Runtime harnesses** such as OMC and OMX extend Claude Code/Codex with workflow modes; they are not equivalent to orchestrators like Hermes or Claw. Consult `docs/OPEN_SCAFFOLD_SYSTEM.md` for the ontology and `docs/WORKFLOW.md` for phase guidance.
+open-scaffold has multiple layers. The **core system** is framework-agnostic repo discipline: mission, roadmap, plans, amendments, evidence, run packets, operator reports, and handover. **Orchestrators/agents** such as Hermes, Claw/OpenClaw, Claude Code, Codex, and Gemini can operate against that substrate. **Runtime harnesses** such as OMC and OMX extend Claude Code/Codex with workflow modes; they are not equivalent to orchestrators like Hermes or Claw. Consult `docs/OPEN_SCAFFOLD_SYSTEM.md` for the ontology, `docs/TASK_RUN_MODEL.md` for task/run/operator-surface identity, `docs/GITHUB_WORKFLOW.md` for issue/PR/Codex-review traceability, and `docs/WORKFLOW.md` for phase guidance.
 
 ## Where things live
 
 - **`MISSION.md`** — the project's mission, goals, and non-goals. The source of truth for *what* we're building. Contains an explicit `## Changelog` section that records every scope pivot.
 - **`ROADMAP.md`** — product/system milestones and the self-dogfood chain from roadmap item to issue/task, plan, run packet, PR, and release note.
 - **`docs/OPEN_SCAFFOLD_SYSTEM.md`** — boundary map for Open Scaffold core, orchestrators/agents, OMC/OMX runtime harnesses, task bridges, glass-cockpit surfaces, and GitHub.
+- **`docs/TASK_RUN_MODEL.md`** — task/run/operator-surface identity model: `task_id`, `run_id`, `question_id`, runtime bindings, and chat/thread bindings.
+- **`docs/GITHUB_WORKFLOW.md`** — GitHub issue, PR template, Codex connector review, CI, and merge/release traceability.
 - **`.osc/plans/`** — plan files organized in stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`). The folder IS the status. Plans are **immutable** once committed. New learnings become amendment files named `<slug>-amendment-<n>.md` in the same stage folder as the parent. The handoff template in `.osc/plans/handoff-template.md` defines the exact 7-section schema every plan follows. See `.osc/plans/WORKFLOW.md` for movement rules between stage folders.
 - **`docs/decisions/`** — `README.md` is the public design-choices page (paired views, immutable plans, adapter-mediated orchestration). The full ADR records that back these decisions live internally in `.osc-dev/decisions/` and do not ship with the public template.
 - **`.osc-dev/`** (gitignored; populated only when working on open-scaffold itself, not in cloned templates) — owner's internal workspace holding `plans/`, `decisions/` (full ADR records), `specs/`, and `snapshots/`. **Before proposing architectural changes to the scaffold itself, read `.osc-dev/plans/` and `.osc-dev/decisions/` first** — many design questions are already investigated there, and re-deriving a rejected decision wastes a session. Grep/Glob tools skip gitignored paths by default; include `.osc-dev/` explicitly when searching.
@@ -72,6 +74,7 @@ When executing a plan from `.osc/plans/`, check whether it contains an `## Execu
    - **With OMX harness:** Suggest Codex/OMX workflows such as `$team`, `$ralph`, `$ultrawork`, or `$ralplan`, promoting runtime evidence back into the scaffold chain.
    - **Without a runtime harness:** Describe the parallelism opportunity in plain text (e.g., "Tasks T1 and T5 are independent and could be run in separate sessions"). The user decides how to act on it.
 3. **Warn on risky parallelization.** If tasks marked as parallel in the Execution Strategy share files listed in the plan's "Files to touch" section, or if a task's dependency is in the same parallel group, flag the conflict before proceeding.
+4. **Bind harness execution to a run package.** When execution needs OMC/OMX or another harness, create or request a bound run package (`osc run <plan> --task-id ... --executor ...`) rather than treating the chat thread or runtime session as canonical state. For code/public-doc changes, carry the same trace into the GitHub PR template and trigger Codex review when available.
 
 If the plan has no Execution Strategy section, proceed normally — the section is optional and only present for multi-agent or parallel work.
 

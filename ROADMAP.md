@@ -29,6 +29,7 @@ A mature Open Scaffold work item should be traceable through a chain like:
 ROADMAP item
   -> GitHub issue or private task
   -> scaffold plan / amendment
+  -> task_id / run_id binding
   -> run packet / evidence
   -> branch / PR
   -> verification gate
@@ -98,6 +99,7 @@ Goal: make build-in-public / private control-room operation a first-class Open S
 Deliverables:
 
 - Define glass-cockpit event types: nudge, active session, blocker, question, answer, approval request, completion report, evidence receipt, PR link.
+- Define event/session transport separately from the cockpit: clawhip-style routers, webhooks, gateway adapters, and session hooks carry events but do not plan or execute.
 - Define public/team/private modes.
 - Provide Discord-first examples while keeping the protocol surface generic enough for Slack/Telegram/CLI/GitHub comments.
 - Specify that chat is a surface, not canonical truth.
@@ -107,6 +109,7 @@ Acceptance criteria:
 - A team can run a Discord build-in-public channel from Open Scaffold state.
 - A solo dev can run a private cockpit with the same event types.
 - Status posts link back to canonical repo/task/issue/evidence IDs.
+- Event routers are documented as transport glue, not as source-of-truth databases or executor agents.
 
 ## Milestone 4 — ROADMAP / GitHub / task bridge
 
@@ -117,13 +120,18 @@ Deliverables:
 - Define when a roadmap item becomes a GitHub issue.
 - Define when an issue becomes a live task in an orchestrator/task system.
 - Define task metadata needed for harness execution: repo, run mode, allowed paths, acceptance criteria, evidence path, approval gates.
+- Define the task/run identity split: `task_id` for durable work item, `run_id` for one execution attempt, `question_id` for blocking operator prompts, and chat/thread ids as optional bindings.
+- Define the coordinator-to-executor pattern: task/card/package chooses OMC, OMX, plain agent, or manual lane; execution returns artifact/status/blocker; coordinator updates state.
 - Add templates for issue bodies and task handoff packets.
+- Ship `osc` run binding options that create v1 `.osc/runs/<run_id>/run.json` records without spawning runtimes.
 
 Acceptance criteria:
 
 - One roadmap item can be converted into GitHub issues and live tasks with stable IDs.
 - The repo can answer “what is the source of truth for this work?” at each stage.
 - No Discord thread or runtime transcript is required to reconstruct task state.
+- A generated run record can bind a task/card/issue to an executor lane, operator surface, worktree/branch, and evidence paths.
+- GitHub issue and PR templates capture task/run traceability and review gates.
 
 ## Milestone 5 — Runtime harness bindings
 
@@ -139,7 +147,8 @@ Deliverables:
 Acceptance criteria:
 
 - Open Scaffold core remains runtime-neutral.
-- Runtime-specific docs describe OMC/OMX as harnesses, not universal orchestrators.
+- Runtime-specific docs describe OMC/OMX as execution/orchestration lanes, not universal orchestrators.
+- OMX is documented as an explicitly selected Codex lane, not the automatic runtime engine for Hermes or OMC.
 - A plan can be handed to a harness and return evidence without mutating canonical repo truth incorrectly.
 
 ## Milestone 6 — Self-dogfood release loop
@@ -151,13 +160,14 @@ Deliverables:
 - Convert this roadmap into issues.
 - Use plans/amendments for meaningful work.
 - Record run packets/evidence for agent-assisted changes.
-- Open PRs that link roadmap item, issue, plan, and evidence.
+- Open PRs that link roadmap item, issue, task_id, run_id, plan, verification, Codex review, and evidence.
 - Publish release notes that cite the loop.
 
 Acceptance criteria:
 
 - At least one public PR demonstrates the full chain.
 - The PR can be understood without private Daniel Command Center context.
+- Codex connector review is triggered or explicitly skipped with rationale.
 - The release notes explain what was learned from dogfooding.
 
 ## Parking lot
