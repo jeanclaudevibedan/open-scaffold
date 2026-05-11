@@ -2,15 +2,17 @@
 
 # Agent Instructions
 
-This project was created from [open-scaffold](https://github.com/jeanclaudevibedan/open-scaffold), a methodology template for disciplined AI development. It ships with a persistent project structure — mission definitions, immutable plans, amendment protocols, decision records, and session handover practices — so that any agent (Codex CLI, Antigravity Gemini, Claude Code, or similar) can operate in the repository from commit #1 without re-explanation.
+This project is [open-scaffold](https://github.com/jeanclaudevibedan/open-scaffold), a runtime-neutral repo-native operating system for agent-orchestrated development. It ships with a persistent project structure — mission, roadmap, immutable plans, amendment protocols, decisions, evidence, run packets, and session handover practices — so that any agent or orchestrator (Hermes, Claw/OpenClaw, Claude Code, Codex, Gemini, or similar) can operate in the repository from commit #1 without re-explanation.
 
 ## Layered architecture
 
-open-scaffold has two layers. The **core methodology** (folder discipline, immutable plans, amendment protocol, ADRs, session handover) is framework-agnostic — it works with any agent or no agent at all. The **adapter-enhanced layer** lives in public runtime repos: [`open-scaffold-omc`](https://github.com/jeanclaudevibedan/open-scaffold-omc) for `.omc`/`osc-omc` and [`open-scaffold-omx`](https://github.com/jeanclaudevibedan/open-scaffold-omx) for `.omx`/`osc-omx`. Consult `docs/WORKFLOW.md` for OMC/OMX callouts alongside each development phase.
+open-scaffold has multiple layers. The **core system** is framework-agnostic repo discipline: mission, roadmap, plans, amendments, evidence, run packets, operator reports, and handover. **Orchestrators/agents** such as Hermes, Claw/OpenClaw, Claude Code, Codex, and Gemini can operate against that substrate. **Runtime harnesses** such as OMC and OMX extend Claude Code/Codex with workflow modes; they are not equivalent to orchestrators like Hermes or Claw. Consult `docs/OPEN_SCAFFOLD_SYSTEM.md` for the ontology and `docs/WORKFLOW.md` for phase guidance.
 
 ## Project facts
 
 - **Mission source of truth:** `MISSION.md` — goals, non-goals, and changelog of scope pivots.
+- **Roadmap source of direction:** `ROADMAP.md` — product/system milestones and the self-dogfood chain from roadmap item to issue/task, plan, run packet, PR, and release note.
+- **System ontology:** `docs/OPEN_SCAFFOLD_SYSTEM.md` — boundary map for Open Scaffold core, orchestrators/agents, OMC/OMX runtime harnesses, task bridges, glass-cockpit surfaces, and GitHub.
 - **Plans directory:** `.osc/plans/` — immutable plan files organized in stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`), one per task/feature slice, conforming to the 7-section schema in `.osc/plans/handoff-template.md`. The folder IS the status — see `.osc/plans/WORKFLOW.md` for movement rules.
 - **Amendments:** new learnings become `<plan-slug>-amendment-<n>.md` in the same stage folder as the parent plan, scaffolded by `./amend.sh <plan-slug>`. Plans are never edited in place; amendment files and MISSION.md's changelog are never hand-written.
 - **Amend helper:** `amend.sh` — run `./amend.sh <plan-slug>` to autonumber the next amendment, scaffold the 5-section schema, and stamp MISSION.md's changelog in one shot. Use `--backlog` to place in backlog instead of active.

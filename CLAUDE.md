@@ -2,15 +2,17 @@
 
 # Project Context
 
-This project was created from [open-scaffold](https://github.com/jeanclaudevibedan/open-scaffold), a methodology template for disciplined AI development. It ships with a persistent project structure — mission definitions, immutable plans, amendment protocols, decision records, and session handover practices — so that any agent can operate in this repository from commit #1 without re-explanation. Read this file first, then consult `MISSION.md` for what the project actually is.
+This project is [open-scaffold](https://github.com/jeanclaudevibedan/open-scaffold), a runtime-neutral repo-native operating system for agent-orchestrated development. It ships with a persistent project structure — mission, roadmap, immutable plans, amendment protocols, decisions, evidence, run packets, and session handover practices — so that any agent or orchestrator can operate in this repository from commit #1 without re-explanation. Read this file first, then consult `MISSION.md` for what the project actually is.
 
 ## Layered architecture
 
-open-scaffold has two layers. The **core methodology** (folder discipline, immutable plans, amendment protocol, ADRs, session handover) is framework-agnostic — it works with any agent or no agent at all. The **adapter-enhanced layer** lives in public runtime repos: [`open-scaffold-omc`](https://github.com/jeanclaudevibedan/open-scaffold-omc) for `.omc`/`osc-omc` and [`open-scaffold-omx`](https://github.com/jeanclaudevibedan/open-scaffold-omx) for `.omx`/`osc-omx`. Consult `docs/WORKFLOW.md` for OMC/OMX callouts alongside each development phase.
+open-scaffold has multiple layers. The **core system** is framework-agnostic repo discipline: mission, roadmap, plans, amendments, evidence, run packets, operator reports, and handover. **Orchestrators/agents** such as Hermes, Claw/OpenClaw, Claude Code, Codex, and Gemini can operate against that substrate. **Runtime harnesses** such as OMC and OMX extend Claude Code/Codex with workflow modes; they are not equivalent to orchestrators like Hermes or Claw. Consult `docs/OPEN_SCAFFOLD_SYSTEM.md` for the ontology and `docs/WORKFLOW.md` for phase guidance.
 
 ## Where things live
 
 - **`MISSION.md`** — the project's mission, goals, and non-goals. The source of truth for *what* we're building. Contains an explicit `## Changelog` section that records every scope pivot.
+- **`ROADMAP.md`** — product/system milestones and the self-dogfood chain from roadmap item to issue/task, plan, run packet, PR, and release note.
+- **`docs/OPEN_SCAFFOLD_SYSTEM.md`** — boundary map for Open Scaffold core, orchestrators/agents, OMC/OMX runtime harnesses, task bridges, glass-cockpit surfaces, and GitHub.
 - **`.osc/plans/`** — plan files organized in stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`). The folder IS the status. Plans are **immutable** once committed. New learnings become amendment files named `<slug>-amendment-<n>.md` in the same stage folder as the parent. The handoff template in `.osc/plans/handoff-template.md` defines the exact 7-section schema every plan follows. See `.osc/plans/WORKFLOW.md` for movement rules between stage folders.
 - **`docs/decisions/`** — `README.md` is the public design-choices page (paired views, immutable plans, adapter-mediated orchestration). The full ADR records that back these decisions live internally in `.osc-dev/decisions/` and do not ship with the public template.
 - **`.osc-dev/`** (gitignored; populated only when working on open-scaffold itself, not in cloned templates) — owner's internal workspace holding `plans/`, `decisions/` (full ADR records), `specs/`, and `snapshots/`. **Before proposing architectural changes to the scaffold itself, read `.osc-dev/plans/` and `.osc-dev/decisions/` first** — many design questions are already investigated there, and re-deriving a rejected decision wastes a session. Grep/Glob tools skip gitignored paths by default; include `.osc-dev/` explicitly when searching.
@@ -35,7 +37,7 @@ If you cannot execute shell commands, check directly: first check that `MISSION.
 
 ## How to verify
 
-- Run `./verify.sh` (or `./verify.sh --strict` for full compliance) to check methodology adherence. OMC/OMX adapter handoffs may wrap verification, but acceptance-criteria evidence and `./verify.sh` remain the source of truth.
+- Run `./verify.sh` (or `./verify.sh --strict` for full compliance) to check methodology adherence. Runtime harness handoffs may wrap verification, but acceptance-criteria evidence and `./verify.sh` remain the source of truth.
 - MISSION.md ships with the marker `<!-- mission:unset -->` and literal `TODO: define mission`. Verification tooling should treat the presence of either as "mission not yet defined." Remove both only when the real mission is written.
 - For any feature slice, verification must trace back to the acceptance criteria in the plan file under `.osc/plans/`.
 
@@ -66,9 +68,9 @@ When executing a plan from `.osc/plans/`, check whether it contains an `## Execu
 
 1. **Read the parallel groups and dependencies.** Identify which tasks can run concurrently and which must wait for prerequisites.
 2. **Propose delegation to the user:**
-   - **With OMC adapter:** Suggest `/team` for coordinated parallel agents across groups, `/ultrawork` for fan-out within a group, or `/ralph` for persistent completion. Name the groups and tasks explicitly.
-   - **With OMX adapter:** Suggest `$team` for Codex worker teams or `$ralph` for persistent completion, keeping runtime-only data under `.omx/state/`.
-   - **Without an adapter runtime:** Describe the parallelism opportunity in plain text (e.g., "Tasks T1 and T5 are independent and could be run in separate sessions"). The user decides how to act on it.
+   - **With OMC harness:** Suggest Claude Code/OMC workflows such as `/team`, `/ultrawork`, or `/ralph` for suitable groups. Name the groups and tasks explicitly.
+   - **With OMX harness:** Suggest Codex/OMX workflows such as `$team`, `$ralph`, `$ultrawork`, or `$ralplan`, promoting runtime evidence back into the scaffold chain.
+   - **Without a runtime harness:** Describe the parallelism opportunity in plain text (e.g., "Tasks T1 and T5 are independent and could be run in separate sessions"). The user decides how to act on it.
 3. **Warn on risky parallelization.** If tasks marked as parallel in the Execution Strategy share files listed in the plan's "Files to touch" section, or if a task's dependency is in the same parallel group, flag the conflict before proceeding.
 
 If the plan has no Execution Strategy section, proceed normally — the section is optional and only present for multi-agent or parallel work.

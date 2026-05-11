@@ -2,7 +2,7 @@
 
 # 🧱 open-scaffold
 
-**A methodology template for disciplined AI development.**
+**A repo-native operating system for agent-orchestrated development.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](LICENSE)
 [![Template](https://img.shields.io/badge/GitHub-Template-blue.svg)](https://github.com/jeanclaudevibedan/open-scaffold/generate)
@@ -23,7 +23,9 @@ Your first session with an AI coding agent goes great. Clean code, clear goals. 
 
 This isn't a tooling problem. It's human nature, amplified by multi-agent workflows where every session starts on a blank page. The agent doesn't remember last Tuesday's constraints. You barely do either.
 
-**open-scaffold fixes this by encoding discipline as files.** Mission, plans, amendments, decisions, and handovers all live on disk — checked into git from commit #1 — so any human or agent walking into the repo tomorrow has the full story without asking.
+**open-scaffold fixes this by encoding discipline as files.** Mission, roadmap, plans, amendments, decisions, evidence, run packets, and handovers all live on disk — checked into git from commit #1 — so any human, agent, or orchestrator walking into the repo tomorrow has the full story without asking.
+
+Open Scaffold is not a single agent runtime. It is the repo protocol that runtimes can operate against: Hermes, Claw/OpenClaw, Claude Code, Codex, Gemini, OMC, OMX, custom scripts, or tools that do not exist yet. The core stays runtime-neutral; orchestrators and harnesses plug into the contract.
 
 ---
 
@@ -31,13 +33,15 @@ This isn't a tooling problem. It's human nature, amplified by multi-agent workfl
 
 | | | |
 |---|---|---|
-| 🎯 **Mission-first** | `MISSION.md` defines goals and non-goals before a single line is written. Ships unset on purpose — you fill it in on day one. | [→](MISSION.md) |
+| 🗺️ **Roadmap-first** | `ROADMAP.md` captures the product/system direction before live tasks, issues, or runtime sessions fragment the work. | [→](ROADMAP.md) |
+| 🎯 **Mission-first** | `MISSION.md` defines goals and non-goals before a single line is written. | [→](MISSION.md) |
 | 🔒 **Immutable plans** | Plans in `.osc/plans/` (organized in stage subfolders: `active/`, `backlog/`, `done/`, `blocked/`) follow a 7-section schema and become read-only once committed. No silent scope creep. | [→](.osc/plans/handoff-template.md) |
 | 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Run `./amend.sh <plan-slug>` to autonumber, scaffold, and stamp the changelog in one shot. | [→](.osc/plans/README.md) |
 | 🧭 **Design choices** | A short page in `docs/decisions/` explains why the scaffold is the way it is — paired views, immutable plans, adapter-mediated orchestration. | [→](docs/decisions/README.md) |
 | ✅ **`verify.sh` / `osc verify`** | Compliance checks in shell or CLI form. Agents run the quick check before touching code. | [→](verify.sh) |
 | 🧰 **`osc` CLI** | Runtime-neutral command-line helper. Parses plans, reports status, and writes prompt/artifact bundles under `.osc/runs/` without spawning agents. | [→](package.json) |
-| 🔌 **Adapters** | Public runtime adapters exist for OMC and OMX: [`open-scaffold-omc`](https://github.com/jeanclaudevibedan/open-scaffold-omc) uses `.omc`/`osc-omc`; [`open-scaffold-omx`](https://github.com/jeanclaudevibedan/open-scaffold-omx) uses `.omx`/`osc-omx`. | [→](docs/ADAPTERS.md) |
+| 🔌 **Integrations and harnesses** | Open Scaffold supports orchestrators/agents and runtime harnesses without confusing their roles: Hermes/Claw/etc. can operate the scaffold; OMC and OMX are Claude Code/Codex workflow harnesses. | [→](docs/ADAPTERS.md) |
+| 🛩️ **Glass cockpit** | Discord/Slack/Telegram/GitHub comments can expose nudges, blockers, approvals, and build-in-public reports while the repo/task/GitHub chain stays canonical. | [→](docs/OPEN_SCAFFOLD_SYSTEM.md) |
 
 ---
 
@@ -116,9 +120,9 @@ If your goal is fuzzy, let the agent interview you into clarity first:
 $deep-interview
 ```
 
-Without an adapter runtime, ask any agent: *"Interview me until you understand exactly what to build, then write a plan in `.osc/plans/active/` using `.osc/plans/handoff-template.md`."*
+Without a runtime harness, ask any capable agent: *"Interview me until you understand exactly what to build, then write a plan in `.osc/plans/active/` using `.osc/plans/handoff-template.md`."*
 
-Want adapter-native folders from day one? Start from [`open-scaffold-omc`](https://github.com/jeanclaudevibedan/open-scaffold-omc) for `.omc`/`osc-omc` or [`open-scaffold-omx`](https://github.com/jeanclaudevibedan/open-scaffold-omx) for `.omx`/`osc-omx`.
+If you deliberately want a runtime-specific harness lane, use that harness against the Open Scaffold plan/spec: OMC for Claude Code workflows (`/deep-interview`, `/ralplan`, `/team`, `/ralph`) or OMX for Codex workflows (`$deep-interview`, `$ralplan`, `$team`, `$ralph`, `$ultrawork`).
 
 **Fully manual fallback:**
 
@@ -139,18 +143,18 @@ Exit code 0 means your mission is defined, a plan exists, amendments are sequent
 
 ---
 
-## 🧩 Scaffold vs. runtime
+## 🧩 Scaffold vs. runtime vs. cockpit
 
-> A runtime without a scaffold is a powerful engine with no chassis. You drive fast, but parts fall off along the way.
+> A runtime without a scaffold is a powerful engine with no chassis. A cockpit without truth is just a pretty dashboard.
 
-| | **Scaffold** (what open-scaffold is) | **Runtime** (what OMC/OMX are) |
-|---|---|---|
-| **Defines** | How your project stays organized | How tasks get executed |
-| **Lives in** | `MISSION.md`, `.osc/plans/` (with `active/`, `backlog/`, `done/`, `blocked/` subfolders), `docs/decisions/` | Your agent's skills and commands |
-| **Persists** | Across every session, agent, and tool | Per session, per invocation |
-| **Required?** | Yes — this is the floor | No — scaffold works solo, runtimes amplify it |
+| | **Open Scaffold core** | **Runtime harness** | **Glass cockpit** |
+|---|---|---|---|
+| **Defines** | How the project remembers intent, work, evidence, and gates | How a specific base agent plans/executes/verifies | How humans see, steer, approve, or unblock work |
+| **Examples** | `MISSION.md`, `ROADMAP.md`, `.osc/plans/`, `.osc/runs/`, docs, evidence | OMC for Claude Code, OMX for Codex, or future harnesses | Discord, Slack, Telegram, GitHub comments, CLI dashboard |
+| **Persists** | Across every session, agent, and tool | Per runtime/session unless promoted | Per message/thread unless linked back to truth |
+| **Required?** | Yes — this is the floor | No — harnesses amplify it | No — cockpits make it visible |
 
-open-scaffold is the chassis. `osc` is the mechanic that prepares prompt/artifact bundles. Your runtime is the engine. Generic open-scaffold uses `.osc/`; the public adapter repos translate the same contract into runtime-native spaces: [`open-scaffold-omc`](https://github.com/jeanclaudevibedan/open-scaffold-omc) uses `.omc`/`osc-omc`, and [`open-scaffold-omx`](https://github.com/jeanclaudevibedan/open-scaffold-omx) uses `.omx`/`osc-omx`.
+Open Scaffold is the chassis and logbook. Orchestrators/agents such as Hermes, Claw/OpenClaw, Claude Code, Codex, and Gemini can operate it. OMC and OMX are runtime harnesses for Claude Code and Codex respectively. Discord-style build-in-public rooms are glass cockpits: useful surfaces, not canonical truth.
 
 ---
 
@@ -160,21 +164,26 @@ The scaffold runs the same way whether you're on the latest orchestration stack 
 
 | Tier | What happens | Delegation |
 |---|---|---|
-| 🤖 **OMC adapter** ([open-scaffold-omc](https://github.com/jeanclaudevibedan/open-scaffold-omc) + [oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode)) | Claude Code reads `.omc/plans`, emits `osc-omc` handoffs, and routes work through OMC | Full — `/team`, `/ultrawork`, `/ralph` |
-| ⚡ **OMX adapter** ([open-scaffold-omx](https://github.com/jeanclaudevibedan/open-scaffold-omx) + [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex)) | Codex reads `.omx/plans`, emits `osc-omx` handoffs, and respects `.omx/state`/Codex conventions | Full — `$team`, `$ralph`, `$deep-interview`, `$ralplan` |
-| 🧠 **Plain Claude Code / Cursor / Codex** | Agent reads plans when told to via `CLAUDE.md` / `AGENTS.md` | Agent describes parallelism; you dispatch |
+| 🧭 **Orchestrator-led** (Hermes, Claw/OpenClaw, custom bot) | Orchestrator reads roadmap/plans, creates tasks/issues, invokes runtimes, and records evidence | Full system loop if the orchestrator supports it |
+| 🤖 **Claude Code + OMC harness** | Claude Code uses OMC workflow modes against bounded Open Scaffold work | `/team`, `/ultrawork`, `/ralph`, `/ralplan` |
+| ⚡ **Codex + OMX harness** | Codex uses OMX workflow modes against bounded Open Scaffold work | `$team`, `$ralph`, `$ultrawork`, `$deep-interview`, `$ralplan` |
+| 🧠 **Plain Claude Code / Cursor / Codex / Gemini** | Agent reads plans when told to via `CLAUDE.md` / `AGENTS.md` | Agent describes parallelism; you dispatch |
 | ⌨️ **Local LLM or no agent at all** | You read the plans. The methodology still works. | Run `./delegate.sh <plan>` for copy-pasteable prompts |
 
 Higher tiers automate more. Lower tiers keep every file and protocol intact.
 
 ---
 
-## 🛠️ Recommended runtimes
+## 🛠️ Runtime and cockpit choices
 
-- **[open-scaffold-omc](https://github.com/jeanclaudevibedan/open-scaffold-omc)** + **[oh-my-claudecode (OMC)](https://github.com/yeachan-heo/oh-my-claudecode)** — Claude Code adapter using `.omc`/`osc-omc`; planning, parallel execution, verification, consensus loops. The heavy-lift runtime.
-- **[open-scaffold-omx](https://github.com/jeanclaudevibedan/open-scaffold-omx)** + **[oh-my-codex (OMX)](https://github.com/Yeachan-Heo/oh-my-codex)** — Codex adapter using `.omx`/`osc-omx`; `$deep-interview`, `$ralplan`, `$team`, `$ralph`, and `.omx/state` conventions.
+Open Scaffold does not require one preferred runtime. Bring the orchestrator, harness, and operator surface that fit your context:
 
-Neither is required. Use Cursor, Windsurf, Aider, or a plain terminal — the scaffold is just markdown and bash.
+- **Orchestrators/agents:** Hermes, Claw/OpenClaw, Claude Code, Codex, Gemini, custom scripts.
+- **Claude Code harness:** OMC / oh-my-claudecode for `/deep-interview`, `/ralplan`, `/team`, `/ralph`, `/ultrawork`, hooks, skills, and team workflows.
+- **Codex harness:** OMX / oh-my-codex for `$deep-interview`, `$ralplan`, `$team`, `$ralph`, `$ultrawork`, `$ultragoal`, and Codex-specific execution modes.
+- **Glass cockpits:** Discord, Slack, Telegram, CLI dashboards, or GitHub comments for nudges, blockers, approvals, and build-in-public reports.
+
+Neither OMC nor OMX is required. Use Cursor, Windsurf, Aider, or a plain terminal — the scaffold is still markdown, scripts, and source-of-truth boundaries.
 
 ---
 
@@ -185,7 +194,7 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 <details>
 <summary><b>So, does this allow multi-agent automatic orchestration?</b></summary>
 
-> Not by itself. The scaffold is paperwork; orchestration is the runtime's job. What it *does* is give an agent a machine-readable structure to act on: OMC can route groups into `/team` or `/ultrawork`, and OMX can route them into `$team` or `$ralph`. Without an adapter runtime, `./delegate.sh <plan>` emits terminal prompts you paste into separate sessions. The core scaffold enables orchestration; adapter repos perform runtime-native handoffs/spawning.
+> Not by itself. Open Scaffold is the source-of-truth contract; orchestration is an orchestrator or runtime harness job. What it *does* is give agents a durable structure to act on: Hermes or Claw/OpenClaw can route roadmap/plan work; OMC can use Claude Code workflows such as `/team` or `/ultrawork`; OMX can use Codex workflows such as `$team`, `$ralph`, or `$ultrawork`. Without a runtime, `./delegate.sh <plan>` emits terminal prompts you paste into separate sessions. The core scaffold enables orchestration; external agents/harnesses perform it.
 
 </details>
 
@@ -247,7 +256,9 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 
 | File | Purpose |
 |---|---|
-| [`MISSION.md`](MISSION.md) | Source of truth for what the project is. Ships with an `<!-- mission:unset -->` marker. |
+| [`MISSION.md`](MISSION.md) | Source of truth for what the project is: mission, goals, non-goals, changelog. |
+| [`ROADMAP.md`](ROADMAP.md) | Product/system milestones and self-dogfood chain. |
+| [`docs/OPEN_SCAFFOLD_SYSTEM.md`](docs/OPEN_SCAFFOLD_SYSTEM.md) | Ontology: core, orchestrators, runtime harnesses, task bridges, glass cockpits, GitHub. |
 | [`CLAUDE.md`](CLAUDE.md) | Claude Code's entry point. Agents read this first. |
 | [`AGENTS.md`](AGENTS.md) | Entry point for Codex, Gemini, and other agents (paired view of `CLAUDE.md`). |
 | [`.osc/plans/handoff-template.md`](.osc/plans/handoff-template.md) | The 7-section schema every plan file follows. |
@@ -281,7 +292,7 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 
 **Delegate** — `./delegate.sh <plan>`. Reads a plan's Execution Strategy section and prints prompts you can paste into parallel terminal sessions. Designed for users without an orchestration runtime.
 
-**OMC / OMX** — Runtime layers: [oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode) and [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex). open-scaffold adapters: [open-scaffold-omc](https://github.com/jeanclaudevibedan/open-scaffold-omc) (`.omc`/`osc-omc`) and [open-scaffold-omx](https://github.com/jeanclaudevibedan/open-scaffold-omx) (`.omx`/`osc-omx`). Recommended, not required.
+**OMC / OMX** — Runtime harnesses, not universal orchestrators: [oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode) extends Claude Code workflows; [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex) extends Codex workflows. Recommended when useful, never required.
 
 **Plan Immutability** — Once a plan is committed to git, it is never edited. Changes layer on top as amendments. This is the single rule that prevents silent scope creep.
 
@@ -296,12 +307,14 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 <details>
 <summary><b>Under the hood</b></summary>
 
-open-scaffold has two layers:
+open-scaffold has several cooperating layers:
 
-- **Core methodology** — folder discipline, immutable plans, amendment protocol, ADRs, session handover, and the `osc` prompt/artifact CLI. Framework-agnostic. Works with any agent or no agent at all.
-- **Adapter-enhanced layer** — separate public adapter repos that translate the scaffold contract into runtime-native workflows: [open-scaffold-omc](https://github.com/jeanclaudevibedan/open-scaffold-omc) maps to `.omc`/`osc-omc`; [open-scaffold-omx](https://github.com/jeanclaudevibedan/open-scaffold-omx) maps to `.omx`/`osc-omx`.
+- **Core methodology** — mission, roadmap, folder discipline, immutable plans, amendment protocol, evidence/run packets, ADRs, session handover, and the `osc` prompt/artifact CLI. Framework-agnostic.
+- **Orchestrators/agents** — Hermes, Claw/OpenClaw, Claude Code, Codex, Gemini, or custom scripts that operate on the Open Scaffold contract.
+- **Runtime harnesses** — OMC for Claude Code workflows and OMX for Codex workflows. They amplify execution but do not own the source of truth.
+- **Glass cockpits** — Discord/Slack/Telegram/GitHub comments/CLI dashboards that expose status, blockers, approvals, and build-in-public streams.
 
-The scaffold is the load-bearing part. The runtimes amplify it. You can strip the runtimes away and the methodology still holds.
+The scaffold is the load-bearing part. Agents and runtimes amplify it. Cockpits make it visible. You can strip the runtimes away and the methodology still holds.
 
 </details>
 

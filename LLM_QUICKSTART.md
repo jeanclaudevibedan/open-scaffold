@@ -54,24 +54,27 @@ Either way, report the failing check and proceed to Step 4. A passing `--quick` 
 
 Ask the user two questions:
 
-1. Which runtime are you using?
-   - **OMC adapter** ([open-scaffold-omc](https://github.com/jeanclaudevibedan/open-scaffold-omc) + [oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode))
-   - **OMX adapter** ([open-scaffold-omx](https://github.com/jeanclaudevibedan/open-scaffold-omx) + [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex))
-   - **Plain agent** (Claude Code, Cursor, Codex, Aider — no adapter runtime)
+1. Which operating mode are you using?
+   - **Orchestrator-led** (Hermes, Claw/OpenClaw, or a custom bot reading Open Scaffold state)
+   - **Claude Code + OMC harness** (`/deep-interview`, `/ralplan`, `/team`, `/ralph`)
+   - **Codex + OMX harness** (`$deep-interview`, `$ralplan`, `$team`, `$ralph`, `$ultrawork`)
+   - **Plain agent** (Claude Code, Cursor, Codex, Gemini, Aider — no harness)
    - **Fully manual** (no agent)
 2. Is your first task clear in your head, or still fuzzy?
 
 Print the matching handoff verbatim, then stop. Each handoff assumes the downstream session may inherit a `mission:unset` MISSION.md and tells it to elicit the mission if needed.
 
-| Runtime | Task state | Handoff |
+| Mode | Task state | Handoff |
 |---|---|---|
-| OMC adapter | Clear | `If you want OMC-native folders, start from https://github.com/jeanclaudevibedan/open-scaffold-omc. Run /ralplan or /autopilot with: "If my MISSION.md is still unset, elicit it from me first (one sentence on what this project is; main outcomes; adjacent features I'm choosing NOT to build). Stamp MISSION.md with my answers. Then write a plan in .omc/plans/active/ for <task> using .omc/plans/handoff-template.md."` |
-| OMC adapter | Fuzzy | `If you want OMC-native folders, start from https://github.com/jeanclaudevibedan/open-scaffold-omc. Run /deep-interview. Tell it your MISSION.md is unset AND your first task is fuzzy — it will cover both in one interview, stamp MISSION.md, and write the plan in .omc/plans/active/.` |
-| OMX adapter | Clear | `If you want OMX-native folders, start from https://github.com/jeanclaudevibedan/open-scaffold-omx. Run $ralplan with: "If my MISSION.md is still unset, elicit it from me first (one sentence on what this project is; main outcomes; adjacent features I'm choosing NOT to build). Stamp MISSION.md with my answers. Then write a plan in .omx/plans/active/ for <task> using .omx/plans/handoff-template.md."` |
-| OMX adapter | Fuzzy | `If you want OMX-native folders, start from https://github.com/jeanclaudevibedan/open-scaffold-omx. Run $deep-interview. Tell it your MISSION.md is unset AND your first task is fuzzy — it will cover both in one interview, stamp MISSION.md, and write the plan in .omx/plans/active/. Keep runtime-only session/question data under .omx/state/.` |
-| Plain agent | Clear | `Tell your agent: "My MISSION.md is unset. Ask me three things: (a) what is this project in one sentence, (b) main outcomes, (c) adjacent features I could plausibly build but am choosing not to (good non-goals are adjacent, not unrelated — think 'recipe app: not a meal planner' rather than 'recipe app: not a television'). Update MISSION.md with my answers, then write a plan in .osc/plans/active/ for <task> using .osc/plans/handoff-template.md."` |
-| Plain agent | Fuzzy | `Tell your agent: "My MISSION.md is unset AND my first task is fuzzy. Interview me until both are clear — mission (what, main outcomes, adjacent non-goals) and task (specific enough for a 7-section plan). Update MISSION.md, then write the plan in .osc/plans/active/ using .osc/plans/handoff-template.md."` |
-| Manual | Either | `Open MISSION.md in your editor and fill in the three TODO sections by hand (if they are still there — interactive bootstrap may have replaced them). Then run: cp .osc/plans/handoff-template.md .osc/plans/active/my-first-task.md — open the copy and fill in its 7 sections. See .osc/RULES.md for non-negotiable principles, .osc/plans/WORKFLOW.md for stage-folder conventions, and close.sh for marking plans done.` |
+| Orchestrator-led | Clear | `Tell your orchestrator: "Read MISSION.md, ROADMAP.md, docs/OPEN_SCAFFOLD_SYSTEM.md, AGENTS.md/CLAUDE.md, and .osc/RULES.md. If MISSION.md is still unset, elicit it first. Then create a bounded plan in .osc/plans/active/ for <task>, preserving the roadmap/task/evidence chain. Do not treat chat/Discord/runtime state as canonical truth."` |
+| Orchestrator-led | Fuzzy | `Tell your orchestrator: "Read MISSION.md, ROADMAP.md, docs/OPEN_SCAFFOLD_SYSTEM.md, AGENTS.md/CLAUDE.md, and .osc/RULES.md. Run an interview until mission and first task are clear, then write the result as an Open Scaffold plan/spec. If live execution is needed, create a task in your task system that links back to the plan."` |
+| OMC harness | Clear | `From Claude Code/OMC, run /ralplan or /autopilot against the Open Scaffold context: "If MISSION.md is still unset, elicit it from me first. Then write or use a plan in .osc/plans/active/ for <task> using .osc/plans/handoff-template.md. Treat OMC runtime state as forensic until promoted into Open Scaffold evidence."` |
+| OMC harness | Fuzzy | `From Claude Code/OMC, run /deep-interview. Tell it: "MISSION.md may be unset and the first task is fuzzy. Clarify both, then promote the result into MISSION.md and an Open Scaffold plan/spec. Do not make OMC runtime state the source of truth."` |
+| OMX harness | Clear | `From Codex/OMX, run $ralplan against the Open Scaffold context: "If MISSION.md is still unset, elicit it from me first. Then write or use a plan in .osc/plans/active/ for <task> using .osc/plans/handoff-template.md. Treat OMX runtime state as forensic until promoted into Open Scaffold evidence."` |
+| OMX harness | Fuzzy | `From Codex/OMX, run $deep-interview. Tell it: "MISSION.md may be unset and the first task is fuzzy. Clarify both, then promote the result into MISSION.md and an Open Scaffold plan/spec. Keep runtime-only question/session state forensic until promoted."` |
+| Plain agent | Clear | `Tell your agent: "My MISSION.md may be unset. Ask me three things if needed: (a) what is this project in one sentence, (b) main outcomes, (c) adjacent features I could plausibly build but am choosing not to. Update MISSION.md with my answers, then write a plan in .osc/plans/active/ for <task> using .osc/plans/handoff-template.md."` |
+| Plain agent | Fuzzy | `Tell your agent: "My MISSION.md may be unset AND my first task is fuzzy. Interview me until both are clear — mission and task — then update MISSION.md and write the plan in .osc/plans/active/ using .osc/plans/handoff-template.md."` |
+| Manual | Either | `Open MISSION.md in your editor and fill in the mission/goals/non-goals. Then run: cp .osc/plans/handoff-template.md .osc/plans/active/my-first-task.md — open the copy and fill in its 7 sections. See ROADMAP.md, docs/OPEN_SCAFFOLD_SYSTEM.md, .osc/RULES.md, and .osc/plans/WORKFLOW.md for boundaries.` |
 
 ## Stop condition
 

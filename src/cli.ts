@@ -17,7 +17,7 @@ Usage:
   osc verify
   osc doctor
 
-Generic open-scaffold generates prompts/artifacts only. OMC/OMX adapters perform autonomous spawning.`);
+Generic open-scaffold generates prompts/artifacts only. External orchestrators/agents and runtime harnesses perform autonomous spawning.`);
 }
 
 function requireArg(args: string[], name: string): string {
