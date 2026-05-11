@@ -22,20 +22,22 @@ Open Scaffold core owns the portable project substrate:
 
 Core does **not** spawn agents. It defines the contract that agents and tools can use.
 
-### 2. Orchestrators and agents
+### 2. Coordinators, orchestrators, and agents
 
-Orchestrators/agents decide what to do next or perform work against the Open Scaffold substrate.
+Coordinators/orchestrators decide what should happen next, maintain or bridge task state, and interact with the operator. Agents may also perform work directly against the Open Scaffold substrate.
 
 Examples:
 
-- Hermes
-- Claw / OpenClaw
-- Claude Code
-- Codex
-- Gemini / Antigravity
-- Custom scripts or CI bots
+- Hermes as coordinator / stateful product-workflow surface.
+- Hermes Kanban as live package/task state and nudge-driven lifecycle.
+- Claw / OpenClaw as autonomous coding or orchestration agent family.
+- Claude Code, Codex, Gemini / Antigravity as base agent runtimes.
+- GitHub Issues as public task/intent state when work should be versioned publicly.
+- Custom scripts, CI bots, or local task queues.
 
-These tools may read roadmap items, create plans, execute work, ask for approval, open PRs, or update evidence — but they should preserve Open Scaffold’s source-of-truth boundaries.
+These tools may read roadmap items, create plans, create/live-update tasks, choose executor lanes, ask for approval, open PRs, or update evidence — but they should preserve Open Scaffold’s source-of-truth boundaries.
+
+A coordinator should dispatch **bounded packages** into execution lanes rather than letting multiple systems mutate the same worktree and truth state at once.
 
 ### 3. Runtime harnesses
 
@@ -89,7 +91,20 @@ Examples:
 
 Open Scaffold should define how roadmap items and plans link to these systems, but it should not assume one board is universal.
 
-### 5. Operator surfaces / glass cockpits
+### 5. Event/session transport
+
+Event/session transport routes notifications, session updates, and status messages between runtimes and operator surfaces. It is glue, not the planner or executor.
+
+Examples:
+
+- clawhip-style event/session notification routing
+- webhook listeners
+- gateway adapters
+- tmux/session notification hooks
+
+Transport can post active-session updates, blockers, and completion events into a glass cockpit. It should not become canonical task state or perform planning/execution itself.
+
+### 6. Operator surfaces / glass cockpits
 
 Operator surfaces let humans and teams see, steer, approve, or unblock work.
 
@@ -111,7 +126,7 @@ The glass cockpit can run in several modes:
 
 Operator surfaces are **not canonical truth**. They should link back to roadmap items, task IDs, run packets, evidence, issues, branches, and PRs.
 
-### 6. GitHub/public versioning layer
+### 7. GitHub/public versioning layer
 
 GitHub owns public/versioned implementation state:
 
@@ -130,10 +145,13 @@ Use these statements in product docs and agent prompts:
 
 ```text
 Open Scaffold is the repo protocol, not the agent runtime.
-Hermes and Claw/OpenClaw are orchestrators/agents that can operate Open Scaffold.
-Claude Code, Codex, and Gemini can operate Open Scaffold directly or through harnesses.
-OMC is a Claude Code workflow harness.
-OMX is a Codex workflow/execution harness.
+Hermes is a coordinator / stateful product-workflow surface that may use Kanban, nudges, package/task state, and operator interaction.
+Hermes Kanban/Nudge is a coordination/control layer, not a Codex or Claude Code runtime.
+Claude Code, Codex, Gemini, Claw/OpenClaw, and custom agents can operate Open Scaffold directly when bounded by the repo contract.
+OMC is a Claude Code execution/orchestration lane.
+OMX is a Codex execution/orchestration lane.
+OMX is not automatically the runtime engine for Hermes or OMC; it becomes one only when a coordinator dispatches a bounded package into an OMX/Codex session.
+clawhip-style tooling is routing/status/event transport, not the planner or executor.
 Discord is a glass cockpit, not canonical state.
 GitHub is public/versioned work truth.
 ```
@@ -144,12 +162,35 @@ Avoid these claims:
 
 ```text
 OMX is an Open Scaffold adapter in the same sense Hermes is.
+OMX is automatically the runtime engine for any Hermes or OMC workflow.
 OMC is the Open Scaffold orchestrator.
+clawhip is the planner or executor.
 Discord is the task database.
 Runtime session logs are durable project truth.
 A chat transcript is enough evidence for done.
 Open Scaffold requires one preferred agent runtime.
+Multiple coordinators/runtimes can mutate the same worktree at once safely.
 ```
+
+## Integration pattern
+
+A clean coordinator-to-runtime flow looks like this:
+
+```text
+Open Scaffold roadmap/plan or external task card
+  -> coordinator chooses executor lane: OMC, OMX, plain agent, or manual
+  -> coordinator dispatches a bounded prompt/artifact/run packet
+  -> executor produces result artifact, diff, PR, status, or blocker
+  -> coordinator updates task state, asks the operator, or nudges next step
+  -> evidence and decisions are promoted back into Open Scaffold/GitHub
+```
+
+Rules:
+
+- Keep coordinator state separate from runtime execution state.
+- Dispatch bounded packages; do not let Hermes, OMC, OMX, and Discord all become competing brains.
+- Do not make Hermes/OMC/OMX mutate the same worktree at the same time unless the plan explicitly defines isolation and merge rules.
+- Treat event routers such as clawhip as transport for session/status events, not as the source of planning or execution truth.
 
 ## Self-dogfood loop
 

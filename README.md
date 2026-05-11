@@ -147,14 +147,14 @@ Exit code 0 means your mission is defined, a plan exists, amendments are sequent
 
 > A runtime without a scaffold is a powerful engine with no chassis. A cockpit without truth is just a pretty dashboard.
 
-| | **Open Scaffold core** | **Runtime harness** | **Glass cockpit** |
-|---|---|---|---|
-| **Defines** | How the project remembers intent, work, evidence, and gates | How a specific base agent plans/executes/verifies | How humans see, steer, approve, or unblock work |
-| **Examples** | `MISSION.md`, `ROADMAP.md`, `.osc/plans/`, `.osc/runs/`, docs, evidence | OMC for Claude Code, OMX for Codex, or future harnesses | Discord, Slack, Telegram, GitHub comments, CLI dashboard |
-| **Persists** | Across every session, agent, and tool | Per runtime/session unless promoted | Per message/thread unless linked back to truth |
-| **Required?** | Yes — this is the floor | No — harnesses amplify it | No — cockpits make it visible |
+| | **Open Scaffold core** | **Coordinator/task state** | **Runtime harness** | **Glass cockpit / transport** |
+|---|---|---|---|---|
+| **Defines** | How the project remembers intent, work, evidence, and gates | What should happen next and what state work is in | How a specific base agent plans/executes/verifies | How humans see, steer, approve, or unblock work |
+| **Examples** | `MISSION.md`, `ROADMAP.md`, `.osc/plans/`, `.osc/runs/`, docs, evidence | Hermes Kanban/Nudge, GitHub Issues, Linear/Jira, custom bots | OMC for Claude Code, OMX for Codex, or future harnesses | Discord, Slack, Telegram, GitHub comments, CLI dashboard, clawhip-style event routing |
+| **Persists** | Across every session, agent, and tool | Until task/issue lifecycle closes | Per runtime/session unless promoted | Per message/thread/event unless linked back to truth |
+| **Required?** | Yes — this is the floor | Needed for multi-step/live work | No — harnesses amplify it | No — cockpits make it visible |
 
-Open Scaffold is the chassis and logbook. Orchestrators/agents such as Hermes, Claw/OpenClaw, Claude Code, Codex, and Gemini can operate it. OMC and OMX are runtime harnesses for Claude Code and Codex respectively. Discord-style build-in-public rooms are glass cockpits: useful surfaces, not canonical truth.
+Open Scaffold is the chassis and logbook. Coordinators such as Hermes decide what should happen next and may maintain live task/package state. OMC and OMX are execution/orchestration lanes for Claude Code and Codex respectively. clawhip-style tools are event/status transport. Discord-style build-in-public rooms are glass cockpits: useful surfaces, not canonical truth.
 
 ---
 
@@ -178,10 +178,10 @@ Higher tiers automate more. Lower tiers keep every file and protocol intact.
 
 Open Scaffold does not require one preferred runtime. Bring the orchestrator, harness, and operator surface that fit your context:
 
-- **Orchestrators/agents:** Hermes, Claw/OpenClaw, Claude Code, Codex, Gemini, custom scripts.
-- **Claude Code harness:** OMC / oh-my-claudecode for `/deep-interview`, `/ralplan`, `/team`, `/ralph`, `/ultrawork`, hooks, skills, and team workflows.
-- **Codex harness:** OMX / oh-my-codex for `$deep-interview`, `$ralplan`, `$team`, `$ralph`, `$ultrawork`, `$ultragoal`, and Codex-specific execution modes.
-- **Glass cockpits:** Discord, Slack, Telegram, CLI dashboards, or GitHub comments for nudges, blockers, approvals, and build-in-public reports.
+- **Coordinators/task state:** Hermes + Kanban/Nudge, GitHub Issues, Linear/Jira, or custom bots for deciding next steps and tracking live state.
+- **Claude Code lane:** OMC / oh-my-claudecode for `/deep-interview`, `/ralplan`, `/team`, `/ralph`, `/ultrawork`, hooks, skills, and team workflows.
+- **Codex lane:** OMX / oh-my-codex for `$deep-interview`, `$ralplan`, `$team`, `$ralph`, `$ultrawork`, `$ultragoal`, and Codex-specific execution modes.
+- **Glass cockpits / transport:** Discord, Slack, Telegram, CLI dashboards, GitHub comments, webhook/gateway glue, or clawhip-style routing for nudges, blockers, approvals, session events, and build-in-public reports.
 
 Neither OMC nor OMX is required. Use Cursor, Windsurf, Aider, or a plain terminal — the scaffold is still markdown, scripts, and source-of-truth boundaries.
 
@@ -194,7 +194,7 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 <details>
 <summary><b>So, does this allow multi-agent automatic orchestration?</b></summary>
 
-> Not by itself. Open Scaffold is the source-of-truth contract; orchestration is an orchestrator or runtime harness job. What it *does* is give agents a durable structure to act on: Hermes or Claw/OpenClaw can route roadmap/plan work; OMC can use Claude Code workflows such as `/team` or `/ultrawork`; OMX can use Codex workflows such as `$team`, `$ralph`, or `$ultrawork`. Without a runtime, `./delegate.sh <plan>` emits terminal prompts you paste into separate sessions. The core scaffold enables orchestration; external agents/harnesses perform it.
+> Not by itself. Open Scaffold is the source-of-truth contract; orchestration is a coordinator or runtime-lane job. What it *does* is give systems a durable structure to act on: Hermes can maintain Kanban/package state and choose a lane; OMC can run Claude Code workflows such as `/team` or `/ultrawork`; OMX can run Codex workflows such as `$team`, `$ralph`, or `$ultrawork`; clawhip-style tooling can route session/status events. OMX is not automatic — it is selected when the coordinator dispatches a bounded package into Codex/OMX. Without a runtime, `./delegate.sh <plan>` emits terminal prompts you paste into separate sessions.
 
 </details>
 
@@ -310,9 +310,10 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 open-scaffold has several cooperating layers:
 
 - **Core methodology** — mission, roadmap, folder discipline, immutable plans, amendment protocol, evidence/run packets, ADRs, session handover, and the `osc` prompt/artifact CLI. Framework-agnostic.
-- **Orchestrators/agents** — Hermes, Claw/OpenClaw, Claude Code, Codex, Gemini, or custom scripts that operate on the Open Scaffold contract.
-- **Runtime harnesses** — OMC for Claude Code workflows and OMX for Codex workflows. They amplify execution but do not own the source of truth.
-- **Glass cockpits** — Discord/Slack/Telegram/GitHub comments/CLI dashboards that expose status, blockers, approvals, and build-in-public streams.
+- **Coordinators/task state** — Hermes, GitHub Issues, Linear/Jira, or custom systems choose what should happen next and track live work.
+- **Runtime lanes** — OMC for Claude Code and OMX for Codex. They amplify execution but do not own the source of truth.
+- **Event transport** — clawhip-style tools, webhooks, and gateways route session/status events into operator surfaces.
+- **Glass cockpits** — Discord/Slack/Telegram/GitHub comments/CLI dashboards expose status, blockers, approvals, and build-in-public streams.
 
 The scaffold is the load-bearing part. Agents and runtimes amplify it. Cockpits make it visible. You can strip the runtimes away and the methodology still holds.
 

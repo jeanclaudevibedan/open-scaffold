@@ -98,6 +98,7 @@ Goal: make build-in-public / private control-room operation a first-class Open S
 Deliverables:
 
 - Define glass-cockpit event types: nudge, active session, blocker, question, answer, approval request, completion report, evidence receipt, PR link.
+- Define event/session transport separately from the cockpit: clawhip-style routers, webhooks, gateway adapters, and session hooks carry events but do not plan or execute.
 - Define public/team/private modes.
 - Provide Discord-first examples while keeping the protocol surface generic enough for Slack/Telegram/CLI/GitHub comments.
 - Specify that chat is a surface, not canonical truth.
@@ -107,6 +108,7 @@ Acceptance criteria:
 - A team can run a Discord build-in-public channel from Open Scaffold state.
 - A solo dev can run a private cockpit with the same event types.
 - Status posts link back to canonical repo/task/issue/evidence IDs.
+- Event routers are documented as transport glue, not as source-of-truth databases or executor agents.
 
 ## Milestone 4 — ROADMAP / GitHub / task bridge
 
@@ -117,6 +119,7 @@ Deliverables:
 - Define when a roadmap item becomes a GitHub issue.
 - Define when an issue becomes a live task in an orchestrator/task system.
 - Define task metadata needed for harness execution: repo, run mode, allowed paths, acceptance criteria, evidence path, approval gates.
+- Define the coordinator-to-executor pattern: task/card/package chooses OMC, OMX, plain agent, or manual lane; execution returns artifact/status/blocker; coordinator updates state.
 - Add templates for issue bodies and task handoff packets.
 
 Acceptance criteria:
@@ -139,7 +142,8 @@ Deliverables:
 Acceptance criteria:
 
 - Open Scaffold core remains runtime-neutral.
-- Runtime-specific docs describe OMC/OMX as harnesses, not universal orchestrators.
+- Runtime-specific docs describe OMC/OMX as execution/orchestration lanes, not universal orchestrators.
+- OMX is documented as an explicitly selected Codex lane, not the automatic runtime engine for Hermes or OMC.
 - A plan can be handed to a harness and return evidence without mutating canonical repo truth incorrectly.
 
 ## Milestone 6 — Self-dogfood release loop
