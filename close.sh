@@ -132,7 +132,7 @@ if grep -Fq "$ANCHOR" "$MISSION"; then
   while IFS= read -r line || [ -n "$line" ]; do
     printf '%s\n' "$line"
     if printf '%s' "$line" | grep -Fq "$ANCHOR"; then
-      printf '- %s\n' "$CHANGELOG_LINE"
+      printf -- '- %s\n' "$CHANGELOG_LINE"
     fi
   done < "$MISSION" > "$TMPFILE"
   mv "$TMPFILE" "$MISSION"

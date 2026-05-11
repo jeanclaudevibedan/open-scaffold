@@ -1,0 +1,86 @@
+name: Feature / Slice
+
+description: Define a bounded product or workflow slice that can become a plan, task, run packet, branch, and PR.
+
+title: "[Feature]: "
+labels: ["feature"]
+body:
+  - type: textarea
+    id: roadmap
+    attributes:
+      label: Roadmap item / context
+      description: Link the roadmap item, prior issue, or product context this belongs to.
+      placeholder: "ROADMAP.md Milestone 4, previous PR, customer request, etc."
+    validations:
+      required: true
+
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: What should exist or be true when this is done?
+      placeholder: "Build a bounded GitHub PR workflow doc and template..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: why_now
+    attributes:
+      label: Why now?
+      description: Why is this the next useful slice?
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: Testable yes/no criteria. If these are fuzzy, route to clarification first.
+      placeholder: |
+        - [ ] PR template exists
+        - [ ] docs/GITHUB_WORKFLOW.md documents Codex review triggers
+        - [ ] Verification passes
+    validations:
+      required: true
+
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: Non-goals
+      description: Adjacent work this issue must not expand into.
+      placeholder: "No production Discord bot implementation in this issue."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: execution_lane
+    attributes:
+      label: Suggested execution lane
+      options:
+        - human
+        - plain-agent
+        - omc-claude
+        - omx-codex
+        - undecided
+    validations:
+      required: true
+
+  - type: dropdown
+    id: needs_clarification
+    attributes:
+      label: Needs deep-interview / clarification before build?
+      options:
+        - "no"
+        - "yes"
+        - "unsure"
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Expected evidence
+      description: What proof should the PR or run packet contain?
+      placeholder: "Test output, run packet, screenshots, docs links, CI, Codex review."
+    validations:
+      required: true

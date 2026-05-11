@@ -19,13 +19,36 @@
 
 ## 💥 The problem
 
-Your first session with an AI coding agent goes great. Clean code, clear goals. By session three, you've forgotten what you decided in session one. By session five, the folder structure has grown into something nobody can navigate. Plans exist only in chat history that's long gone. Scope crept in every direction and no one noticed.
+Semi-autonomous software work is finally possible, but the default shape is chaos:
 
-This isn't a tooling problem. It's human nature, amplified by multi-agent workflows where every session starts on a blank page. The agent doesn't remember last Tuesday's constraints. You barely do either.
+```text
+Discord thread here.
+GitHub issue there.
+Claude Code in one terminal.
+Codex/OMX in another.
+A bot says it is done.
+A PR appears.
+Nobody can reconstruct what was asked, what ran, what passed, or who approved it.
+```
 
-**open-scaffold fixes this by encoding discipline as files.** Mission, roadmap, plans, amendments, decisions, evidence, run packets, and handovers all live on disk — checked into git from commit #1 — so any human, agent, or orchestrator walking into the repo tomorrow has the full story without asking.
+The exciting part is not just "an AI coding agent wrote code." The exciting part is a build loop where a human can steer from Discord/chat/voice, a coordinator bot such as Hermes or a claw-code-style agent can package work, OMC/Claude Code and OMX/Codex can execute bounded slices, GitHub PRs and Codex review can gate changes, and the repo remembers the truth after the chat scroll disappears.
 
-Open Scaffold is not a single agent runtime. It is the repo protocol that runtimes can operate against: Hermes, Claw/OpenClaw, Claude Code, Codex, Gemini, OMC, OMX, custom scripts, or tools that do not exist yet. The core stays runtime-neutral; orchestrators and harnesses plug into the contract.
+**open-scaffold is the chassis and black box recorder for that loop.** It gives semi-autonomous building a durable control substrate: mission, roadmap, task/run identity, executable plans, run packets, evidence, amendments, PR traceability, and verification gates as files that any human, bot, agent, or runtime can read.
+
+Open Scaffold is not the Discord bot, not the agent runtime, and not the PR reviewer. It is the repo-native protocol that lets those pieces cooperate without making chat, terminal state, or a model transcript the source of truth.
+
+A mature Open Scaffold loop looks like:
+
+```text
+ROADMAP / idea
+  -> GitHub issue or Kanban task_id
+  -> .osc plan/spec/package
+  -> .osc run_id packet
+  -> OMC/Claude Code, OMX/Codex, plain agent, or human execution
+  -> Discord/chat/GitHub comments for questions and approvals
+  -> branch / PR / CI / Codex review
+  -> evidence / release note / next amendment
+```
 
 ---
 
@@ -39,15 +62,17 @@ Open Scaffold is not a single agent runtime. It is the repo protocol that runtim
 | 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Run `./amend.sh <plan-slug>` to autonumber, scaffold, and stamp the changelog in one shot. | [→](.osc/plans/README.md) |
 | 🧭 **Design choices** | A short page in `docs/decisions/` explains why the scaffold is the way it is — paired views, immutable plans, adapter-mediated orchestration. | [→](docs/decisions/README.md) |
 | ✅ **`verify.sh` / `osc verify`** | Compliance checks in shell or CLI form. Agents run the quick check before touching code. | [→](verify.sh) |
-| 🧰 **`osc` CLI** | Runtime-neutral command-line helper. Parses plans, reports status, and writes prompt/artifact bundles under `.osc/runs/` without spawning agents. | [→](package.json) |
+| 🧰 **`osc` CLI** | Runtime-neutral command-line helper. Parses plans, reports status, and writes prompt/artifact bundles under `.osc/runs/` without spawning agents. Run binding options can record task/run/operator/harness metadata. | [→](package.json) |
 | 🔌 **Integrations and harnesses** | Open Scaffold supports orchestrators/agents and runtime harnesses without confusing their roles: Hermes/Claw/etc. can operate the scaffold; OMC and OMX are Claude Code/Codex workflow harnesses. | [→](docs/ADAPTERS.md) |
+| 🧾 **Task/run model** | `task_id` owns durable work, `run_id` owns one execution attempt, chat threads are operator-surface bindings, and ambiguous packages route to clarification before harness dispatch. | [→](docs/TASK_RUN_MODEL.md) |
+| 🐙 **GitHub PR loop** | Issues, branches, PR templates, CI, Codex review triggers, and human approvals become the publication/review layer for semi-autonomous work. | [→](docs/GITHUB_WORKFLOW.md) |
 | 🛩️ **Glass cockpit** | Discord/Slack/Telegram/GitHub comments can expose nudges, blockers, approvals, and build-in-public reports while the repo/task/GitHub chain stays canonical. | [→](docs/OPEN_SCAFFOLD_SYSTEM.md) |
 
 ---
 
 ## 🔁 The workflow
 
-Five phases, one per session (or one per feature slice). The amendment loop handles the "I got smarter" case without silent edits.
+Six phases, one per session or feature slice. The amendment loop handles the "I got smarter" case without silent edits.
 
 ```mermaid
 flowchart LR
@@ -55,9 +80,10 @@ flowchart LR
     B --> C["⚙️ Execute"]
     C --> D["✅ Verify"]
     D --> E{"ACs pass?"}
-    E -->|yes| F["🤝 Handover"]
+    E -->|yes| F["🐙 Publish / PR"]
     E -->|no| C
-    F -.->|"new learnings"| G["📝 Amend"]
+    F --> H["🤝 Handover"]
+    H -.->|"new learnings"| G["📝 Amend"]
     G -.-> B
 ```
 
@@ -133,7 +159,32 @@ $EDITOR .osc/plans/my-first-task.md
 
 Either way you end up with a plan file: Context, Goal, Constraints, Files to touch, Acceptance criteria, Verification steps, Open questions.
 
-### 4. Check compliance (optional but satisfying)
+### 4. Create a bound run package when a harness should execute it
+
+Open Scaffold core still does not spawn agents, but it can create a canonical run packet that a coordinator or adapter can dispatch into OMC, OMX, a plain agent, or a human lane.
+
+```bash
+npm run osc -- run .osc/plans/active/my-first-task.md \
+  --task-id TASK-2026-0511-demo \
+  --executor omx-codex \
+  --harness-skill '$ralplan' \
+  --operator-surface discord \
+  --repo /path/to/project
+```
+
+This writes `.osc/runs/<run_id>/run.json` with task/run bindings, executor choice, operator-surface binding, package-quality checks, prompts, and commit policy. If the package lacks goal, acceptance criteria, verification, or has blocking open questions, dispatch should route to clarification/deep-interview before implementation.
+
+### 5. Open a traceable PR when code changes
+
+When a slice changes code or public docs, carry the trace into GitHub:
+
+```text
+Issue/task -> plan/spec -> run_id -> branch -> PR -> CI + Codex review + human approval -> merge
+```
+
+The template includes `.github/pull_request_template.md` and `.github/ISSUE_TEMPLATE/feature.yml`. If the Codex connector is enabled for the repo, trigger review by opening the PR for review, marking a draft ready, or commenting `@codex review`. See [docs/GITHUB_WORKFLOW.md](docs/GITHUB_WORKFLOW.md).
+
+### 6. Check compliance (optional but satisfying)
 
 ```bash
 ./verify.sh
@@ -150,11 +201,11 @@ Exit code 0 means your mission is defined, a plan exists, amendments are sequent
 | | **Open Scaffold core** | **Coordinator/task state** | **Runtime harness** | **Glass cockpit / transport** |
 |---|---|---|---|---|
 | **Defines** | How the project remembers intent, work, evidence, and gates | What should happen next and what state work is in | How a specific base agent plans/executes/verifies | How humans see, steer, approve, or unblock work |
-| **Examples** | `MISSION.md`, `ROADMAP.md`, `.osc/plans/`, `.osc/runs/`, docs, evidence | Hermes Kanban/Nudge, GitHub Issues, Linear/Jira, custom bots | OMC for Claude Code, OMX for Codex, or future harnesses | Discord, Slack, Telegram, GitHub comments, CLI dashboard, clawhip-style event routing |
+| **Examples** | `MISSION.md`, `ROADMAP.md`, `.osc/plans/`, `.osc/runs/`, docs, evidence | Hermes Kanban/Nudge, GitHub Issues, Linear/Jira, custom bots; owns `task_id` | OMC for Claude Code, OMX for Codex, or future harnesses; binds to `run_id` | Discord, Slack, Telegram, GitHub comments, CLI dashboard, clawhip-style event routing; binds via thread/comment ids |
 | **Persists** | Across every session, agent, and tool | Until task/issue lifecycle closes | Per runtime/session unless promoted | Per message/thread/event unless linked back to truth |
 | **Required?** | Yes — this is the floor | Needed for multi-step/live work | No — harnesses amplify it | No — cockpits make it visible |
 
-Open Scaffold is the chassis and logbook. Coordinators such as Hermes decide what should happen next and may maintain live task/package state. OMC and OMX are execution/orchestration lanes for Claude Code and Codex respectively. clawhip-style tools are event/status transport. Discord-style build-in-public rooms are glass cockpits: useful surfaces, not canonical truth.
+Open Scaffold is the chassis and logbook. Coordinators such as Hermes decide what should happen next and may maintain live task/package state. OMC and OMX are execution/orchestration lanes for Claude Code and Codex respectively. clawhip-style tools are event/status transport. Discord-style build-in-public rooms are glass cockpits: useful surfaces, not canonical truth. The task/run split is explicit: `task_id` tracks durable work, `run_id` tracks one attempt, `question_id` tracks human blockers, and chat/thread ids are optional bindings.
 
 ---
 
@@ -259,6 +310,8 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 | [`MISSION.md`](MISSION.md) | Source of truth for what the project is: mission, goals, non-goals, changelog. |
 | [`ROADMAP.md`](ROADMAP.md) | Product/system milestones and self-dogfood chain. |
 | [`docs/OPEN_SCAFFOLD_SYSTEM.md`](docs/OPEN_SCAFFOLD_SYSTEM.md) | Ontology: core, orchestrators, runtime harnesses, task bridges, glass cockpits, GitHub. |
+| [`docs/TASK_RUN_MODEL.md`](docs/TASK_RUN_MODEL.md) | Canonical `task_id` / `run_id` / `question_id` model and chat/operator binding rules. |
+| [`docs/GITHUB_WORKFLOW.md`](docs/GITHUB_WORKFLOW.md) | GitHub issue → run packet → PR → CI/Codex/human review loop. |
 | [`CLAUDE.md`](CLAUDE.md) | Claude Code's entry point. Agents read this first. |
 | [`AGENTS.md`](AGENTS.md) | Entry point for Codex, Gemini, and other agents (paired view of `CLAUDE.md`). |
 | [`.osc/plans/handoff-template.md`](.osc/plans/handoff-template.md) | The 7-section schema every plan file follows. |
@@ -294,13 +347,17 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 
 **OMC / OMX** — Runtime harnesses, not universal orchestrators: [oh-my-claudecode](https://github.com/yeachan-heo/oh-my-claudecode) extends Claude Code workflows; [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex) extends Codex workflows. Recommended when useful, never required.
 
+**Task / Run / Question** — `task_id` is durable work identity, `run_id` is one execution attempt, and `question_id` is one blocking clarification/approval inside a run. Chat thread/message ids are bindings, not canonical truth.
+
 **Plan Immutability** — Once a plan is committed to git, it is never edited. Changes layer on top as amendments. This is the single rule that prevents silent scope creep.
 
 **Scaffold** — The project-specific structure that organizes plans, decisions, amendments, and handovers in your repo. open-scaffold is a scaffold. OMC and OMX are runtimes.
 
 **Session Handover** — The practice of producing explicit, reviewable deliverables at the end of each work session so the next session (human or agent) starts with context, not questions. See [`docs/WORKFLOW.md`](docs/WORKFLOW.md).
 
-**verify.sh** — The built-in compliance checker. `--quick` (what agents run automatically), `--standard` (the default), `--strict` (full methodology audit).
+**verify.sh** — The built-in zero-dependency compliance checker. `--quick` (what agents run automatically), `--standard` (the default), `--strict` (full methodology audit).
+
+**Shell scripts vs `osc`** — Shell scripts are the day-zero compatibility floor: useful before `npm install`, global CLI setup, or any agent runtime. The tested `osc` CLI is the canonical implementation path for richer run/package behavior; shell helpers should remain thin wrappers or fallbacks over time.
 
 </details>
 
@@ -310,9 +367,10 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 open-scaffold has several cooperating layers:
 
 - **Core methodology** — mission, roadmap, folder discipline, immutable plans, amendment protocol, evidence/run packets, ADRs, session handover, and the `osc` prompt/artifact CLI. Framework-agnostic.
-- **Coordinators/task state** — Hermes, GitHub Issues, Linear/Jira, or custom systems choose what should happen next and track live work.
-- **Runtime lanes** — OMC for Claude Code and OMX for Codex. They amplify execution but do not own the source of truth.
+- **Coordinators/task state** — Hermes, GitHub Issues, Linear/Jira, or custom systems choose what should happen next and track live work through durable task IDs.
+- **Runtime lanes** — OMC for Claude Code and OMX for Codex. They amplify execution through bound run IDs but do not own the source of truth.
 - **Event transport** — clawhip-style tools, webhooks, and gateways route session/status events into operator surfaces.
+- **GitHub review layer** — issues, branches, PRs, CI, Codex review, and human approvals gate publication.
 - **Glass cockpits** — Discord/Slack/Telegram/GitHub comments/CLI dashboards expose status, blockers, approvals, and build-in-public streams.
 
 The scaffold is the load-bearing part. Agents and runtimes amplify it. Cockpits make it visible. You can strip the runtimes away and the methodology still holds.

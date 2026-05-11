@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { createRunArtifacts } from './artifacts.js';
+import { createRunArtifacts, type ArtifactMode, type ExecutorLane, type OperatorSurface, type RunArtifactOptions } from './artifacts.js';
 import { inspectScaffold, parsePlanFile, planToJson } from './scaffold.js';
 
 function printHelp(): void {
@@ -10,14 +10,28 @@ function printHelp(): void {
 Usage:
   osc status [--json]
   osc plan <plan-path>
-  osc delegate <plan-path>
-  osc run <plan-path>
-  osc review <plan-path>
-  osc ultrareview <plan-path>
+  osc delegate <plan-path> [run binding options]
+  osc run <plan-path> [run binding options]
+  osc review <plan-path> [run binding options]
+  osc ultrareview <plan-path> [run binding options]
   osc verify
   osc doctor
 
-Generic open-scaffold generates prompts/artifacts only. External orchestrators/agents and runtime harnesses perform autonomous spawning.`);
+Run binding options:
+  --task-id <id>              Canonical task/card/issue id for this work item
+  --source-ref <ref>          Additional source ref; repeatable
+  --executor <lane>           omc-claude | omx-codex | plain-agent | human | custom
+  --harness-skill <skill>     e.g. /ralplan, $ralplan, /ralph, $ultrawork
+  --repo <path>               Repository path for execution
+  --worktree <path>           Worktree path for isolated execution
+  --branch <name>             Branch expected for the run
+  --operator-surface <name>   discord | slack | telegram | github | cli | none | custom
+  --operator-thread <id>      Optional chat/thread/comment binding id
+  --issue <id-or-url>         Optional GitHub issue binding
+  --pr <id-or-url>            Optional PR binding
+  --commit-policy <text>      Commit/push approval rule
+
+Generic open-scaffold generates prompts/artifacts only. External coordinators/agents and runtime harnesses perform autonomous spawning.`);
 }
 
 function requireArg(args: string[], name: string): string {
@@ -27,6 +41,90 @@ function requireArg(args: string[], name: string): string {
     process.exit(2);
   }
   return value;
+}
+
+const EXECUTOR_LANES = ['omc-claude', 'omx-codex', 'plain-agent', 'human', 'custom'] as const;
+const OPERATOR_SURFACES = ['discord', 'slack', 'telegram', 'github', 'cli', 'none', 'custom'] as const;
+
+function parseChoice<T extends readonly string[]>(value: string, choices: T, flag: string): T[number] {
+  if ((choices as readonly string[]).includes(value)) return value as T[number];
+  console.error(`Invalid value for ${flag}: ${value}. Expected one of: ${choices.join(', ')}`);
+  process.exit(2);
+}
+
+function parseRunOptions(args: string[]): { planPathArg: string; options: RunArtifactOptions } {
+  const planPathArg = requireArg(args, 'plan-path');
+  const rest = args.slice(1);
+  const options: RunArtifactOptions = {};
+
+  function takeValue(index: number, flag: string): string {
+    const value = rest[index + 1];
+    if (!value || value.startsWith('--')) {
+      console.error(`Missing value for ${flag}`);
+      process.exit(2);
+    }
+    return value;
+  }
+
+  for (let i = 0; i < rest.length; i += 1) {
+    const flag = rest[i];
+    switch (flag) {
+      case '--task-id':
+        options.taskId = takeValue(i, flag);
+        i += 1;
+        break;
+      case '--source-ref':
+        options.sourceRef = [...(options.sourceRef ?? []), takeValue(i, flag)];
+        i += 1;
+        break;
+      case '--executor':
+        options.executor = parseChoice(takeValue(i, flag), EXECUTOR_LANES, flag) as ExecutorLane;
+        i += 1;
+        break;
+      case '--harness-skill':
+        options.harnessSkill = takeValue(i, flag);
+        i += 1;
+        break;
+      case '--repo':
+        options.repo = takeValue(i, flag);
+        i += 1;
+        break;
+      case '--worktree':
+        options.worktree = takeValue(i, flag);
+        i += 1;
+        break;
+      case '--branch':
+        options.branch = takeValue(i, flag);
+        i += 1;
+        break;
+      case '--operator-surface':
+        options.operatorSurface = parseChoice(takeValue(i, flag), OPERATOR_SURFACES, flag) as OperatorSurface;
+        i += 1;
+        break;
+      case '--operator-thread':
+        options.operatorThread = takeValue(i, flag);
+        i += 1;
+        break;
+      case '--issue':
+        options.issue = takeValue(i, flag);
+        i += 1;
+        break;
+      case '--pr':
+        options.pr = takeValue(i, flag);
+        i += 1;
+        break;
+      case '--commit-policy':
+        options.commitPolicy = takeValue(i, flag);
+        i += 1;
+        break;
+      default:
+        console.error(`Unknown option for run artifacts: ${flag}`);
+        printHelp();
+        process.exit(2);
+    }
+  }
+
+  return { planPathArg, options };
 }
 
 function status(json: boolean): void {
@@ -45,18 +143,20 @@ function status(json: boolean): void {
   }
 }
 
-function createArtifacts(args: string[], mode: 'delegate' | 'run' | 'review' | 'ultrareview'): void {
-  const planPath = resolve(requireArg(args, 'plan-path'));
+function createArtifacts(args: string[], mode: ArtifactMode): void {
+  const { planPathArg, options } = parseRunOptions(args);
+  const planPath = resolve(planPathArg);
   if (!existsSync(planPath)) {
     console.error(`Plan not found: ${planPath}`);
     process.exit(1);
   }
   const plan = parsePlanFile(planPath);
-  const run = createRunArtifacts(process.cwd(), plan, mode);
+  const run = createRunArtifacts(process.cwd(), plan, mode, options);
   console.log(`Created ${mode} artifacts:`);
   console.log(`  Run: ${run.runDir}`);
   console.log(`  Manifest: ${run.manifestPath}`);
   for (const prompt of run.promptPaths) console.log(`  Prompt: ${prompt}`);
+  console.log('  Note: generic open-scaffold did not spawn a runtime; dispatch via your coordinator or harness adapter.');
 }
 
 function main(): void {

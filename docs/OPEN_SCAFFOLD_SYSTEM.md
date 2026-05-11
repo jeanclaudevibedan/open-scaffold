@@ -19,6 +19,7 @@ Open Scaffold core owns the portable project substrate:
 - `.osc/runs/` — generated run packets, prompt bundles, execution evidence.
 - `docs/` — decisions, workflow standards, examples, operator guidance.
 - `verify.sh` / `osc verify` — methodology compliance checks.
+- `.github/` templates — issue and PR traceability for GitHub-centered workflows.
 
 Core does **not** spawn agents. It defines the contract that agents and tools can use.
 
@@ -91,6 +92,16 @@ Examples:
 
 Open Scaffold should define how roadmap items and plans link to these systems, but it should not assume one board is universal.
 
+A live task should dispatch work through a canonical run record instead of through a chat thread or runtime transcript directly. See [`docs/TASK_RUN_MODEL.md`](TASK_RUN_MODEL.md) for the v1 task/run/operator-surface schema.
+
+```text
+task_id = durable product/work item
+run_id = one execution attempt
+question_id = one blocking clarification/approval inside a run
+thread_id = optional operator-surface binding
+session/worktree/branch/PR = runtime/publication bindings
+```
+
 ### 5. Event/session transport
 
 Event/session transport routes notifications, session updates, and status messages between runtimes and operator surfaces. It is glue, not the planner or executor.
@@ -133,11 +144,11 @@ GitHub owns public/versioned implementation state:
 - issues
 - branches
 - PRs
-- reviews
+- reviews, including Codex connector review when enabled
 - CI results
 - releases
 
-A mature Open Scaffold workflow should make GitHub artifacts traceable to roadmap items, plans, evidence, and verification gates.
+A mature Open Scaffold workflow should make GitHub artifacts traceable to roadmap items, task IDs, run IDs, plans, evidence, and verification gates. See [`docs/GITHUB_WORKFLOW.md`](GITHUB_WORKFLOW.md).
 
 ## Correct boundary statements
 
@@ -153,6 +164,7 @@ OMX is a Codex execution/orchestration lane.
 OMX is not automatically the runtime engine for Hermes or OMC; it becomes one only when a coordinator dispatches a bounded package into an OMX/Codex session.
 clawhip-style tooling is routing/status/event transport, not the planner or executor.
 Discord is a glass cockpit, not canonical state.
+A chat thread is a binding on a task/run, not the task/run itself.
 GitHub is public/versioned work truth.
 ```
 
@@ -191,6 +203,18 @@ Rules:
 - Dispatch bounded packages; do not let Hermes, OMC, OMX, and Discord all become competing brains.
 - Do not make Hermes/OMC/OMX mutate the same worktree at the same time unless the plan explicitly defines isolation and merge rules.
 - Treat event routers such as clawhip as transport for session/status events, not as the source of planning or execution truth.
+- Require an executable package before harness dispatch: clear objective, bounded scope, testable acceptance criteria, explicit constraints/non-goals, verification, and no blocking open questions.
+- If the package is ambiguous, route to clarification, interview, Seed/spec generation, or a harness-specific deep-interview mode before implementation.
+
+## Shell scripts and CLI boundary
+
+Shell scripts are the zero-dependency compatibility floor. They make a fresh template clone usable before `npm install`, global CLI setup, Hermes, OMC, OMX, or any agent runtime exists. The richer tested path is the `osc` CLI; over time shell helpers should remain thin wrappers or fallbacks rather than becoming a separate strategic brain.
+
+```text
+bootstrap.sh / verify.sh = day-zero floor
+osc CLI = canonical tested package/run implementation
+amend.sh / close.sh / delegate.sh = compatibility helpers that should converge toward osc-backed behavior
+```
 
 ## Self-dogfood loop
 

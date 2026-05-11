@@ -38,11 +38,15 @@ Implement what the plan says. Independent tasks can run in parallel. Every chang
 
 Check the plan's acceptance criteria one by one. Run tests. Read the diff. Verification traces to criteria, not vibes.
 
-Run `./verify.sh` for a methodology compliance report (mission defined, plans exist, amendments sequential, changelog coverage). Use `./verify.sh --strict` for full checks including plan schema validation and paired-view drift detection. `osc verify` performs the generic CLI check; adapter repos keep their own namespace-specific verify behavior.
+Run `./verify.sh` for a zero-dependency methodology compliance report (mission defined, plans exist, amendments sequential, changelog coverage). Use `./verify.sh --strict` for full checks including plan schema validation and paired-view drift detection. `osc verify` performs the generic CLI check; adapter repos keep their own namespace-specific verify behavior. Shell scripts are the day-zero floor; `osc` is the canonical tested path for richer run/package behavior.
 
 > **With adapters:** OMC/OMX handoffs should still end by running the repo-local `./verify.sh` plus acceptance-criteria checks. Runtime-native verify commands are wrappers around this evidence, not replacements for it.
 
-### 5. Capture amendments (when you "get smarter")
+### 5. Publish/review (when code or public docs change)
+
+Open a traceable GitHub PR for meaningful changes. The PR should link issue/task, plan/spec, run packet, verification, evidence, and review gates. If the Codex connector is enabled, trigger review by opening the PR for review, marking a draft ready, or commenting `@codex review`. See `docs/GITHUB_WORKFLOW.md`.
+
+### 6. Capture amendments (when you "get smarter")
 
 New information legitimately changes what you're building? That's fine — but capture it, don't silently drift.
 
@@ -68,6 +72,7 @@ There is no automatic router between tools. You, the human, decide based on the 
 | Simple, single-file fix | Execute directly | Overhead of planning exceeds the fix itself |
 | Independent parallel tasks | Parallel execution | Fan out across agents for throughput |
 | Stuck or uncertain | Second opinion | A different model's perspective breaks deadlocks |
+| Public/versioned change | GitHub PR loop | CI, Codex review, and human approval gate merges |
 
 > **Runtime split:** Open Scaffold is the runtime-neutral contract. Hermes, Claw/OpenClaw, Claude Code, Codex, Gemini, or custom scripts can act as orchestrators/agents. OMC is a Claude Code harness; OMX is a Codex harness. Operator surfaces such as Discord are glass cockpits, not canonical state.
 
