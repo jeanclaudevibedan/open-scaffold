@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createRunArtifacts, type ArtifactMode, type ExecutorLane, type OperatorSurface, type RunArtifactOptions } from './artifacts.js';
 import { inspectScaffold, parsePlanFile, planToJson } from './scaffold.js';
+import { validateScaffold } from './validation.js';
 
 function printHelp(): void {
   console.log(`osc — Open Scaffold CLI
@@ -183,17 +184,17 @@ function main(): void {
       createArtifacts(args, command);
       return;
     case 'verify': {
+      const result = validateScaffold(process.cwd());
+      for (const failure of result.failures) {
+        console.error(`FAIL ${failure.code}: ${failure.message}${failure.path ? ` (${failure.path})` : ''}`);
+      }
+      for (const warning of result.warnings) {
+        console.warn(`WARN ${warning.code}: ${warning.message}${warning.path ? ` (${warning.path})` : ''}`);
+      }
+      if (!result.ok) process.exit(1);
       const state = inspectScaffold(process.cwd());
-      if (!state.mission.defined) {
-        console.error(`FAIL mission: ${state.mission.reason}`);
-        process.exit(1);
-      }
       const count = Object.values(state.plans).flat().length;
-      if (count === 0) {
-        console.error('FAIL plans: no plan files found under .osc/plans/');
-        process.exit(1);
-      }
-      console.log(`PASS mission defined and ${count} plan file(s) found`);
+      console.log(`PASS mission defined and ${count} plan file(s) found; ${result.warnings.length} warning(s)`);
       return;
     }
     case 'doctor':

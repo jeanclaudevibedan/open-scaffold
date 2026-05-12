@@ -198,8 +198,8 @@ if [ "$TIER" = "--strict" ]; then
           *-amendment-*) continue ;;
         esac
         relpath=$(python3 -c "import os; print(os.path.relpath('$f', '$ROOT'))" 2>/dev/null || printf '%s' "$f" | sed "s|$ROOT/||")
-        # Count commits that modified this file (excluding the initial add)
-        commit_count=$(git -C "$ROOT" log --oneline --follow -- "$relpath" 2>/dev/null | wc -l | tr -d ' ')
+        # Count commits that modified this file's content (renames/moves during close are allowed)
+        commit_count=$(git -C "$ROOT" log --oneline --diff-filter=M --follow -- "$relpath" 2>/dev/null | wc -l | tr -d ' ')
         if [ "$commit_count" -gt 1 ]; then
           warn "Plan $basename was modified after initial commit ($commit_count commits)"
           IMMUTABLE_OK=false
@@ -248,6 +248,66 @@ if [ "$TIER" = "--strict" ]; then
     pass "Execution Strategy section structure valid (where present)"
   fi
 fi
+
+
+  # Check 9: Official release/evidence directory exists and release notes have core sections
+  RELEASES_OK=true
+  if [ ! -d "$ROOT/.osc/releases" ]; then
+    warn ".osc/releases/ directory missing (official release/evidence note location)"
+    RELEASES_OK=false
+  elif [ ! -f "$ROOT/.osc/releases/README.md" ]; then
+    warn ".osc/releases/README.md missing"
+    RELEASES_OK=false
+  else
+    for f in "$ROOT/.osc/releases"/*.md; do
+      [ -f "$f" ] || continue
+      basename=$(basename "$f")
+      [ "$basename" = "README.md" ] && continue
+      for section in "Summary" "Traceability" "Verification" "Outcome"; do
+        if ! grep -qi "^## .*$section" "$f"; then
+          warn "Release note $basename missing section: $section"
+          RELEASES_OK=false
+        fi
+      done
+      if grep -qi 'pending' "$f" && grep -Eqi '(PR #[0-9]+ merged|issue #[0-9]+ closed|Tag:[[:space:]]*v[0-9]|GitHub Release:[[:space:]]*https?://)' "$f"; then
+        warn "Release note $basename still says pending while citing merged/closed/released evidence"
+        RELEASES_OK=false
+      fi
+      if grep -Eq '[0-9]{8}T[0-9]{6}Z-[a-z0-9-]+' "$f" && ! grep -Eqi '(PR #[0-9]+|Pull Request|github.com/.*/pull/[0-9]+)' "$f"; then
+        warn "Release note $basename cites a run id but no PR reference"
+        RELEASES_OK=false
+      fi
+    done
+  fi
+  if $RELEASES_OK; then
+    pass "Release/evidence notes have required local structure"
+  fi
+
+  # Check 10: Active plan stale-state heuristic (local-only, no network)
+  STALE_OK=true
+  STALE_DAYS="${OSC_STALE_DAYS:-30}"
+  NOW_EPOCH=$(date +%s)
+  for f in "$ROOT/.osc/plans/active"/*.md; do
+    [ -f "$f" ] || continue
+    basename=$(basename "$f")
+    case "$basename" in
+      README.md|WORKFLOW.md|handoff-template.md|*-amendment-*) continue ;;
+    esac
+    # macOS/BSD stat first, GNU stat fallback
+    MTIME=$(stat -f %m "$f" 2>/dev/null || stat -c %Y "$f" 2>/dev/null || printf '%s' "$NOW_EPOCH")
+    AGE_DAYS=$(( (NOW_EPOCH - MTIME) / 86400 ))
+    if [ "$AGE_DAYS" -gt "$STALE_DAYS" ]; then
+      warn "Active plan $basename has not changed for $AGE_DAYS days (threshold $STALE_DAYS)"
+      STALE_OK=false
+    fi
+    if grep -Eqi '(PR #[0-9]+ (merged|closed)|merged PR #[0-9]+|issue #[0-9]+ closed)' "$f"; then
+      warn "Active plan $basename appears to cite merged/closed evidence; consider moving it to done/"
+      STALE_OK=false
+    fi
+  done
+  if $STALE_OK; then
+    pass "Active plan stale-state heuristic clean"
+  fi
 
 # ──────────────────────────────────────────
 # Summary
