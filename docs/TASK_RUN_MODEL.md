@@ -8,7 +8,8 @@ Open Scaffold separates product intent, operational task state, execution attemp
 Task owns intent/lifecycle.
 Run owns one execution attempt.
 Harness owns execution while alive.
-Operator surface owns visibility/questions/approvals.
+Operator surface: visibility/questions/approvals.
+Cockpit event: replaceable visible message that references task/run/question/evidence IDs.
 Evidence owns proof.
 ```
 
@@ -57,6 +58,10 @@ Never route by "latest pending message" when more than one run or question can e
 A Discord/Slack/Telegram/GitHub-comment/CLI surface binding. It mirrors status, shows artifacts, asks questions, and collects approvals. It should point back to `task_id`, `run_id`, and evidence paths.
 
 A thread can be replaced, deleted, or unavailable without destroying task/run recovery.
+
+### Event / cockpit bindings
+
+Cockpit events are status, blocker, question, answer, approval, completion, evidence, PR, release, nudge, or cancellation messages posted to an operator surface. They should carry canonical IDs rather than becoming canonical themselves. See [`docs/GLASS_COCKPIT_PROTOCOL.md`](GLASS_COCKPIT_PROTOCOL.md).
 
 ### Runtime bindings
 

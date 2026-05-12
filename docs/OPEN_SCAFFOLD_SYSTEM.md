@@ -18,6 +18,7 @@ Open Scaffold core owns the portable project substrate:
 - `.osc/specs/` — durable specs and context packs.
 - `.osc/runs/` — generated run packets, prompt bundles, execution evidence.
 - `docs/` — decisions, workflow standards, examples, operator guidance.
+- `docs/GLASS_COCKPIT_PROTOCOL.md` — runtime-neutral event vocabulary for status, blockers, questions, approvals, evidence receipts, PR links, and build-in-public streams.
 - `docs/SLICE_CLOSE_PROTOCOL.md` — evidence receipts, postflight decisions, approval strength, correction routing, and next-slice inheritance.
 - `verify.sh` / `osc verify` — methodology compliance checks.
 - `.github/` templates — issue and PR traceability for GitHub-centered workflows.
@@ -136,7 +137,7 @@ The glass cockpit can run in several modes:
 - **Build-in-public room:** public or semi-public devlog channel.
 - **Stakeholder room:** curated client/product updates.
 
-Operator surfaces are **not canonical truth**. They should link back to roadmap items, task IDs, run packets, evidence, issues, branches, and PRs.
+Operator surfaces are **not canonical truth**. They should link back to roadmap items, task IDs, run packets, evidence, issues, branches, and PRs. Their event vocabulary is documented in [`docs/GLASS_COCKPIT_PROTOCOL.md`](GLASS_COCKPIT_PROTOCOL.md).
 
 ### 7. GitHub/public versioning layer
 

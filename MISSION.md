@@ -27,6 +27,7 @@ Explicit things this project is NOT trying to do. Legitimate scope discipline st
 One-line dated entries for every scope pivot. Format: `YYYY-MM-DD: <one-line pivot description + link to amendment file if applicable>`. Append entries in chronological order. Never rewrite history here.
 
 <!-- append YYYY-MM-DD entries below this line -->
+- 2026-05-12: closed 002-slice-close-evidence-loop — shipped docs/SLICE_CLOSE_PROTOCOL.md in PR #5 with Codex review clean
 2026-05-11: Defined Open Scaffold as a runtime-neutral repo-native operating system for agent-orchestrated development, with explicit orchestrator/harness/glass-cockpit boundaries.
 2026-05-11: Reframed Open Scaffold ontology and roadmap via `.osc/plans/active/001-generic-osc-core-amendment-1.md`.
 2026-05-11: Adopted external OMC/OMX/Hermes/clawhip boundary correction via `.osc/plans/active/001-generic-osc-core-amendment-2.md`.

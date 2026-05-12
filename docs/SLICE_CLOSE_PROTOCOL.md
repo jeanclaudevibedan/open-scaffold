@@ -286,6 +286,10 @@ Avoid:
 - requiring one specific coordinator, chat surface, or runtime harness for closure;
 - treating `postflighted` as the same thing as `approved`.
 
+## Relationship to cockpit events
+
+Slice close decisions often appear first as cockpit events: `completion_report`, `approval_request`, `evidence_receipt`, or `pr_link`. Those events are visibility and control messages. The durable close record still belongs in the run packet, evidence file, PR/release note, issue/task, or plan/amendment. See [`docs/GLASS_COCKPIT_PROTOCOL.md`](GLASS_COCKPIT_PROTOCOL.md) for the event vocabulary.
+
 ## Minimal manual template
 
 Copy this into a PR body, issue comment, or evidence file when no tooling exists yet:

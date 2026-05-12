@@ -77,7 +77,7 @@ Acceptance criteria:
 
 ## Milestone 2 — Evolutionary closed-loop protocol
 
-Status: in progress via `.osc/plans/active/002-slice-close-evidence-loop.md` and `docs/SLICE_CLOSE_PROTOCOL.md`.
+Status: first public protocol shipped in PR #5 via `docs/SLICE_CLOSE_PROTOCOL.md`; future CLI validation remains optional follow-up.
 
 Goal: productize the “slice → feedback → correction → approval → next slice” learning loop.
 
@@ -96,13 +96,15 @@ Acceptance criteria:
 
 ## Milestone 3 — Glass cockpit MVP
 
+Status: in progress via `.osc/plans/active/003-glass-cockpit-event-protocol.md` and `docs/GLASS_COCKPIT_PROTOCOL.md`.
+
 Goal: make build-in-public / private control-room operation a first-class Open Scaffold capability.
 
 Deliverables:
 
-- Define glass-cockpit event types: nudge, active session, blocker, question, answer, approval request, completion report, evidence receipt, PR link.
+- Define glass-cockpit event types: nudge, active session, blocker, question, answer, approval request, completion report, evidence receipt, PR link. First public shape: `docs/GLASS_COCKPIT_PROTOCOL.md`.
 - Define event/session transport separately from the cockpit: clawhip-style routers, webhooks, gateway adapters, and session hooks carry events but do not plan or execute.
-- Define public/team/private modes.
+- Define public/team/private modes. First public shape: private, team, build-in-public, and stakeholder modes in `docs/GLASS_COCKPIT_PROTOCOL.md`.
 - Provide Discord-first examples while keeping the protocol surface generic enough for Slack/Telegram/CLI/GitHub comments.
 - Specify that chat is a surface, not canonical truth.
 
