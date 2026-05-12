@@ -61,7 +61,8 @@ leakage scan                  -> no private paths/secrets hits
 ## Codex review status
 
 ```text
-pending until PR is opened and @codex review is triggered
+@codex review triggered on PR #9.
+Codex connector initially requested environment setup, then completed review and reported: "Didn't find any major issues. :+1:"
 ```
 
 ## Outcome
