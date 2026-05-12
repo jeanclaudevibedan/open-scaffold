@@ -77,14 +77,16 @@ Acceptance criteria:
 
 ## Milestone 2 — Evolutionary closed-loop protocol
 
+Status: in progress via `.osc/plans/active/002-slice-close-evidence-loop.md` and `docs/SLICE_CLOSE_PROTOCOL.md`.
+
 Goal: productize the “slice → feedback → correction → approval → next slice” learning loop.
 
 Deliverables:
 
-- Define feedback-capture format.
-- Define slice close criteria.
+- Define feedback-capture format. First public shape: evidence receipt in `docs/SLICE_CLOSE_PROTOCOL.md`.
+- Define slice close criteria. First public shape: postflight checklist and approval taxonomy in `docs/SLICE_CLOSE_PROTOCOL.md`.
 - Define how corrections become amendments, evidence, roadmap changes, or next-slice inheritance.
-- Add validation checks for stale state, fake evidence, or weak approvals.
+- Add validation checks for stale state, fake evidence, or weak approvals. First public shape: manual checklist and anti-patterns; CLI validation remains a future implementation option.
 
 Acceptance criteria:
 

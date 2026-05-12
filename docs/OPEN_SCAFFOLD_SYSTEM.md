@@ -18,6 +18,7 @@ Open Scaffold core owns the portable project substrate:
 - `.osc/specs/` — durable specs and context packs.
 - `.osc/runs/` — generated run packets, prompt bundles, execution evidence.
 - `docs/` — decisions, workflow standards, examples, operator guidance.
+- `docs/SLICE_CLOSE_PROTOCOL.md` — evidence receipts, postflight decisions, approval strength, correction routing, and next-slice inheritance.
 - `verify.sh` / `osc verify` — methodology compliance checks.
 - `.github/` templates — issue and PR traceability for GitHub-centered workflows.
 
@@ -92,7 +93,7 @@ Examples:
 
 Open Scaffold should define how roadmap items and plans link to these systems, but it should not assume one board is universal. The dispatch pattern is documented in [`docs/RUNTIME_HARNESS_DISPATCH.md`](RUNTIME_HARNESS_DISPATCH.md): core creates the package, coordinators/task bridges choose and launch the harness, and evidence returns to `.osc/runs`, GitHub, or release notes.
 
-A live task should dispatch work through a canonical run record instead of through a chat thread or runtime transcript directly. See [`docs/TASK_RUN_MODEL.md`](TASK_RUN_MODEL.md) for the v1 task/run/operator-surface schema.
+A live task should dispatch work through a canonical run record instead of through a chat thread or runtime transcript directly. See [`docs/TASK_RUN_MODEL.md`](TASK_RUN_MODEL.md) for the v1 task/run/operator-surface schema. A task or run should close through the evidence-backed slice-close protocol in [`docs/SLICE_CLOSE_PROTOCOL.md`](SLICE_CLOSE_PROTOCOL.md), not merely because a runtime or chat message says "done".
 
 ```text
 task_id = durable product/work item
@@ -156,6 +157,7 @@ Use these statements in product docs and agent prompts:
 
 ```text
 Open Scaffold is the repo protocol, not the agent runtime.
+Slice close requires evidence, acceptance-gate status, and an explicit approval/rejection/block decision; chat alone is not closure.
 Hermes is a coordinator / stateful product-workflow surface that may use Kanban, nudges, package/task state, and operator interaction.
 Hermes Kanban/Nudge is a coordination/control layer, not a Codex or Claude Code runtime.
 Claude Code, Codex, Gemini, Claw/OpenClaw, and custom agents can operate Open Scaffold directly when bounded by the repo contract.
@@ -195,6 +197,7 @@ Open Scaffold roadmap/plan or external task card
   -> executor produces result artifact, diff, PR, status, or blocker
   -> coordinator updates task state, asks the operator, or nudges next step
   -> evidence and decisions are promoted back into Open Scaffold/GitHub
+  -> slice close records acceptance-gate status, approval strength, corrections, and next-slice inheritance
 ```
 
 Rules:

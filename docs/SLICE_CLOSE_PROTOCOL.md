@@ -1,0 +1,324 @@
+# Slice Close Protocol
+
+Open Scaffold does not treat "the agent says it is done" as done. A slice closes only when the repo can show what was attempted, what evidence exists, what acceptance criteria passed or failed, what the operator decided, and what the next slice inherits.
+
+This protocol productizes the closed loop:
+
+```text
+slice -> run -> evidence -> postflight -> approval decision -> correction routing -> next slice
+```
+
+## Executive rule
+
+```text
+A slice is not closed by chat.
+A slice is closed by evidence, acceptance-gate status, and an explicit decision.
+```
+
+Chat threads, runtime transcripts, terminal logs, and coordinator task comments can help humans operate the work. They are not enough by themselves. The durable close record must point back to Open Scaffold files, task/run identifiers, GitHub artifacts, or evidence paths.
+
+## Layer ownership
+
+| Layer | Owns | Does not own |
+|---|---|---|
+| Open Scaffold core | close protocol, evidence receipt shape, postflight fields, next-slice inheritance rules | live task board, agent spawning, runtime auth |
+| Task system / coordinator | live state such as ready/running/blocked/review/done | final proof by itself |
+| Runtime harness / agent | execution attempt while alive | canonical closure or approval |
+| Operator surface | questions, approvals, visible status | source of truth |
+| GitHub / release layer | branch, PR, review, CI, release note | runtime session truth |
+| Evidence | proof of outputs, checks, decisions, and gaps | vague vibes |
+
+## Identity chain
+
+A meaningful slice should be reconstructable from stable identifiers:
+
+```text
+roadmap_item
+  -> plan_or_spec
+  -> task_id
+  -> run_id(s)
+  -> evidence_receipt(s)
+  -> postflight_decision
+  -> next_action
+```
+
+Not every tiny task needs every link. But if a slice changes product direction, public docs, code, release notes, or a multi-agent workflow, it should have enough of this chain for the next human or agent to resume without chat memory.
+
+## Slice states
+
+Recommended slice states:
+
+```text
+planned
+  -> packaged
+  -> dispatched | manual_execution
+  -> running
+  -> evidence_ready
+  -> postflighted
+  -> approved | weak_approved | rejected | blocked
+  -> closed | next_slice_created
+```
+
+State meanings:
+
+- `planned` — a roadmap item, issue, plan, or spec exists.
+- `packaged` — a bounded run packet or manual execution contract exists.
+- `dispatched` — a coordinator launched or assigned execution.
+- `manual_execution` — a human or direct agent worked without runtime dispatch, still under the plan/spec.
+- `running` — work is active.
+- `evidence_ready` — outputs and verification evidence are available for review.
+- `postflighted` — someone or something compared evidence to acceptance criteria.
+- `approved` — strong approval; the result meets the product bar.
+- `weak_approved` — procedural or fatigue approval; acceptable to move on, but downstream slices should treat it as weak signal.
+- `rejected` — output does not meet the bar; correction required.
+- `blocked` — cannot close because a human, dependency, credential, access, or external input is missing.
+- `closed` — no follow-up required beyond routine archive/release bookkeeping.
+- `next_slice_created` — follow-up work has a durable plan/issue/task.
+
+## Evidence receipt
+
+An evidence receipt is a short durable record that lets reviewers audit the close decision without reading an entire transcript.
+
+Recommended location:
+
+```text
+.osc/runs/<run_id>/evidence.md
+.osc/runs/<run_id>/postflight.md
+```
+
+If a repo does not track generated `.osc/runs/`, use a stable tracked location such as:
+
+```text
+docs/evidence/<date>-<slice>.md
+```
+
+Minimum receipt shape:
+
+```yaml
+schema: open-scaffold.evidence.v1
+slice: docs-runtime-dispatch
+plan: .osc/plans/active/001-example.md
+task_id: issue:42
+run_id: 20260512T090000Z-docs-runtime-dispatch
+operator_surface: github-pr
+pr: 12
+commit_or_branch: feat/docs-runtime-dispatch
+acceptance_gate:
+  status: pass | partial | fail | blocked
+  criteria:
+    - id: AC1
+      status: pass
+      evidence: docs/RUNTIME_HARNESS_DISPATCH.md
+    - id: AC2
+      status: partial
+      evidence: "Manual review: wording still needs example"
+verification:
+  - command: ./verify.sh --standard
+    result: pass
+  - command: npm run osc -- verify
+    result: pass
+artifacts:
+  changed_files:
+    - docs/RUNTIME_HARNESS_DISPATCH.md
+    - docs/TASK_RUN_MODEL.md
+  outputs:
+    - docs/RUNTIME_HARNESS_DISPATCH.md#where-we-are-right-now
+known_gaps:
+  - "Runtime binding starter kit remains future work."
+approval:
+  status: approved | weak_approved | rejected | blocked
+  approver: human | maintainer | reviewer | automated-check
+  rationale: "Why this decision was made."
+next_action:
+  type: close | amend_plan | create_next_slice | update_roadmap | open_issue | retry_run | block
+  target: .osc/plans/backlog/002-next-slice.md
+```
+
+The schema is intentionally plain text/YAML-friendly. Tools can validate it later, but humans should be able to write and review it today.
+
+## Postflight checklist
+
+Before a slice is called closed, answer these in writing:
+
+1. **What was the slice goal?** Link the plan/spec/issue.
+2. **What changed?** Link changed files, artifacts, PR, or release note.
+3. **Which acceptance criteria passed?** Mark each `pass`, `partial`, `fail`, or `blocked`.
+4. **What verification ran?** Include exact commands, manual checks, screenshots, reviewer comments, or CI links.
+5. **What evidence proves it?** Link durable files, PR comments, CI logs, screenshots, generated outputs, or release notes.
+6. **What gaps remain?** Include known defects, weak evidence, skipped checks, or unresolved product taste questions.
+7. **What did the operator decide?** Use the approval taxonomy below.
+8. **What happens next?** Close, amend, create next slice, retry, block, or release.
+
+## Approval taxonomy
+
+Use a small, explicit vocabulary.
+
+### `approved`
+
+Strong product approval.
+
+Use when:
+
+- acceptance criteria pass;
+- evidence is durable and inspectable;
+- known gaps are acceptable or separately tracked;
+- the human/product owner or required review gate explicitly accepts the result.
+
+Downstream meaning: future slices may treat this output as stable baseline unless new evidence appears.
+
+### `weak_approved`
+
+Procedural, fatigue, or weak-positive approval.
+
+Use when:
+
+- the result is allowed to move forward, but confidence is limited;
+- approval came from "good enough for now", not strong taste/product validation;
+- verification passed mechanically but the product bar is uncertain;
+- review was shallow, time-boxed, or explicitly provisional.
+
+Downstream meaning: future slices must inherit the caution. Do not use weak approval as proof of product quality.
+
+### `rejected`
+
+The slice does not meet the bar.
+
+Use when:
+
+- acceptance criteria fail;
+- evidence is missing or fake;
+- the output drifts from the goal;
+- a reviewer/product owner says the result is not acceptable.
+
+Downstream meaning: create a correction plan, amend the existing plan if scope changed, or retry with a new run.
+
+### `blocked`
+
+The slice cannot be judged yet.
+
+Use when:
+
+- credentials, access, external input, stakeholder decision, environment, or human review is missing;
+- the evidence exists but cannot be validated yet;
+- a blocking question is open.
+
+Downstream meaning: record the blocker and owner. Do not call the slice closed.
+
+## Correction routing
+
+When postflight finds new information, route it deliberately:
+
+| Finding | Durable destination |
+|---|---|
+| Original goal changed | plan amendment via `./amend.sh <plan-slug>` |
+| Acceptance criteria changed | plan amendment |
+| Evidence exists for the current run | `.osc/runs/<run_id>/` or tracked evidence doc |
+| Product direction changed | `ROADMAP.md` update or roadmap amendment/PR |
+| Operational task status changed | task system / issue / coordinator comment |
+| Public code/docs changed | branch / PR / release note |
+| Follow-up work is needed | new plan in `.osc/plans/backlog/` or issue/task |
+| Runtime failed or was blocked | new run record or blocker note; do not rewrite the failed run |
+| Approval was weak | evidence receipt + next-slice caution |
+
+The rule: **promote the learning to the layer that will need it next**. Do not hide product corrections in chat. Do not turn every task comment into roadmap truth.
+
+## Next-slice inheritance
+
+A next slice should inherit only explicit durable facts:
+
+```yaml
+inherits_from:
+  previous_slice: docs-runtime-dispatch
+  previous_run: 20260512T090000Z-docs-runtime-dispatch
+  approval_status: weak_approved
+  carried_forward:
+    - "Runtime-specific binding examples still missing."
+    - "Need one complete PR-to-release dogfood example."
+  do_not_assume:
+    - "Weak approval means the UX language is product-grade."
+```
+
+If the previous slice was `weak_approved`, `rejected`, or `blocked`, the next slice must name the inherited caution or blocker. This prevents accidental laundering of weak evidence into strong product truth.
+
+## Close decision examples
+
+### Strong close
+
+```text
+Decision: approved
+Reason: all acceptance criteria passed, docs are linked from README and task/run model, verify.sh and osc verify passed, Codex review found no major issues.
+Next action: merge PR and add release note.
+```
+
+### Weak close
+
+```text
+Decision: weak_approved
+Reason: mechanical checks passed and the doc is usable, but no external user validated the terminology yet.
+Next action: create next slice for examples/user-facing quickstart; inherit terminology caution.
+```
+
+### Rejected
+
+```text
+Decision: rejected
+Reason: output explains runtime dispatch but accidentally makes Discord look canonical.
+Next action: amend plan with boundary correction and retry docs slice.
+```
+
+### Blocked
+
+```text
+Decision: blocked
+Reason: CI evidence cannot be inspected because the integration is unavailable.
+Next action: task owner wires CI access; do not close slice.
+```
+
+## Anti-patterns
+
+Avoid:
+
+- calling a slice closed because an agent said "done";
+- treating a runtime transcript as evidence without durable links;
+- merging weak approval into the next slice as if it were strong product validation;
+- rewriting a failed run instead of creating a retry;
+- burying corrections in chat or a private task board;
+- requiring one specific coordinator, chat surface, or runtime harness for closure;
+- treating `postflighted` as the same thing as `approved`.
+
+## Minimal manual template
+
+Copy this into a PR body, issue comment, or evidence file when no tooling exists yet:
+
+```markdown
+## Slice close
+
+- Plan/spec:
+- Task ID:
+- Run ID:
+- PR/branch:
+- Acceptance gate: pass | partial | fail | blocked
+- Verification:
+  - `command` -> result
+- Evidence:
+  - path/link
+- Known gaps:
+  - ...
+- Approval decision: approved | weak_approved | rejected | blocked
+- Rationale:
+- Correction routing:
+- Next-slice inheritance:
+```
+
+## Product implication
+
+Open Scaffold's job is not to make every run autonomous. Its job is to make semi-autonomous work auditable:
+
+```text
+Open Scaffold core = contract + evidence shape
+Coordinator = live state + dispatch choice
+Harness/agent = execution
+Operator surface = human visibility and decisions
+GitHub = public review and release
+Evidence receipt = proof and inheritance
+```
