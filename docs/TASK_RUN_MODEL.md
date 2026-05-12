@@ -59,6 +59,10 @@ A Discord/Slack/Telegram/GitHub-comment/CLI surface binding. It mirrors status, 
 
 A thread can be replaced, deleted, or unavailable without destroying task/run recovery.
 
+### Runtime binding
+
+A runtime binding consumes `run.json`, validates package quality, launches or hands off to the selected lane outside Open Scaffold core, attaches runtime metadata, and returns evidence. The binding contract is documented in [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md).
+
 ### Event / cockpit bindings
 
 Cockpit events are status, blocker, question, answer, approval, completion, evidence, PR, release, nudge, or cancellation messages posted to an operator surface. They should carry canonical IDs rather than becoming canonical themselves. See [`docs/GLASS_COCKPIT_PROTOCOL.md`](GLASS_COCKPIT_PROTOCOL.md).
@@ -78,7 +82,7 @@ log_paths
 artifact_paths
 ```
 
-Runtime state is live/forensic until promoted into the run packet, evidence, docs, issue, PR, or release note.
+Runtime state is live/forensic until promoted into the run packet, evidence, docs, issue, PR, or release note. Bindings that launch OMC, OMX, plain-agent, or human lanes should follow [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md).
 
 ## Minimal run record
 

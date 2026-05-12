@@ -2,7 +2,7 @@
 
 Open Scaffold core defines the portable contract for semi-autonomous work. It does **not** own the local control plane that launches agents. A coordinator or runtime-specific binding consumes `.osc/runs/<run_id>/run.json` and dispatches the selected harness.
 
-This page captures the pattern proven in Daniel's private Command Center with Hermes Kanban -> OMX `$ralplan`, then translates it into the public Open Scaffold model.
+This page captures the pattern proven in Daniel's private Command Center with Hermes Kanban -> OMX `$ralplan`, then translates it into the public Open Scaffold model. The detailed adapter/binding responsibilities live in [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md).
 
 ## Executive rule
 
@@ -45,7 +45,7 @@ Current state:
 - The **private Command Center bridge** has been proven with Hermes Kanban dispatching a task into detached OMX `$ralplan` and preserving run evidence.
 - Open Scaffold already has the generic `task_id` / `run_id` / `operator_surface` schema.
 - This Open Scaffold slice documents the bridge as a public, runtime-neutral dispatch pattern.
-- The next adapter/product step is an OMX/OMC binding that consumes `.osc/runs/<run_id>/run.json` and performs real launch/postflight outside core.
+- The next adapter/product step is an OMX/OMC binding that consumes `.osc/runs/<run_id>/run.json` and performs real launch/postflight outside core. The v1 public contract for this is [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md).
 
 ## Layer ownership
 
@@ -108,7 +108,7 @@ Open Scaffold core should generate or preserve enough information for a launcher
 
 ## What the coordinator/adapter should do
 
-A coordinator or runtime-specific binding should:
+A coordinator or runtime-specific binding should follow the contract in [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md):
 
 1. Read `.osc/runs/<run_id>/run.json`.
 2. Refuse dispatch unless `packageQuality.executable` is true.

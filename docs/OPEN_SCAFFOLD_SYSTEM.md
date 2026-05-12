@@ -19,6 +19,7 @@ Open Scaffold core owns the portable project substrate:
 - `.osc/runs/` — generated run packets, prompt bundles, execution evidence.
 - `docs/` — decisions, workflow standards, examples, operator guidance.
 - `docs/GLASS_COCKPIT_PROTOCOL.md` — runtime-neutral event vocabulary for status, blockers, questions, approvals, evidence receipts, PR links, and build-in-public streams.
+- `docs/RUNTIME_BINDING_CONTRACT.md` — binding lifecycle and responsibilities for OMC/OMX/plain-agent/human lanes that consume run packets outside core.
 - `docs/SLICE_CLOSE_PROTOCOL.md` — evidence receipts, postflight decisions, approval strength, correction routing, and next-slice inheritance.
 - `verify.sh` / `osc verify` — methodology compliance checks.
 - `.github/` templates — issue and PR traceability for GitHub-centered workflows.
@@ -44,7 +45,7 @@ A coordinator should dispatch **bounded packages** into execution lanes rather t
 
 ### 3. Runtime harnesses
 
-Runtime harnesses extend a base agent with workflow modes, teams, persistence, planning, or verification.
+Runtime harnesses extend a base agent with workflow modes, teams, persistence, planning, or verification. Bindings that launch those harnesses from Open Scaffold run packets are defined in [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md).
 
 They are not the same class as orchestrators like Hermes or Claw/OpenClaw.
 

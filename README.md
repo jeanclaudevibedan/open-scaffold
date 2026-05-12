@@ -67,6 +67,7 @@ ROADMAP / idea
 | 🧾 **Task/run model** | `task_id` owns durable work, `run_id` owns one execution attempt, chat threads are operator-surface bindings, and ambiguous packages route to clarification before harness dispatch. | [→](docs/TASK_RUN_MODEL.md) |
 | 🧪 **Slice close protocol** | Evidence receipts, postflight decisions, approval strength, correction routing, and next-slice inheritance keep "done" from becoming vibes. | [→](docs/SLICE_CLOSE_PROTOCOL.md) |
 | 🛩️ **Glass cockpit protocol** | Runtime-neutral event types for status, blockers, questions, approvals, evidence receipts, PR links, and build-in-public streams without making chat canonical. | [→](docs/GLASS_COCKPIT_PROTOCOL.md) |
+| 🔗 **Runtime binding contract** | Binding lifecycle and responsibilities for OMC, OMX, plain-agent, and human lanes that consume `run.json` outside core. | [→](docs/RUNTIME_BINDING_CONTRACT.md) |
 | 🚦 **Runtime dispatch pattern** | Coordinators consume `.osc/runs/<run_id>/run.json` and launch OMX/OMC/plain-agent/human lanes while core stays non-spawning. Includes the current Mermaid map. | [→](docs/RUNTIME_HARNESS_DISPATCH.md) |
 | 🐙 **GitHub PR loop** | Issues, branches, PR templates, CI, Codex review triggers, and human approvals become the publication/review layer for semi-autonomous work. | [→](docs/GITHUB_WORKFLOW.md) |
 | 🛩️ **Glass cockpit** | Discord/Slack/Telegram/GitHub comments can expose nudges, blockers, approvals, and build-in-public reports while the repo/task/GitHub chain stays canonical. | [→](docs/OPEN_SCAFFOLD_SYSTEM.md) |
@@ -357,6 +358,8 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 **Slice Close** — The evidence-backed decision that a feature slice is approved, weak-approved, rejected, blocked, closed, or carried into a next slice. It records acceptance-gate status, verification evidence, known gaps, approval strength, and correction routing. See [`docs/SLICE_CLOSE_PROTOCOL.md`](docs/SLICE_CLOSE_PROTOCOL.md).
 
 **Glass Cockpit** — A visible operator surface such as Discord, Slack, Telegram, GitHub comments, CLI dashboard, or web UI. Cockpits show status, blockers, questions, approvals, evidence receipts, and public progress, but source-of-truth IDs and evidence live in the repo/task/run/PR chain. See [`docs/GLASS_COCKPIT_PROTOCOL.md`](docs/GLASS_COCKPIT_PROTOCOL.md).
+
+**Runtime Binding** — The glue that consumes `.osc/runs/<run_id>/run.json`, validates package quality, launches or hands off to a selected OMC/OMX/plain-agent/human lane outside core, attaches runtime metadata, and returns evidence. See [`docs/RUNTIME_BINDING_CONTRACT.md`](docs/RUNTIME_BINDING_CONTRACT.md).
 
 **Plan Immutability** — Once a plan is committed to git, it is never edited. Changes layer on top as amendments. This is the single rule that prevents silent scope creep.
 

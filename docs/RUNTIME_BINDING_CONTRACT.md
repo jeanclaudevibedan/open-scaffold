@@ -1,0 +1,379 @@
+# Runtime Binding Contract
+
+Open Scaffold core creates bounded run packages. Runtime bindings consume those packages and launch a chosen execution lane outside core. This document defines the contract between the repo-native Open Scaffold package and any coordinator, adapter, harness, agent, or human lane that executes it.
+
+## Executive rule
+
+```text
+Open Scaffold core packages.
+A coordinator decides.
+A binding launches.
+A harness or human executes.
+Evidence returns.
+Postflight closes.
+```
+
+`spawning: false` in `run.json` is not a missing feature. It is the boundary that keeps generic Open Scaffold portable.
+
+## What is a runtime binding?
+
+A runtime binding is the glue that turns a run packet into a concrete execution attempt.
+
+Examples:
+
+- a coordinator script that reads `.osc/runs/<run_id>/run.json` and starts an OMX `$ralplan` session;
+- an OMC-specific command that turns a plan into a Claude Code `/team` handoff;
+- a GitHub bot that assigns a plain agent to a branch and links the PR;
+- a human operator who reads the generated prompt package and performs the work manually.
+
+A binding is not the Open Scaffold core. It may be a separate repo, plugin, bot, shell script, GitHub Action, IDE extension, or manual procedure.
+
+## Layer ownership
+
+| Layer | Owns | Must not own |
+|---|---|---|
+| Open Scaffold core | plan/spec/run package, package-quality fields, prompt artifacts, evidence locations, commit policy | runtime auth, process lifecycle, autonomous spawning |
+| Coordinator/task bridge | selecting work, choosing lane, assigning owner, retry/block/review state | final evidence by itself |
+| Runtime binding | translating package to a specific launch, attaching runtime metadata, returning artifacts | project truth, merge authority unless granted |
+| Harness/agent/human lane | execution while alive | canonical task database, approval gate |
+| Operator surface | status/questions/approval messages | source of truth |
+| GitHub/evidence | public review, CI, release, proof | runtime session truth |
+
+## Binding lifecycle
+
+```text
+1. Select task or plan
+2. Create or read .osc/runs/<run_id>/run.json
+3. Validate packageQuality.executable
+4. Validate executor lane and harness skill
+5. Check safety and isolation requirements
+6. Launch or hand off to selected lane outside core
+7. Attach runtime bindings back to run metadata/evidence
+8. Route questions by question_id -> run_id
+9. Promote outputs, logs, diffs, PRs, and verification evidence
+10. Produce completion report or blocker
+11. Postflight using slice-close protocol
+12. Close, retry, amend, block, or create next slice
+```
+
+## Required input: run packet
+
+A binding should expect a run packet like:
+
+```json
+{
+  "schemaVersion": "open-scaffold.run.v1",
+  "runId": "20260512T120000Z-runtime-binding",
+  "taskId": "issue:42",
+  "mode": "run",
+  "status": "created",
+  "namespace": ".osc",
+  "plan": {
+    "path": ".osc/plans/active/004-runtime-binding-contract.md",
+    "goal": "Define the runtime binding contract.",
+    "acceptanceCriteria": [],
+    "verificationSteps": [],
+    "openQuestions": []
+  },
+  "packageQuality": {
+    "executable": true,
+    "blockers": [],
+    "requiredAction": null
+  },
+  "executor": {
+    "lane": "omx-codex",
+    "harnessSkill": "$ralplan",
+    "spawning": false
+  },
+  "runtime": {
+    "repoPath": "/repo",
+    "worktreePath": null,
+    "branch": "docs/runtime-binding-contract",
+    "tmuxSession": null,
+    "processId": null
+  },
+  "bindings": {
+    "operatorSurface": "github-pr",
+    "operatorThreadId": null,
+    "githubIssue": "42",
+    "githubPr": null
+  },
+  "artifacts": {
+    "runDir": ".osc/runs/20260512T120000Z-runtime-binding",
+    "manifest": ".osc/runs/20260512T120000Z-runtime-binding/run.json",
+    "prompts": [],
+    "logs": [],
+    "outputs": [],
+    "evidence": []
+  },
+  "commitPolicy": "no commit/push unless explicitly approved by the operator"
+}
+```
+
+Bindings may enrich this record, but they should not rewrite past attempts. A retry is a new run.
+
+## Package validation gate
+
+Before launching anything, the binding must verify:
+
+```yaml
+package_quality:
+  executable: true
+  blockers: []
+plan:
+  goal: present
+  acceptance_criteria: present and testable
+  verification_steps: present
+executor:
+  lane: supported by this binding
+  harness_skill: allowed for this lane or null for plain/manual lanes
+runtime:
+  repo_path: exists or intentionally remote
+  branch_or_worktree: isolated enough for planned work
+commit_policy: explicit
+open_questions: no blocking questions
+```
+
+If the package is not executable, do not improvise implementation. Route to clarification, deep-interview, plan amendment, blocker, or manual correction.
+
+## Binding responsibilities
+
+A binding should:
+
+1. Read the run packet and generated prompts.
+2. Refuse unsupported lanes, unsafe packages, and blocking open questions.
+3. Preserve the commit policy.
+4. Create or select an isolated worktree/session when needed.
+5. Launch the runtime or produce a manual handoff outside core.
+6. Attach runtime metadata:
+   - session ID;
+   - process ID;
+   - tmux/session name;
+   - worktree path;
+   - branch;
+   - log path;
+   - operator thread/comment ID;
+   - PR number if opened.
+7. Emit glass-cockpit events for status, blockers, questions, approval requests, completion, and evidence receipts when an operator surface is bound.
+8. Route human answers by `question_id -> run_id`.
+9. Promote final artifacts and evidence to `.osc/runs`, tracked evidence docs, PRs, issues, or release notes.
+10. Leave approval/merge/release to the configured gate.
+
+## Explicit non-responsibilities
+
+Generic Open Scaffold core does not own:
+
+- installing or authenticating Claude, Codex, OMC, OMX, or any other runtime;
+- tmux/process supervision;
+- background daemons or watchdogs;
+- Discord/Slack/Telegram/GitHub bot implementation;
+- automatic commits, pushes, merges, or releases;
+- runtime-specific state folders;
+- resolving product ambiguity after dispatch.
+
+Runtime-specific projects or coordinators may own these, but must promote durable outcomes back into the Open Scaffold chain.
+
+## Supported lane examples
+
+### OMC / Claude Code lane
+
+Use when Claude Code plus OMC workflow modes are intentionally selected.
+
+Example executor:
+
+```json
+{
+  "lane": "omc-claude",
+  "harnessSkill": "/ralplan",
+  "spawning": false
+}
+```
+
+Binding behavior:
+
+```text
+Read .osc/runs/<run_id>/package.md.
+Launch or hand off to Claude Code/OMC with /ralplan, /team, /ralph, or /ultrawork as selected.
+Do not mutate unrelated worktrees.
+Return plan/output/evidence paths to .osc/runs or PR.
+If blocked, emit BLOCKED with question_id.
+```
+
+OMC runtime state is forensic until promoted.
+
+### OMX / Codex lane
+
+Use when Codex plus OMX workflow modes are intentionally selected.
+
+Example executor:
+
+```json
+{
+  "lane": "omx-codex",
+  "harnessSkill": "$ralplan",
+  "spawning": false
+}
+```
+
+Binding behavior:
+
+```text
+Read .osc/runs/<run_id>/package.md.
+Launch or hand off to Codex/OMX with $ralplan, $team, $ralph, $ultrawork, or $ultragoal as selected.
+Attach session/log/worktree metadata back to the run.
+Return completion report, artifacts, verification, and blocker questions by ID.
+Never treat OMX state as canonical truth unless promoted.
+```
+
+OMX is not automatically the runtime engine for Hermes, OMC, or Open Scaffold. It is a selected Codex execution lane.
+
+### Plain-agent lane
+
+Use when a capable coding agent can read the package directly without a harness.
+
+Example executor:
+
+```json
+{
+  "lane": "plain-agent",
+  "harnessSkill": null,
+  "spawning": false
+}
+```
+
+Binding behavior:
+
+```text
+Give the agent the package.md and relevant files.
+Require it to report changed files, verification, evidence paths, open blockers, and commit policy compliance.
+If it cannot answer with evidence, do not close the slice.
+```
+
+### Human/manual lane
+
+Use when a person performs the work.
+
+Example executor:
+
+```json
+{
+  "lane": "manual",
+  "harnessSkill": null,
+  "spawning": false
+}
+```
+
+Binding behavior:
+
+```text
+Show the human objective, scope, acceptance criteria, verification, and evidence expectations.
+The human updates files/PR/evidence manually.
+Postflight still uses the same slice-close protocol.
+```
+
+## Failure-state taxonomy
+
+Use these states when a binding cannot complete cleanly:
+
+| State | Meaning | Required action |
+|---|---|---|
+| `package_not_executable` | Missing goal, AC, verification, or blocking questions exist | Clarify, amend, or regenerate package |
+| `unsupported_lane` | Binding cannot run requested executor lane or skill | Choose another binding/lane or update package |
+| `prompt_rejected` | Runtime refused or could not parse the handoff | Repair prompt/package; retry as new run if substantial |
+| `session_blocked` | Runtime is waiting on a decision, auth, dependency, or environment | Emit `question_id`/blocker and wait |
+| `artifact_missing` | Runtime claims completion but required output/evidence is absent | Do not close; request repair or retry |
+| `verification_failed` | Tests/checks/AC verification failed | Fix in same branch/run if small, otherwise create retry run |
+| `human_input_needed` | Operator decision required | Send approval/question event with correlation IDs |
+| `cancelled` | Run intentionally stopped | Preserve partial artifacts if useful; record reason |
+| `runtime_error` | Harness/process crashed or transport failed | Preserve logs; classify retry/blocker |
+
+Do not hide failures in chat. Record them in the run/evidence/task chain.
+
+## Evidence return contract
+
+At completion, the binding should produce or point to:
+
+```yaml
+run_id: 20260512T120000Z-runtime-binding
+status: completed | blocked | failed | cancelled
+changed_files:
+  - docs/RUNTIME_BINDING_CONTRACT.md
+artifacts:
+  - .osc/runs/<run_id>/output.md
+logs:
+  - .osc/runs/<run_id>/runtime.log
+verification:
+  - command: ./verify.sh --standard
+    result: pass
+  - command: npm test
+    result: pass
+known_gaps:
+  - "No executable adapter implemented in core."
+questions: []
+next_action: postflight
+```
+
+Then use `docs/SLICE_CLOSE_PROTOCOL.md` to decide whether the slice is approved, weak-approved, rejected, or blocked.
+
+## Cockpit events
+
+If an operator surface is bound, the binding may emit events using `docs/GLASS_COCKPIT_PROTOCOL.md`:
+
+- `session_start` when execution begins;
+- `status` for progress;
+- `blocker` when stuck;
+- `question` when human input is required;
+- `completion_report` when work finishes;
+- `evidence_receipt` when proof is available;
+- `approval_request` before merge/release;
+- `cancellation` when stopped.
+
+Events must carry `task_id`, `run_id`, `question_id`, evidence path, issue, PR, or release links when applicable.
+
+## PR and release handoff
+
+When a binding opens or updates a PR, the PR body should include:
+
+- roadmap item or issue/task ID;
+- plan/spec path;
+- run ID and run packet path;
+- executor lane and harness skill;
+- changed files summary;
+- verification commands and results;
+- evidence/postflight path;
+- Codex/CI/human review status;
+- commit/merge policy.
+
+GitHub is the publication layer, not the runtime transcript.
+
+## Anti-patterns
+
+Avoid:
+
+- adding runtime-specific spawning to generic Open Scaffold core;
+- letting a binding execute packages with blocking questions;
+- launching OMC/OMX/plain agents from vague prose instead of a run packet;
+- treating runtime state folders as durable truth;
+- routing answers by latest chat message instead of `question_id`;
+- allowing multiple runtimes to mutate one worktree without explicit isolation;
+- allowing a binding to merge/publish unless the package grants that authority;
+- calling a run complete without artifacts and verification evidence.
+
+## Relationship to other protocols
+
+- `docs/TASK_RUN_MODEL.md` defines task/run/question/operator identity.
+- `docs/RUNTIME_HARNESS_DISPATCH.md` explains the high-level coordinator-to-harness flow.
+- `docs/GLASS_COCKPIT_PROTOCOL.md` defines visible operator events emitted during binding execution.
+- `docs/SLICE_CLOSE_PROTOCOL.md` defines postflight, approval strength, correction routing, and next-slice inheritance.
+- `docs/GITHUB_WORKFLOW.md` defines the issue/branch/PR/review/release publication chain.
+
+## Product implication
+
+Open Scaffold can support many runtimes precisely because core does less:
+
+```text
+Core stays portable.
+Bindings become specific.
+Evidence stays durable.
+Operators stay in control.
+```
