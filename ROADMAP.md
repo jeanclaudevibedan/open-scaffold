@@ -238,6 +238,75 @@ Deliverables:
 - Add a sharper “why this exists” product diagram/story.
 - Evaluate npm/template packaging readiness.
 
+## Independent review addendum — make the useful parts undeniable
+
+A 2026-05-12 independent two-lane review found the core thesis valid and the mechanics working, but also named the adoption gap clearly: Open Scaffold is strongest as repo-native discipline and core tooling, while examples, adapter proof, packaging, and docs compression must catch up.
+
+The review direction is now part of the public roadmap. The priority is not to turn Open Scaffold core into an agent runtime; it is to make the scaffold easier to trust, easier to try, and harder to misunderstand.
+
+### Milestone 11 — Independent review hardening
+
+Status: complete via `.osc/plans/done/012-independent-review-hardening.md` and `.osc/releases/2026-05-12-independent-review-hardening.md`.
+
+Goal: convert external review findings into source-grounded fixes and a small trust-building hardening release.
+
+Deliverables:
+
+- Confirm every report-flagged hardening issue against current source before patching.
+- Resolve confirmed `verify.sh`, stale-state, immutability, dependency-audit, or runtime-state hygiene issues.
+- Add regression tests or shell fixtures for confirmed validation behavior where practical.
+- Record release/evidence notes for what was confirmed, fixed, deferred, or rejected.
+
+### Milestone 12 — Minimal runtime binding example
+
+Status: backlog via `.osc/plans/backlog/013-binding-example.md`.
+
+Goal: prove that `.osc/runs/<run_id>/run.json` can be consumed by an external adapter without making Open Scaffold core the spawner.
+
+Deliverables:
+
+- Add one tiny public binding example or dry-run adapter.
+- Show the command path from plan to generated run packet to external runtime handoff.
+- Document the safety boundary: core packages work; adapters/harnesses execute it.
+- Keep the example credential-free and runnable by a fresh user.
+
+### Milestone 13 — Non-scaffold downstream example
+
+Status: backlog via `.osc/plans/backlog/014-downstream-example-project.md`.
+
+Goal: demonstrate Open Scaffold on one tiny project that is not Open Scaffold itself.
+
+Deliverables:
+
+- Add a public-safe example that demonstrates mission → plan → run packet → evidence → close.
+- Make the example small enough to understand in one sitting.
+- Use it to show when Open Scaffold is valuable and when it is overkill.
+
+### Milestone 14 — CLI and packaging UX
+
+Status: backlog via `.osc/plans/backlog/015-cli-packaging-ux.md`.
+
+Goal: reduce day-one friction with first-class `osc` commands and an install path that does not require users to reason about shell helpers first.
+
+Deliverables:
+
+- Evaluate and implement the first high-value CLI commands: `osc init`, `osc plan new`, `osc amend`, `osc close`, `osc evidence`.
+- Keep existing shell scripts as compatibility wrappers until CLI replacements are proven.
+- Evaluate `npx open-scaffold init`, npm packaging, and GitHub Action checks.
+
+### Milestone 15 — Docs compression and public positioning
+
+Status: backlog via `.osc/plans/backlog/016-docs-positioning-compression.md`.
+
+Goal: make the first-read path shorter while surfacing the strongest use cases: multi-session AI development, consulting/client delivery, compliance/audit traceability, and multi-agent handoff.
+
+Deliverables:
+
+- Compress overlapping protocol explanations into a clearer reader path.
+- Add or improve the roadmap → issue/task → plan → run → PR → evidence diagram.
+- Remove or generalize private/Daniel-specific context in public docs.
+- State honestly what exists today versus what is adapter/backlog work.
+
 ## Parking lot
 
 - MCP bridge for structured harness dispatch/status/artifact retrieval.

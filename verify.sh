@@ -249,6 +249,10 @@ if [ "$TIER" = "--strict" ]; then
   fi
 fi
 
+# STANDARD/STRICT shared checks: release/evidence notes + stale active-plan heuristics.
+# Keep --quick focused on only the mission and plan-presence gates so first-run
+# failures stay progressively disclosed.
+if [ "$TIER" = "--standard" ] || [ "$TIER" = "--strict" ]; then
 
   # Check 9: Official release/evidence directory exists and release notes have core sections
   RELEASES_OK=true
@@ -311,6 +315,7 @@ fi
   if $STALE_OK; then
     pass "Active plan stale-state heuristic clean"
   fi
+fi
 
 # ──────────────────────────────────────────
 # Summary
