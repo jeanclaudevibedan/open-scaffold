@@ -14,9 +14,9 @@ ROADMAP.md Milestone 6 — Self-dogfood release loop
   -> .osc/plans/active/005-self-dogfood-release-loop.md
   -> run_id 20260512T135850Z-005-self-dogfood-release-loop-run
   -> branch docs/self-dogfood-release-loop
-  -> PR: filled when opened
-  -> verification: filled from PR checks/local commands
-  -> merge/release: filled after PR merge
+  -> PR #9
+  -> verification: local commands passed before PR creation
+  -> merge/release: pending PR review/merge
 ```
 
 ## Work item
@@ -30,6 +30,7 @@ ROADMAP.md Milestone 6 — Self-dogfood release loop
 - Harness skill: `none`
 - Operator surface: `github`
 - Branch: `docs/self-dogfood-release-loop`
+- PR: https://github.com/jeanclaudevibedan/open-scaffold/pull/9
 
 ## Run packet summary
 
