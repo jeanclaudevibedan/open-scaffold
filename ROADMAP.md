@@ -141,7 +141,7 @@ Acceptance criteria:
 
 ## Milestone 5 — Runtime harness bindings
 
-Status: active local slice via `.osc/plans/active/004-runtime-binding-contract.md` and `docs/RUNTIME_BINDING_CONTRACT.md`; this becomes v1 complete when the PR lands. Executable OMC/OMX launchers and JSON-schema enforcement remain adapter/backlog work, not core spawning work.
+Status: v1 complete in PR #7 via `docs/RUNTIME_BINDING_CONTRACT.md`; executable OMC/OMX launchers and JSON-schema enforcement remain adapter/backlog work, not core spawning work.
 
 Goal: support specific harnesses without making them the core system.
 
