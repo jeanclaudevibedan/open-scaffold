@@ -24,7 +24,7 @@ The example validates the generated run packet, prints the handoff summary an ex
 Commands run after implementation:
 
 ```text
-npm run osc -- run .osc/plans/active/013-binding-example.md \
+npm run osc -- run .osc/plans/done/013-binding-example.md \
   --task-id plan:013-binding-example-verification \
   --executor plain-agent \
   --operator-surface cli \

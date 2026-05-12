@@ -9,7 +9,7 @@ This directory contains small examples that make Open Scaffold mechanics concret
 From a repository checkout with dependencies installed:
 
 ```bash
-npm run osc -- run .osc/plans/active/013-binding-example.md \
+npm run osc -- run .osc/plans/done/013-binding-example.md \
   --task-id plan:013-binding-example-verification \
   --executor plain-agent \
   --operator-surface cli \
