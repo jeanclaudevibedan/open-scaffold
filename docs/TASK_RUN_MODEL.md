@@ -148,7 +148,7 @@ Runtime state is live/forensic until promoted into the run packet, evidence, doc
 }
 ```
 
-Generic Open Scaffold sets `spawning: false`: the core writes the package and bindings; a coordinator or runtime adapter performs actual dispatch.
+Generic Open Scaffold sets `spawning: false`: the core writes the package and bindings; a coordinator or runtime adapter performs actual dispatch. See [`docs/RUNTIME_HARNESS_DISPATCH.md`](RUNTIME_HARNESS_DISPATCH.md) for the public pattern that maps `.osc/runs/<run_id>/run.json` into OMX/OMC/plain-agent/human execution without moving private control-plane machinery into core.
 
 ## Lifecycle states
 

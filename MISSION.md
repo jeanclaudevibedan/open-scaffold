@@ -31,3 +31,4 @@ One-line dated entries for every scope pivot. Format: `YYYY-MM-DD: <one-line piv
 2026-05-11: Reframed Open Scaffold ontology and roadmap via `.osc/plans/active/001-generic-osc-core-amendment-1.md`.
 2026-05-11: Adopted external OMC/OMX/Hermes/clawhip boundary correction via `.osc/plans/active/001-generic-osc-core-amendment-2.md`.
 2026-05-11: Documented task/run/operator-surface model and added v1 run binding schema via `.osc/plans/active/001-generic-osc-core-amendment-3.md`.
+2026-05-12: Document runtime harness dispatch bridge pattern for Open Scaffold core — see `.osc/plans/active/001-generic-osc-core-amendment-4.md`.
