@@ -27,6 +27,7 @@ Explicit things this project is NOT trying to do. Legitimate scope discipline st
 One-line dated entries for every scope pivot. Format: `YYYY-MM-DD: <one-line pivot description + link to amendment file if applicable>`. Append entries in chronological order. Never rewrite history here.
 
 <!-- append YYYY-MM-DD entries below this line -->
+- 2026-05-12: closed 006-v2-roadmap-stale-state-checks — closed 006-v2-roadmap-stale-state-checks — reconciled v1 state, created v2 backlog, officialized .osc/releases, added stale-state validation, and prepared v0.3.0 in PR #10
 - 2026-05-12: closed 001-generic-osc-core — closed 001-generic-osc-core — foundational .osc core, task/run protocol, runtime binding, and self-dogfood baseline shipped through PRs #2-#9; v2 follow-ups moved to backlog
 - 2026-05-12: closed 005-self-dogfood-release-loop — closed 005-self-dogfood-release-loop — proved Milestone 6 issue/plan/run/PR/Codex/verification/release-note chain in PR #9
 - 2026-05-12: closed 004-runtime-binding-contract — closed 004-runtime-binding-contract — shipped docs/RUNTIME_BINDING_CONTRACT.md in PR #7; Codex connector blocked by missing environment, local verification green

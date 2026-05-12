@@ -228,7 +228,7 @@ Deliverables:
 
 ### Milestone 10 — Product packaging and releases
 
-Status: backlog via `.osc/plans/backlog/010-product-packaging-release.md`; `v0.3.0` release baseline is being prepared in `.osc/releases/2026-05-12-v0.3.0-runtime-neutral-baseline.md`.
+Status: backlog via `.osc/plans/backlog/010-product-packaging-release.md`; `v0.3.0` baseline release evidence exists at `.osc/releases/2026-05-12-v0.3.0-runtime-neutral-baseline.md`.
 
 Goal: package the v1 protocol baseline as a public product release.
 
