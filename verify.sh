@@ -200,8 +200,8 @@ if [ "$TIER" = "--strict" ]; then
         relpath=$(python3 -c "import os; print(os.path.relpath('$f', '$ROOT'))" 2>/dev/null || printf '%s' "$f" | sed "s|$ROOT/||")
         # Count commits that modified this file's content (renames/moves during close are allowed)
         commit_count=$(git -C "$ROOT" log --oneline --diff-filter=M --follow -- "$relpath" 2>/dev/null | wc -l | tr -d ' ')
-        if [ "$commit_count" -gt 1 ]; then
-          warn "Plan $basename was modified after initial commit ($commit_count commits)"
+        if [ "$commit_count" -gt 0 ]; then
+          warn "Plan $basename was modified after initial commit ($commit_count content-modifying commit(s))"
           IMMUTABLE_OK=false
         fi
       done
@@ -293,8 +293,11 @@ fi
     case "$basename" in
       README.md|WORKFLOW.md|handoff-template.md|*-amendment-*) continue ;;
     esac
-    # macOS/BSD stat first, GNU stat fallback
-    MTIME=$(stat -f %m "$f" 2>/dev/null || stat -c %Y "$f" 2>/dev/null || printf '%s' "$NOW_EPOCH")
+    # GNU stat first, BSD/macOS stat fallback. GNU `stat -f %m` succeeds but returns filesystem text.
+    MTIME=$(stat -c %Y "$f" 2>/dev/null || stat -f %m "$f" 2>/dev/null || printf '%s' "$NOW_EPOCH")
+    case "$MTIME" in
+      ''|*[!0-9]*) MTIME="$NOW_EPOCH" ;;
+    esac
     AGE_DAYS=$(( (NOW_EPOCH - MTIME) / 86400 ))
     if [ "$AGE_DAYS" -gt "$STALE_DAYS" ]; then
       warn "Active plan $basename has not changed for $AGE_DAYS days (threshold $STALE_DAYS)"
