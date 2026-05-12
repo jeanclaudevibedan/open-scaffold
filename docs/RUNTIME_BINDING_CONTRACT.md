@@ -377,3 +377,9 @@ Bindings become specific.
 Evidence stays durable.
 Operators stay in control.
 ```
+
+## Dry-run binding example
+
+For a concrete, credential-free consumer of this contract, see [`docs/examples/runtime-binding-dry-run.mjs`](examples/runtime-binding-dry-run.mjs) and [`docs/examples/README.md`](examples/README.md). The example reads a generated `.osc/runs/<run_id>/run.json`, validates the executable-package and `spawning: false` boundary, prints the handoff summary an external binding would use, and exits without launching any runtime.
+
+The dry-run is intentionally not a supported adapter SDK and not an Open Scaffold launcher. It is a reference proof that run packets are concrete enough for external coordinators, runtime bindings, or humans to consume while core remains runtime-neutral.
