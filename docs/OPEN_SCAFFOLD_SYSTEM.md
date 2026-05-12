@@ -90,7 +90,7 @@ Examples:
 - a local SQLite task queue
 - a custom orchestrator board
 
-Open Scaffold should define how roadmap items and plans link to these systems, but it should not assume one board is universal.
+Open Scaffold should define how roadmap items and plans link to these systems, but it should not assume one board is universal. The dispatch pattern is documented in [`docs/RUNTIME_HARNESS_DISPATCH.md`](RUNTIME_HARNESS_DISPATCH.md): core creates the package, coordinators/task bridges choose and launch the harness, and evidence returns to `.osc/runs`, GitHub, or release notes.
 
 A live task should dispatch work through a canonical run record instead of through a chat thread or runtime transcript directly. See [`docs/TASK_RUN_MODEL.md`](TASK_RUN_MODEL.md) for the v1 task/run/operator-surface schema.
 

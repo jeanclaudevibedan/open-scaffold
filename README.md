@@ -65,6 +65,7 @@ ROADMAP / idea
 | 🧰 **`osc` CLI** | Runtime-neutral command-line helper. Parses plans, reports status, and writes prompt/artifact bundles under `.osc/runs/` without spawning agents. Run binding options can record task/run/operator/harness metadata. | [→](package.json) |
 | 🔌 **Integrations and harnesses** | Open Scaffold supports orchestrators/agents and runtime harnesses without confusing their roles: Hermes/Claw/etc. can operate the scaffold; OMC and OMX are Claude Code/Codex workflow harnesses. | [→](docs/ADAPTERS.md) |
 | 🧾 **Task/run model** | `task_id` owns durable work, `run_id` owns one execution attempt, chat threads are operator-surface bindings, and ambiguous packages route to clarification before harness dispatch. | [→](docs/TASK_RUN_MODEL.md) |
+| 🚦 **Runtime dispatch pattern** | Coordinators consume `.osc/runs/<run_id>/run.json` and launch OMX/OMC/plain-agent/human lanes while core stays non-spawning. Includes the current Mermaid map. | [→](docs/RUNTIME_HARNESS_DISPATCH.md) |
 | 🐙 **GitHub PR loop** | Issues, branches, PR templates, CI, Codex review triggers, and human approvals become the publication/review layer for semi-autonomous work. | [→](docs/GITHUB_WORKFLOW.md) |
 | 🛩️ **Glass cockpit** | Discord/Slack/Telegram/GitHub comments can expose nudges, blockers, approvals, and build-in-public reports while the repo/task/GitHub chain stays canonical. | [→](docs/OPEN_SCAFFOLD_SYSTEM.md) |
 
@@ -173,6 +174,8 @@ npm run osc -- run .osc/plans/active/my-first-task.md \
 ```
 
 This writes `.osc/runs/<run_id>/run.json` with task/run bindings, executor choice, operator-surface binding, package-quality checks, prompts, and commit policy. If the package lacks goal, acceptance criteria, verification, or has blocking open questions, dispatch should route to clarification/deep-interview before implementation.
+
+For the public coordinator-to-harness pattern, including the current Mermaid map of where the system is now, see [docs/RUNTIME_HARNESS_DISPATCH.md](docs/RUNTIME_HARNESS_DISPATCH.md).
 
 ### 5. Open a traceable PR when code changes
 
