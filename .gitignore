@@ -11,10 +11,10 @@ Desktop.ini
 *.swo
 *~
 
-# Runtime/editor local configuration
+# Agent/runtime local state
 .claude/
-
-# Open Scaffold generated/ephemeral state
+.omc/
+.omx/
 .osc/state/
 .osc/research/
 .osc/runs/

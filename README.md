@@ -56,7 +56,7 @@ ROADMAP / idea
 
 | | | |
 |---|---|---|
-| 🗺️ **Roadmap-first** | `ROADMAP.md` captures the product/system direction before live tasks, issues, or runtime sessions fragment the work. | [→](ROADMAP.md) |
+| 🗺️ **Roadmap-first** | `ROADMAP.md` captures the product/system direction before live tasks, issues, or runtime sessions fragment the work. The post-v0.3 roadmap now explicitly tracks independent-review findings: hardening, adapter proof, downstream examples, packaging, and docs compression. | [→](ROADMAP.md) |
 | 🎯 **Mission-first** | `MISSION.md` defines goals and non-goals before a single line is written. | [→](MISSION.md) |
 | 🔒 **Immutable plans** | Plans in `.osc/plans/` (organized in stage subfolders: `active/`, `backlog/`, `done/`, `blocked/`) follow a 7-section schema and become read-only once committed. No silent scope creep. | [→](.osc/plans/handoff-template.md) |
 | 📝 **Amendment protocol** | "I got smarter" moments become `<plan>-amendment-<n>.md` files. Run `./amend.sh <plan-slug>` to autonumber, scaffold, and stamp the changelog in one shot. | [→](.osc/plans/README.md) |
