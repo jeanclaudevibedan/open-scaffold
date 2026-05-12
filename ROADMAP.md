@@ -161,6 +161,8 @@ Acceptance criteria:
 
 ## Milestone 6 — Self-dogfood release loop
 
+Status: active proof slice via GitHub issue #8, `.osc/plans/active/005-self-dogfood-release-loop.md`, run ID `20260512T135850Z-005-self-dogfood-release-loop-run`, and `.osc/releases/2026-05-12-self-dogfood-release-loop.md`.
+
 Goal: ship Open Scaffold improvements through Open Scaffold itself.
 
 Deliverables:

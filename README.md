@@ -70,6 +70,7 @@ ROADMAP / idea
 | 🔗 **Runtime binding contract** | Binding lifecycle and responsibilities for OMC, OMX, plain-agent, and human lanes that consume `run.json` outside core. | [→](docs/RUNTIME_BINDING_CONTRACT.md) |
 | 🚦 **Runtime dispatch pattern** | Coordinators consume `.osc/runs/<run_id>/run.json` and launch OMX/OMC/plain-agent/human lanes while core stays non-spawning. Includes the current Mermaid map. | [→](docs/RUNTIME_HARNESS_DISPATCH.md) |
 | 🐙 **GitHub PR loop** | Issues, branches, PR templates, CI, Codex review triggers, and human approvals become the publication/review layer for semi-autonomous work. | [→](docs/GITHUB_WORKFLOW.md) |
+| 📦 **Release / evidence notes** | `.osc/releases/` records scaffold-native release evidence when a full GitHub Release is too heavy: issue, plan, run ID, PR, verification, and follow-up. | [→](.osc/releases/README.md) |
 | 🛩️ **Glass cockpit** | Discord/Slack/Telegram/GitHub comments can expose nudges, blockers, approvals, and build-in-public reports while the repo/task/GitHub chain stays canonical. | [→](docs/OPEN_SCAFFOLD_SYSTEM.md) |
 
 ---

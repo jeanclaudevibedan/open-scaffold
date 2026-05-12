@@ -30,7 +30,7 @@ Small fixes may skip some links. Substantial or semi-autonomous work should make
 - Branch/worktree: implementation surface for the attempt.
 - Pull Request: review/publication surface for code changes.
 - CI/Codex/human review: quality gates.
-- Release note/evidence: durable outcome.
+- Release note/evidence: durable outcome, either in GitHub Releases or a scaffold-native note such as `.osc/releases/<date>-<slug>.md`.
 
 Do not treat a Discord thread, runtime transcript, or terminal session as sufficient recovery state.
 
