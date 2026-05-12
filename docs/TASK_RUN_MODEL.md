@@ -40,7 +40,7 @@ One concrete execution attempt against a task or plan. In Open Scaffold core, a 
   prompts/
 ```
 
-A run can succeed, fail, block for a question, be cancelled, or be postflighted. A retry is a new run, not a rewrite of the old one.
+A run can succeed, fail, block for a question, be cancelled, or be postflighted. A retry is a new run, not a rewrite of the old one. Slice closure is a separate evidence-backed decision: a postflight can produce `approved`, `weak_approved`, `rejected`, or `blocked` outcomes as defined in [`docs/SLICE_CLOSE_PROTOCOL.md`](SLICE_CLOSE_PROTOCOL.md).
 
 ### `question_id`
 
@@ -166,6 +166,8 @@ created
 
 State transitions should be idempotent. A restarted coordinator may re-read the run store, repost current status, or re-bind a cockpit thread without duplicating terminal summaries, open questions, or completion reports.
 
+`postflighted` is not the same as `approved`. Postflight means the evidence was reviewed against acceptance criteria. The close decision may still be `approved`, `weak_approved`, `rejected`, or `blocked`; record that decision using the slice-close protocol.
+
 ## Executable package gate
 
 No harness should execute unbounded prose. A run package should contain:
@@ -206,6 +208,7 @@ Kanban/GitHub/CLI/chat creates or selects task_id
 - Runtime harness: execution while alive.
 - Operator surface: visibility/questions/approvals.
 - GitHub PR/release: versioned publication.
+- Evidence receipt / postflight: proof, approval strength, correction routing, and next-slice inheritance.
 - Evidence: proof of what happened.
 
 ## Anti-patterns

@@ -65,6 +65,7 @@ ROADMAP / idea
 | 🧰 **`osc` CLI** | Runtime-neutral command-line helper. Parses plans, reports status, and writes prompt/artifact bundles under `.osc/runs/` without spawning agents. Run binding options can record task/run/operator/harness metadata. | [→](package.json) |
 | 🔌 **Integrations and harnesses** | Open Scaffold supports orchestrators/agents and runtime harnesses without confusing their roles: Hermes/Claw/etc. can operate the scaffold; OMC and OMX are Claude Code/Codex workflow harnesses. | [→](docs/ADAPTERS.md) |
 | 🧾 **Task/run model** | `task_id` owns durable work, `run_id` owns one execution attempt, chat threads are operator-surface bindings, and ambiguous packages route to clarification before harness dispatch. | [→](docs/TASK_RUN_MODEL.md) |
+| 🧪 **Slice close protocol** | Evidence receipts, postflight decisions, approval strength, correction routing, and next-slice inheritance keep "done" from becoming vibes. | [→](docs/SLICE_CLOSE_PROTOCOL.md) |
 | 🚦 **Runtime dispatch pattern** | Coordinators consume `.osc/runs/<run_id>/run.json` and launch OMX/OMC/plain-agent/human lanes while core stays non-spawning. Includes the current Mermaid map. | [→](docs/RUNTIME_HARNESS_DISPATCH.md) |
 | 🐙 **GitHub PR loop** | Issues, branches, PR templates, CI, Codex review triggers, and human approvals become the publication/review layer for semi-autonomous work. | [→](docs/GITHUB_WORKFLOW.md) |
 | 🛩️ **Glass cockpit** | Discord/Slack/Telegram/GitHub comments can expose nudges, blockers, approvals, and build-in-public reports while the repo/task/GitHub chain stays canonical. | [→](docs/OPEN_SCAFFOLD_SYSTEM.md) |
@@ -352,6 +353,8 @@ Not an FAQ. These are the questions that matter most. For the full list, see [do
 
 **Task / Run / Question** — `task_id` is durable work identity, `run_id` is one execution attempt, and `question_id` is one blocking clarification/approval inside a run. Chat thread/message ids are bindings, not canonical truth.
 
+**Slice Close** — The evidence-backed decision that a feature slice is approved, weak-approved, rejected, blocked, closed, or carried into a next slice. It records acceptance-gate status, verification evidence, known gaps, approval strength, and correction routing. See [`docs/SLICE_CLOSE_PROTOCOL.md`](docs/SLICE_CLOSE_PROTOCOL.md).
+
 **Plan Immutability** — Once a plan is committed to git, it is never edited. Changes layer on top as amendments. This is the single rule that prevents silent scope creep.
 
 **Scaffold** — The project-specific structure that organizes plans, decisions, amendments, and handovers in your repo. open-scaffold is a scaffold. OMC and OMX are runtimes.
@@ -374,6 +377,7 @@ open-scaffold has several cooperating layers:
 - **Runtime lanes** — OMC for Claude Code and OMX for Codex. They amplify execution through bound run IDs but do not own the source of truth.
 - **Event transport** — clawhip-style tools, webhooks, and gateways route session/status events into operator surfaces.
 - **GitHub review layer** — issues, branches, PRs, CI, Codex review, and human approvals gate publication.
+- **Slice close / evidence loop** — evidence receipts, postflight decisions, approval strength, correction routing, and next-slice inheritance prevent weak or missing proof from becoming durable product truth.
 - **Glass cockpits** — Discord/Slack/Telegram/GitHub comments/CLI dashboards expose status, blockers, approvals, and build-in-public streams.
 
 The scaffold is the load-bearing part. Agents and runtimes amplify it. Cockpits make it visible. You can strip the runtimes away and the methodology still holds.

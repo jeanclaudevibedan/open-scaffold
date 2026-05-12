@@ -14,6 +14,7 @@ open-scaffold has multiple layers. The **core system** is framework-agnostic rep
 - **Roadmap source of direction:** `ROADMAP.md` — product/system milestones and the self-dogfood chain from roadmap item to issue/task, plan, run packet, PR, and release note.
 - **System ontology:** `docs/OPEN_SCAFFOLD_SYSTEM.md` — boundary map for Open Scaffold core, orchestrators/agents, OMC/OMX runtime harnesses, task bridges, glass-cockpit surfaces, and GitHub.
 - **Task/run model:** `docs/TASK_RUN_MODEL.md` — `task_id` for durable work, `run_id` for one execution attempt, `question_id` for operator prompts, and chat/thread ids as optional bindings.
+- **Slice close protocol:** `docs/SLICE_CLOSE_PROTOCOL.md` — evidence receipts, postflight decisions, approval strength, correction routing, and next-slice inheritance.
 - **GitHub workflow:** `docs/GITHUB_WORKFLOW.md` — issue → task/run → branch/PR → CI/Codex review → human approval → merge traceability.
 - **Plans directory:** `.osc/plans/` — immutable plan files organized in stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`), one per task/feature slice, conforming to the 7-section schema in `.osc/plans/handoff-template.md`. The folder IS the status — see `.osc/plans/WORKFLOW.md` for movement rules.
 - **Amendments:** new learnings become `<plan-slug>-amendment-<n>.md` in the same stage folder as the parent plan, scaffolded by `./amend.sh <plan-slug>`. Plans are never edited in place; amendment files and MISSION.md's changelog are never hand-written.

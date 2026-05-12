@@ -14,6 +14,7 @@ open-scaffold has multiple layers. The **core system** is framework-agnostic rep
 - **`ROADMAP.md`** — product/system milestones and the self-dogfood chain from roadmap item to issue/task, plan, run packet, PR, and release note.
 - **`docs/OPEN_SCAFFOLD_SYSTEM.md`** — boundary map for Open Scaffold core, orchestrators/agents, OMC/OMX runtime harnesses, task bridges, glass-cockpit surfaces, and GitHub.
 - **`docs/TASK_RUN_MODEL.md`** — task/run/operator-surface identity model: `task_id`, `run_id`, `question_id`, runtime bindings, and chat/thread bindings.
+- **`docs/SLICE_CLOSE_PROTOCOL.md`** — evidence receipts, postflight decisions, approval strength, correction routing, and next-slice inheritance.
 - **`docs/GITHUB_WORKFLOW.md`** — GitHub issue, PR template, Codex connector review, CI, and merge/release traceability.
 - **`.osc/plans/`** — plan files organized in stage subfolders (`active/`, `backlog/`, `done/`, `blocked/`). The folder IS the status. Plans are **immutable** once committed. New learnings become amendment files named `<slug>-amendment-<n>.md` in the same stage folder as the parent. The handoff template in `.osc/plans/handoff-template.md` defines the exact 7-section schema every plan follows. See `.osc/plans/WORKFLOW.md` for movement rules between stage folders.
 - **`docs/decisions/`** — `README.md` is the public design-choices page (paired views, immutable plans, adapter-mediated orchestration). The full ADR records that back these decisions live internally in `.osc-dev/decisions/` and do not ship with the public template.
