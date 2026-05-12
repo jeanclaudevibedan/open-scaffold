@@ -11,19 +11,19 @@ Open Scaffold demonstrated its own public product workflow: ROADMAP Milestone 6 
 ```text
 ROADMAP.md Milestone 6 — Self-dogfood release loop
   -> GitHub issue #8
-  -> .osc/plans/active/005-self-dogfood-release-loop.md
+  -> .osc/plans/done/005-self-dogfood-release-loop.md
   -> run_id 20260512T135850Z-005-self-dogfood-release-loop-run
   -> branch docs/self-dogfood-release-loop
   -> PR #9
   -> verification: local commands passed before PR creation
-  -> merge/release: pending PR review/merge
+  -> merge/release: PR #9 merged; issue #8 closed
 ```
 
 ## Work item
 
 - Issue: https://github.com/jeanclaudevibedan/open-scaffold/issues/8
 - Task ID: `issue:8`
-- Plan: `.osc/plans/active/005-self-dogfood-release-loop.md`
+- Plan: `.osc/plans/done/005-self-dogfood-release-loop.md`
 - Run ID: `20260512T135850Z-005-self-dogfood-release-loop-run`
 - Generated run packet: `.osc/runs/20260512T135850Z-005-self-dogfood-release-loop-run/run.json` (gitignored generated artifact; summarized here for durable public reconstruction)
 - Executor lane: `plain-agent`
@@ -68,7 +68,7 @@ Codex connector initially requested environment setup, then completed review and
 ## Outcome
 
 ```text
-pending until PR merge/close
+PR #9 merged. GitHub issue #8 closed. Milestone 6 v1 proof chain is complete.
 ```
 
 ## Follow-up
