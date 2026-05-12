@@ -92,7 +92,7 @@ Every cockpit event should be able to fit this shape:
 schema: open-scaffold.cockpit_event.v1
 event_id: evt_20260512_001
 created_at: 2026-05-12T10:30:00Z
-event_type: status | blocker | question | answer | approval_request | completion_report | evidence_receipt | pr_link | release_link | nudge | cancellation
+event_type: nudge | session_start | status | blocker | question | answer | approval_request | completion_report | evidence_receipt | pr_link | release_link | cancellation
 visibility: private | internal | public | stakeholder
 source:
   kind: coordinator | runtime | human | ci | github | scheduler | manual
