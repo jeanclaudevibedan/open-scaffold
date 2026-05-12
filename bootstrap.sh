@@ -52,6 +52,7 @@ mkdir -p "$ROOT/.osc/plans/active"
 mkdir -p "$ROOT/.osc/plans/backlog"
 mkdir -p "$ROOT/.osc/plans/done"
 mkdir -p "$ROOT/.osc/plans/blocked"
+mkdir -p "$ROOT/.osc/releases"
 
 # 2. Interactive MISSION.md fill-in (only if marker is present and stdin is a terminal)
 if [ -f "$MISSION" ] && grep -Fq 'mission:unset' "$MISSION"; then

@@ -40,6 +40,8 @@ Not every small task needs every link, but meaningful work should make the chain
 
 ## Milestone 0 — Product contract and dogfood baseline
 
+Status: v1 complete; product mission, roadmap, ontology, and self-dogfood baseline are established.
+
 Goal: make the product identity and ontology precise enough that agents stop making wrong boundary assumptions.
 
 Deliverables:
@@ -58,6 +60,8 @@ Acceptance criteria:
 - `./verify.sh --quick --quiet` passes, or any failure is explicit and actionable.
 
 ## Milestone 1 — Core documentation hardening
+
+Status: v1 complete; README/root docs explain Open Scaffold as a runtime-neutral product rather than only a template.
 
 Goal: make Open Scaffold understandable as a product, not only as a template.
 
@@ -117,7 +121,7 @@ Acceptance criteria:
 
 ## Milestone 4 — ROADMAP / GitHub / task bridge
 
-Status: v1 mostly complete via PR #3 and PR #4: task/run identity, GitHub issue/PR templates, run binding options, and runtime dispatch pattern exist. Remaining product work is the public self-dogfood proof: convert roadmap items into GitHub issues and demonstrate the full issue -> task/run -> PR -> release-note chain under Milestone 6.
+Status: v1 complete via PR #3, PR #4, and the Milestone 6 proof in PR #9: task/run identity, GitHub issue/PR templates, run binding options, runtime dispatch pattern, and public issue -> task/run -> PR -> release-note chain exist.
 
 Goal: connect roadmap intent to live work without duplicating truth.
 
@@ -179,6 +183,60 @@ Acceptance criteria:
 - The PR can be understood without private Daniel Command Center context.
 - Codex connector review is triggered or explicitly skipped with rationale.
 - The release notes explain what was learned from dogfooding.
+
+## V2 roadmap — harden the protocol into a usable product
+
+The v1 baseline proves the model. V2 should make it harder for agents to drift, easier for humans to adopt, and cleaner for runtime harnesses to bind without contaminating core.
+
+### Milestone 7 — CLI validation upgrades
+
+Status: backlog via `.osc/plans/backlog/007-cli-validation-upgrades.md`.
+
+Goal: make stale-state and evidence drift mechanically visible.
+
+Deliverables:
+
+- Validate slice-close evidence and approval status.
+- Validate `.osc/releases/` notes for issue/task, plan, run ID, PR, verification, outcome, and follow-up fields.
+- Detect stale active plans and active plans with completed/merged evidence.
+- Detect cited run IDs with no durable public evidence summary.
+
+### Milestone 8 — User-facing examples
+
+Status: backlog via `.osc/plans/backlog/008-user-facing-examples.md`.
+
+Goal: make Open Scaffold adoptable by people who have never seen Daniel's Command Center.
+
+Deliverables:
+
+- Solo developer example.
+- Team control-room example.
+- GitHub-only workflow example.
+- Runtime harness handoff example.
+
+### Milestone 9 — Runtime harness adapter refresh
+
+Status: backlog via `.osc/plans/backlog/009-runtime-harness-adapter-refresh.md`.
+
+Goal: align OMC/OMX bindings with the public runtime binding contract while keeping runtime launch mechanics outside core.
+
+Deliverables:
+
+- Refresh `open-scaffold-omc` against current core contracts.
+- Refresh `open-scaffold-omx` against current core contracts.
+- Ensure adapter evidence returns to `.osc` run/release conventions.
+
+### Milestone 10 — Product packaging and releases
+
+Status: backlog via `.osc/plans/backlog/010-product-packaging-release.md`; `v0.3.0` release baseline is being prepared in `.osc/releases/2026-05-12-v0.3.0-runtime-neutral-baseline.md`.
+
+Goal: package the v1 protocol baseline as a public product release.
+
+Deliverables:
+
+- Publish `v0.3.0 — Runtime-neutral semi-autonomous protocol baseline`.
+- Add a sharper “why this exists” product diagram/story.
+- Evaluate npm/template packaging readiness.
 
 ## Parking lot
 
