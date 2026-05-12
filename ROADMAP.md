@@ -77,7 +77,7 @@ Acceptance criteria:
 
 ## Milestone 2 — Evolutionary closed-loop protocol
 
-Status: first public protocol shipped in PR #5 via `docs/SLICE_CLOSE_PROTOCOL.md`; future CLI validation remains optional follow-up.
+Status: v1 complete in PR #5 via `docs/SLICE_CLOSE_PROTOCOL.md`; future CLI validation is an optional backlog follow-up, not required for the v1 milestone to count as done.
 
 Goal: productize the “slice → feedback → correction → approval → next slice” learning loop.
 
@@ -96,7 +96,7 @@ Acceptance criteria:
 
 ## Milestone 3 — Glass cockpit MVP
 
-Status: in progress via `.osc/plans/active/003-glass-cockpit-event-protocol.md` and `docs/GLASS_COCKPIT_PROTOCOL.md`.
+Status: v1 complete in PR #6 via `docs/GLASS_COCKPIT_PROTOCOL.md`; implementation examples are optional follow-up slices, not required for the protocol milestone to count as done.
 
 Goal: make build-in-public / private control-room operation a first-class Open Scaffold capability.
 
@@ -116,6 +116,8 @@ Acceptance criteria:
 - Event routers are documented as transport glue, not as source-of-truth databases or executor agents.
 
 ## Milestone 4 — ROADMAP / GitHub / task bridge
+
+Status: v1 mostly complete via PR #3 and PR #4: task/run identity, GitHub issue/PR templates, run binding options, and runtime dispatch pattern exist. Remaining product work is the public self-dogfood proof: convert roadmap items into GitHub issues and demonstrate the full issue -> task/run -> PR -> release-note chain under Milestone 6.
 
 Goal: connect roadmap intent to live work without duplicating truth.
 
@@ -139,13 +141,15 @@ Acceptance criteria:
 
 ## Milestone 5 — Runtime harness bindings
 
+Status: active local slice via `.osc/plans/active/004-runtime-binding-contract.md` and `docs/RUNTIME_BINDING_CONTRACT.md`; this becomes v1 complete when the PR lands. Executable OMC/OMX launchers and JSON-schema enforcement remain adapter/backlog work, not core spawning work.
+
 Goal: support specific harnesses without making them the core system.
 
 Deliverables:
 
-- OMC binding guidance for Claude Code workflows: `/deep-interview`, `/ralplan`, `/team`, `/ralph`, `/ultrawork` where applicable.
-- OMX binding guidance for Codex workflows: `$deep-interview`, `$ralplan`, `$team`, `$ralph`, `$ultrawork`, `$ultragoal`.
-- Generic handoff packet schema for any future harness.
+- OMC binding guidance for Claude Code workflows: `/deep-interview`, `/ralplan`, `/team`, `/ralph`, `/ultrawork` where applicable. First public contract shape: `docs/RUNTIME_BINDING_CONTRACT.md`.
+- OMX binding guidance for Codex workflows: `$deep-interview`, `$ralplan`, `$team`, `$ralph`, `$ultrawork`, `$ultragoal`. First public contract shape: `docs/RUNTIME_BINDING_CONTRACT.md`.
+- Generic handoff packet schema for any future harness. First public contract shape: runtime binding lifecycle, package validation gate, and evidence return contract in `docs/RUNTIME_BINDING_CONTRACT.md`.
 - Failure-state taxonomy: prompt not accepted, session blocked, artifact missing, verification failed, human input needed.
 
 Acceptance criteria:

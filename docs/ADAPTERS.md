@@ -94,7 +94,7 @@ Harness/runtime owns execution while alive.
 Operator surface mirrors/questions/approves through a binding.
 ```
 
-Use `osc run <plan> --task-id <id> --executor <lane> --harness-skill <skill> ...` to create a runtime-neutral `.osc/runs/<run_id>/run.json` package. The core still does not spawn; adapters/coordinators consume that package. See [`docs/TASK_RUN_MODEL.md`](TASK_RUN_MODEL.md).
+Use `osc run <plan> --task-id <id> --executor <lane> --harness-skill <skill> ...` to create a runtime-neutral `.osc/runs/<run_id>/run.json` package. The core still does not spawn; adapters/coordinators consume that package according to the runtime binding contract. See [`docs/TASK_RUN_MODEL.md`](TASK_RUN_MODEL.md) and [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md).
 
 ## Event/session routing glue
 
