@@ -10,7 +10,7 @@ The example validates the generated run packet, prints the handoff summary an ex
 
 - Roadmap milestone: `ROADMAP.md` → Milestone 12 — Minimal runtime binding example.
 - Plan: `.osc/plans/active/013-binding-example.md` before close; `.osc/plans/done/013-binding-example.md` after close.
-- Pull Request: PR #14 — https://github.com/jeanclaudevibedan/open-scaffold/pull/14.
+- Pull Request: PR #14 — https://github.com/graphanov/open-scaffold/pull/14.
 - RALPLAN run packet: `.osc/runs/20260512T211904Z-013-binding-example-run/run.json`.
 - ULTRAWORK run packet: `.osc/runs/20260512T213342Z-013-binding-example-run/run.json`.
 - Public docs:

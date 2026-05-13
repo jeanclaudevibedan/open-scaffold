@@ -5,7 +5,7 @@
 **A repo-native operating system for agent-orchestrated development.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](LICENSE)
-[![Template](https://img.shields.io/badge/GitHub-Template-blue.svg)](https://github.com/jeanclaudevibedan/open-scaffold/generate)
+[![Template](https://img.shields.io/badge/GitHub-Template-blue.svg)](https://github.com/graphanov/open-scaffold/generate)
 [![Works with](https://img.shields.io/badge/Works%20with-Any%20agent-green.svg)](#-recommended-runtimes)
 [![Built with](https://img.shields.io/badge/Built%20with-itself-ff69b4.svg)](#-dogfooded)
 
@@ -105,7 +105,7 @@ Each phase maps to a concrete file or command. Full phase-to-tool cheat sheet li
 > Paste this one-liner into any LLM — coding agent (Claude Code, Cursor, Codex CLI) or chat LLM (ChatGPT, Claude.ai, Gemini web). The agent clones the template, opens [`LLM_QUICKSTART.md`](LLM_QUICKSTART.md) from inside the clone, detects its own capability, and walks you through bootstrap → verify → handoff.
 >
 > ```text
-> Clone https://github.com/jeanclaudevibedan/open-scaffold into a new project directory, then open LLM_QUICKSTART.md from inside the clone and walk me through it.
+> Clone https://github.com/graphanov/open-scaffold into a new project directory, then open LLM_QUICKSTART.md from inside the clone and walk me through it.
 > ```
 >
 > **Prefer to drive it yourself?** The manual steps below do the same thing by hand. ⬇️
@@ -115,7 +115,7 @@ Each phase maps to a concrete file or command. Full phase-to-tool cheat sheet li
 ### 1. Create your project from the template
 
 ```bash
-gh repo create <your-project> --template jeanclaudevibedan/open-scaffold --clone
+gh repo create <your-project> --template graphanov/open-scaffold --clone
 cd <your-project>
 ```
 
