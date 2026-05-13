@@ -309,15 +309,16 @@ Deliverables:
 
 ### Milestone 16 — Runtime strategy and native-runtime exploration
 
-Status: backlog via `.osc/plans/backlog/017-runtime-strategy-native-runtime-exploration.md`.
+Status: complete via `.osc/plans/done/017-runtime-strategy-native-runtime-exploration.md`, PR #17 research synthesis, PR #18 spawning boundary, and `.osc/releases/2026-05-14-runtime-strategy-boundary.md`.
 
 Goal: decide, with evidence, whether Open Scaffold should remain a runtime-neutral launch checklist/dispatch contract/black-box recorder, add a thin opt-in `osc spawn` adapter invoker, or eventually grow a native runtime as a distinct product layer.
 
 Current stance:
 
 - Open Scaffold core does **not** currently provide an autonomous agent runtime.
-- That boundary is intentional today, but not sacred forever.
-- A thin `osc spawn` command or native runtime must not be added by drift; it needs explicit investigation, architecture, security analysis, competitive review, and product-vision work.
+- That boundary is intentional today, and PR #18 documents the adapter/spawning boundary in `docs/SPAWNING_BOUNDARY.md`.
+- PR #17 captured the current runtime strategy research in `docs/RUNTIME_STRATEGY_RESEARCH_SYNTHESIS.md` and supporting evidence docs.
+- A thin `osc spawn` command or native runtime must not be added by drift; any future work starts with explicit adapter/receipt design, safety analysis, and a fake/local dispatch receipt before real runtime mutation.
 
 Discovery tracks:
 
