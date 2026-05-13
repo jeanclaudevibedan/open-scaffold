@@ -259,7 +259,7 @@ Deliverables:
 
 ### Milestone 12 — Minimal runtime binding example
 
-Status: backlog via `.osc/plans/backlog/013-binding-example.md`.
+Status: complete via `.osc/plans/done/013-binding-example.md` and `.osc/releases/2026-05-12-binding-example.md`.
 
 Goal: prove that `.osc/runs/<run_id>/run.json` can be consumed by an external adapter without making Open Scaffold core the spawner.
 

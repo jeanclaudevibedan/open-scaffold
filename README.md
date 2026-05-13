@@ -179,6 +179,8 @@ npm run osc -- run .osc/plans/active/my-first-task.md \
 
 This writes `.osc/runs/<run_id>/run.json` with task/run bindings, executor choice, operator-surface binding, package-quality checks, prompts, and commit policy. If the package lacks goal, acceptance criteria, verification, or has blocking open questions, dispatch should route to clarification/deep-interview before implementation.
 
+To see how an external binding would consume that packet without launching a runtime, run the dry-run example in [docs/examples/runtime-binding-dry-run.mjs](docs/examples/runtime-binding-dry-run.mjs). It validates a generated `run.json`, prints the intended handoff, and explicitly exits without reading credentials, mutating global config, or spawning Claude, Codex, OMC, OMX, or any other lane.
+
 For the public coordinator-to-harness pattern, including the current Mermaid map of where the system is now, see [docs/RUNTIME_HARNESS_DISPATCH.md](docs/RUNTIME_HARNESS_DISPATCH.md).
 
 ### 5. Open a traceable PR when code changes
