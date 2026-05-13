@@ -9,13 +9,14 @@ Open Scaffold is a runtime-neutral, repo-native operating system for agent-orche
 - Define clear integration boundaries between orchestrators, runtime harnesses, operator surfaces, repository truth, and GitHub issue/PR workflows.
 - Productize the closed evolutionary loop: slice work, capture feedback, amend plans, verify against acceptance criteria, and feed learnings into the next slice.
 - Ship a Discord glass-cockpit pattern for private control rooms, team control rooms, and build-in-public workflows while keeping durable truth in the repo/GitHub/task system.
+- Investigate whether Open Scaffold should remain a runtime-neutral launch checklist/dispatch contract/black-box recorder, add a thin opt-in spawner, or eventually grow a native runtime as a separate explicitly-governed product layer.
 - Dogfood Open Scaffold on Open Scaffold itself: use the framework to grow the framework.
 
 ## Non-Goals
 
 Explicit things this project is NOT trying to do. Legitimate scope discipline starts here. When new information arrives that would change what belongs in this list, follow the amendment protocol in `.osc/plans/README.md` — do not silently edit the list.
 
-- Open Scaffold core does not own autonomous agent spawning or long-running execution loops.
+- Open Scaffold core does not own autonomous agent spawning or long-running execution loops today; any move toward thin spawning or a native runtime requires explicit roadmap investigation, architectural decision records, security analysis, and separate approval rather than accidental scope creep.
 - Open Scaffold core does not make Discord, Slack, Telegram, or any chat surface the source of truth.
 - Open Scaffold core does not require Hermes, Claw/OpenClaw, Claude Code, Codex, Gemini, OMC, OMX, or any other specific runtime.
 - Open Scaffold core does not treat OMC/OMX as equivalent to orchestrator agents: OMC is a Claude Code workflow harness; OMX is a Codex workflow/execution harness.
@@ -27,6 +28,7 @@ Explicit things this project is NOT trying to do. Legitimate scope discipline st
 One-line dated entries for every scope pivot. Format: `YYYY-MM-DD: <one-line pivot description + link to amendment file if applicable>`. Append entries in chronological order. Never rewrite history here.
 
 <!-- append YYYY-MM-DD entries below this line -->
+- 2026-05-13: added native runtime / thin spawner exploration as an explicit long-term roadmap question rather than an accidental core scope change
 - 2026-05-12: closed 013-binding-example
 - 2026-05-12: closed 012-independent-review-hardening — independent review hardening shipped: quick/standard/strict tier behavior corrected, vitest upgraded to clear npm audit, OMC/OMX runtime state ignored, verification clean
 - 2026-05-12: closed 011-codex-pr10-verify-feedback — PR #11 merged; verification hotfix accepted, strict/standard/CLI/test/build checks passing before post-v0.3 review roadmap work
