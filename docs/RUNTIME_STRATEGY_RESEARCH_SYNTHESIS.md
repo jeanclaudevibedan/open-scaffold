@@ -84,6 +84,8 @@ Mature systems quickly need:
 
 OMX calls this in terms of authority, backlog, replay, readiness, and runtime events. Ouroboros expresses it through `AgentRuntime`, `RuntimeHandle`, `RuntimeCapabilities`, and `SandboxClass`. GSD expresses it through gates and per-runtime isolation contracts. Open Scaffold should publish the vendor-neutral version before implementing any real spawner.
 
+OMX `v0.17.0` strengthens this conclusion with a bounded Hermes MCP bridge (`omx mcp-serve hermes`). The bridge lets Hermes-style coordinators list sessions, read status/log tails, read safe artifacts, start sessions, send audited follow-up prompts, and report final coordination without exposing tmux scrollback or raw private state. Its stated boundary is directly aligned with Open Scaffold: the coordinator owns intake, operator Q&A, package shaping, and approval policy; OMX owns planning, execution, review, and local artifact production inside a bounded worktree/session.
+
 ### 2. Adapter packages are the least-distorting execution home
 
 OMC, OmO, GSD, and Ouroboros all point toward the same architecture: runtime-specific behavior lives near the runtime.

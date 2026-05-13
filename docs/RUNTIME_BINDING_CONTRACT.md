@@ -138,6 +138,8 @@ If the package is not executable, do not improvise implementation. Route to clar
 
 ## Binding responsibilities
 
+For the detailed spawning/adapter boundary, dispatch receipt shape, authority vocabulary, and OMX v0.17.0 Hermes MCP bridge evidence, see [`docs/SPAWNING_BOUNDARY.md`](SPAWNING_BOUNDARY.md). This contract remains the lifecycle-level agreement; the boundary document defines the safer next-step vocabulary before any real `osc spawn` implementation.
+
 A binding should:
 
 1. Read the run packet and generated prompts.
