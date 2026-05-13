@@ -64,7 +64,7 @@ Questions that didn't make the cut for the main README but are still worth answe
 
 ### Who built this?
 
-> [@jeanclaudevibedan](https://github.com/jeanclaudevibedan). Scoped, planned, implemented, reviewed, and shipped using the scaffold's own methodology.
+> [@graphanov](https://github.com/graphanov). Scoped, planned, implemented, reviewed, and shipped using the scaffold's own methodology.
 
 ### Is it production-ready, or a toy?
 

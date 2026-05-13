@@ -21,7 +21,7 @@ ROADMAP.md Milestone 6 — Self-dogfood release loop
 
 ## Work item
 
-- Issue: https://github.com/jeanclaudevibedan/open-scaffold/issues/8
+- Issue: https://github.com/graphanov/open-scaffold/issues/8
 - Task ID: `issue:8`
 - Plan: `.osc/plans/done/005-self-dogfood-release-loop.md`
 - Run ID: `20260512T135850Z-005-self-dogfood-release-loop-run`
@@ -30,7 +30,7 @@ ROADMAP.md Milestone 6 — Self-dogfood release loop
 - Harness skill: `none`
 - Operator surface: `github`
 - Branch: `docs/self-dogfood-release-loop`
-- PR: https://github.com/jeanclaudevibedan/open-scaffold/pull/9
+- PR: https://github.com/graphanov/open-scaffold/pull/9
 
 ## Run packet summary
 

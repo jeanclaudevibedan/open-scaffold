@@ -2,7 +2,7 @@
 
 # Agent Instructions
 
-This project is [open-scaffold](https://github.com/jeanclaudevibedan/open-scaffold), a runtime-neutral repo-native operating system for agent-orchestrated development. It ships with a persistent project structure — mission, roadmap, immutable plans, amendment protocols, decisions, evidence, run packets, and session handover practices — so that any agent or orchestrator (Hermes, Claw/OpenClaw, Claude Code, Codex, Gemini, or similar) can operate in the repository from commit #1 without re-explanation.
+This project is [open-scaffold](https://github.com/graphanov/open-scaffold), a runtime-neutral repo-native operating system for agent-orchestrated development. It ships with a persistent project structure — mission, roadmap, immutable plans, amendment protocols, decisions, evidence, run packets, and session handover practices — so that any agent or orchestrator (Hermes, Claw/OpenClaw, Claude Code, Codex, Gemini, or similar) can operate in the repository from commit #1 without re-explanation.
 
 ## Layered architecture
 

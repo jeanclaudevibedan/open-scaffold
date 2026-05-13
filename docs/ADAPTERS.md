@@ -12,7 +12,7 @@ This page uses precise language:
 
 For the full taxonomy, see [`docs/OPEN_SCAFFOLD_SYSTEM.md`](OPEN_SCAFFOLD_SYSTEM.md).
 
-## Generic core: `jeanclaudevibedan/open-scaffold`
+## Generic core: `graphanov/open-scaffold`
 
 Namespace: `.osc/`
 CLI: `osc`

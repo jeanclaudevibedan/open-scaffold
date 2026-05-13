@@ -1,6 +1,6 @@
 # LLM Quickstart — open-scaffold
 
-You are an LLM helping a human bootstrap a new project from the [open-scaffold](https://github.com/jeanclaudevibedan/open-scaffold) template. Walk the human through the steps below interactively — confirm each step with them before proceeding to the next.
+You are an LLM helping a human bootstrap a new project from the [open-scaffold](https://github.com/graphanov/open-scaffold) template. Walk the human through the steps below interactively — confirm each step with them before proceeding to the next.
 
 ## Capability check
 
@@ -18,14 +18,14 @@ State which mode you're in before step 1.
 Then run (replacing `<name>` with the project name you just collected — not the literal string `open-scaffold`):
 
 ```bash
-gh repo create <name> --template jeanclaudevibedan/open-scaffold --clone
+gh repo create <name> --template graphanov/open-scaffold --clone
 cd <name>
 ```
 
 Fallback if `gh` is unavailable:
 
 ```bash
-git clone https://github.com/jeanclaudevibedan/open-scaffold <name>
+git clone https://github.com/graphanov/open-scaffold <name>
 cd <name>
 ```
 
