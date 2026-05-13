@@ -36,6 +36,15 @@ describe('runtime binding dry-run example', () => {
     expect(output).toContain('No runtime was launched');
   });
 
+  it('normalizes the documented manual lane to the human lane', () => {
+    const output = execFileSync('node', [script, tempManifest({ executor: { lane: 'manual', harnessSkill: null, spawning: false } })], {
+      encoding: 'utf8',
+    });
+
+    expect(output).toContain('Executor lane: human');
+    expect(output).toContain('No runtime was launched');
+  });
+
   it('refuses packages with blockers before dispatch', () => {
     const manifestPath = tempManifest({ packageQuality: { executable: true, blockers: ['missing verification steps'] } });
 

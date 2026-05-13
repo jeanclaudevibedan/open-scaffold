@@ -53,9 +53,10 @@ if (blockers.length > 0) {
   fail(`packageQuality.blockers must be empty before dispatch (${blockers.join('; ')})`);
 }
 
-const lane = requireString(manifest?.executor?.lane, 'executor.lane');
+const rawLane = requireString(manifest?.executor?.lane, 'executor.lane');
+const lane = rawLane === 'manual' ? 'human' : rawLane;
 if (!supportedLanes.has(lane)) {
-  fail(`unsupported executor.lane ${lane}`);
+  fail(`unsupported executor.lane ${rawLane}`);
 }
 
 if (manifest?.executor?.spawning !== false) {
