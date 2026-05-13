@@ -307,6 +307,42 @@ Deliverables:
 - Remove or generalize private/Daniel-specific context in public docs.
 - State honestly what exists today versus what is adapter/backlog work.
 
+### Milestone 16 — Runtime strategy and native-runtime exploration
+
+Status: backlog via `.osc/plans/backlog/017-runtime-strategy-native-runtime-exploration.md`.
+
+Goal: decide, with evidence, whether Open Scaffold should remain a runtime-neutral launch checklist/dispatch contract/black-box recorder, add a thin opt-in `osc spawn` adapter invoker, or eventually grow a native runtime as a distinct product layer.
+
+Current stance:
+
+- Open Scaffold core does **not** currently provide an autonomous agent runtime.
+- That boundary is intentional today, but not sacred forever.
+- A thin `osc spawn` command or native runtime must not be added by drift; it needs explicit investigation, architecture, security analysis, competitive review, and product-vision work.
+
+Discovery tracks:
+
+1. **Product vision** — what would a native runtime make possible that a launch checklist and adapter contract cannot?
+2. **Architecture** — whether runtime concerns belong in core, optional packages, adapter repos, or a sibling runtime product.
+3. **Technology scan** — compare relevant agent runtimes, coding-agent CLIs, task orchestrators, workflow engines, CI runners, and black-box/evidence systems.
+4. **Safety/governance** — credential boundaries, environment allowlists, process supervision, workspace isolation, commit/push/merge authority, audit trails, and failure states.
+5. **MVP options** — no-spawn, thin `osc spawn`, adapter package, local daemon, hosted coordinator, or full native runtime.
+6. **Adoption impact** — whether spawning makes Open Scaffold meaningfully easier to try, or whether it confuses the runtime-neutral promise.
+
+Candidate outcomes:
+
+- Keep core non-spawning and improve docs/examples only.
+- Add an explicit thin `osc spawn --adapter <name>` that invokes configured local commands and records dispatch receipts.
+- Move runtime launching into official adapter packages such as `open-scaffold-omx` / `open-scaffold-omc`.
+- Create a separate Open Scaffold Runtime product that consumes `.osc` packets without bloating core.
+- Decide that native runtime ownership is strategically wrong and document why.
+
+Acceptance direction:
+
+- No implementation before a written decision.
+- No hidden runtime/provider coupling in core.
+- Any prototype starts with a fake/local adapter and dispatch receipt, not real autonomous mutation.
+- The final decision must state what Open Scaffold wants to be in one sentence.
+
 ## Parking lot
 
 - MCP bridge for structured harness dispatch/status/artifact retrieval.
