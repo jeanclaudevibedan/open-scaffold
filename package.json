@@ -16,8 +16,14 @@
   "files": [
     "dist",
     ".osc",
+    "docs",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "MISSION.md",
+    "ROADMAP.md",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "*.sh"
   ],
   "engines": {
     "node": "^20.19.0 || ^22.12.0 || >=24.0.0"

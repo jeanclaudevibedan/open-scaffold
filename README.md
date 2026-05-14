@@ -65,7 +65,24 @@ Roadmap or issue
 
 ## Quickstart
 
-### 1. Create a project from the template
+### 1. Initialize the scaffold tier you need
+
+Use the CLI when Node is available:
+
+```bash
+npx open-scaffold init --tier min --target <your-project>
+cd <your-project>
+```
+
+Tiers:
+
+- `min` — mission, rules, plan workflow/template, release evidence folder, and shell helpers.
+- `standard` — `min` plus README/roadmap, agent instructions, amendment helper, and core docs.
+- `max` — `standard` plus GitHub/glass-cockpit/runtime docs, delegation helper, and advanced `.osc/` folders.
+
+The initializer is local-only: it does not require network access after the package is present, does not call GitHub or agent services, and refuses to overwrite existing files unless `--force` is supplied.
+
+If you prefer GitHub's template flow:
 
 ```bash
 gh repo create <your-project> --template graphanov/open-scaffold --clone
