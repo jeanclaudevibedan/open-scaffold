@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -38,5 +38,27 @@ describe('osc init CLI', () => {
     writeFileSync(join(target, 'MISSION.md'), 'keep me');
 
     expect(() => execFileSync(tsx, [cli, 'init', '--tier', 'min', '--target', target], { encoding: 'utf8', stdio: 'pipe' })).toThrow(/Refusing to overwrite/);
+  });
+
+  it('reports invalid tier values as argument errors without a stack trace', () => {
+    const target = tempTarget();
+
+    const result = spawnSync(tsx, [cli, 'init', '--tier', 'foo', '--target', target], { encoding: 'utf8' });
+
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain('Invalid value for --tier: foo');
+    expect(result.stderr).not.toContain('Error: Invalid tier');
+    expect(result.stderr).not.toContain('at parseTier');
+  });
+
+  it('keeps min-tier bootstrap output pointed at an existing workflow guide', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--tier', 'min', '--target', target], { encoding: 'utf8' });
+
+    const output = execFileSync(join(target, 'bootstrap.sh'), { cwd: target, encoding: 'utf8' });
+
+    expect(existsSync(join(target, 'docs/WORKFLOW.md'))).toBe(false);
+    expect(output).toContain(join(target, '.osc/plans/WORKFLOW.md'));
+    expect(output).not.toContain(join(target, 'docs/WORKFLOW.md'));
   });
 });

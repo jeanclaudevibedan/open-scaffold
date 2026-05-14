@@ -2,7 +2,7 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createRunArtifacts, type ArtifactMode, type ExecutorLane, type OperatorSurface, type RunArtifactOptions } from './artifacts.js';
-import { initializeScaffold, parseTier, type ScaffoldTier } from './init.js';
+import { initializeScaffold, scaffoldTiers, type ScaffoldTier } from './init.js';
 import { inspectScaffold, parsePlanFile, planToJson } from './scaffold.js';
 import { validateScaffold } from './validation.js';
 
@@ -149,7 +149,7 @@ function parseInitOptions(args: string[]): { tier: ScaffoldTier; target: string;
     const flag = args[i];
     switch (flag) {
       case '--tier':
-        tier = parseTier(takeValue(i, flag));
+        tier = parseChoice(takeValue(i, flag), scaffoldTiers, flag) as ScaffoldTier;
         i += 1;
         break;
       case '--min':
