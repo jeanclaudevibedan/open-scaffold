@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync, writeFileSync, chmodSync } from 'node:fs';
+import { chmodSync, copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -230,6 +230,24 @@ function formatSummary(tier: ScaffoldTier, target: string, files: string[]): str
   ].join('\n');
 }
 
+function rejectSymlinkedDestination(target: string, destination: string): void {
+  const relative = destination.slice(target.length + 1);
+  const parts = relative.split('/').filter(Boolean);
+  let current = target;
+
+  if (existsSync(current) && lstatSync(current).isSymbolicLink()) {
+    throw new Error('Refusing to write through symlinked path: .');
+  }
+
+  for (const part of parts) {
+    current = join(current, part);
+    if (existsSync(current) && lstatSync(current).isSymbolicLink()) {
+      const symlinkRelative = current.slice(target.length + 1) || '.';
+      throw new Error(`Refusing to write through symlinked path: ${symlinkRelative}`);
+    }
+  }
+}
+
 export function initializeScaffold(options: InitializeScaffoldOptions): InitializeScaffoldResult {
   ensureKnownTier(options.tier);
   const target = resolve(options.target);
@@ -244,6 +262,7 @@ export function initializeScaffold(options: InitializeScaffoldOptions): Initiali
 
   for (const file of files) {
     const destination = join(target, file);
+    rejectSymlinkedDestination(target, destination);
     mkdirSync(dirname(destination), { recursive: true });
 
     const source = sourcePathFor(file);

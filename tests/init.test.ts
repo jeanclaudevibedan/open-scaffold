@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { initializeScaffold, tierFiles } from '../src/init.js';
@@ -59,5 +59,24 @@ describe('tiered scaffold initialization', () => {
 
     expect(() => initializeScaffold({ tier: 'min', target })).toThrow(/Refusing to overwrite existing files: MISSION\.md/);
     expect(readFileSync(join(target, 'MISSION.md'), 'utf8')).toBe('keep me');
+  });
+
+  it('refuses to write through symlinked target paths', () => {
+    const target = tempTarget();
+    const outside = tempTarget();
+    mkdirSync(join(outside, '.osc'), { recursive: true });
+    symlinkSync(join(outside, '.osc'), join(target, '.osc'));
+
+    expect(() => initializeScaffold({ tier: 'min', target })).toThrow(/Refusing to write through symlinked path: \.osc/);
+  });
+
+  it('refuses to overwrite symlinked files even with force', () => {
+    const target = tempTarget();
+    const outside = tempTarget();
+    writeFileSync(join(outside, 'README.md'), 'outside');
+    symlinkSync(join(outside, 'README.md'), join(target, 'README.md'));
+
+    expect(() => initializeScaffold({ tier: 'standard', target, force: true })).toThrow(/Refusing to write through symlinked path: README\.md/);
+    expect(readFileSync(join(outside, 'README.md'), 'utf8')).toBe('outside');
   });
 });
