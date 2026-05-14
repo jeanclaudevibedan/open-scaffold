@@ -21,6 +21,8 @@ describe('tiered scaffold initialization', () => {
     expect(readFileSync(join(target, '.osc/RULES.md'), 'utf8')).not.toContain('amend.sh');
     expect(readFileSync(join(target, '.osc/RULES.md'), 'utf8')).not.toContain('docs/WORKFLOW.md');
     expect(readFileSync(join(target, '.osc/RULES.md'), 'utf8')).toContain('.osc/plans/WORKFLOW.md');
+    expect(readFileSync(join(target, '.osc/plans/handoff-template.md'), 'utf8')).not.toContain('amend.sh');
+    expect(readFileSync(join(target, '.osc/plans/handoff-template.md'), 'utf8')).toContain('upgrade to the standard scaffold tier');
     expect(readFileSync(join(target, 'verify.sh'), 'utf8')).toContain('open-scaffold compliance checker');
     expect(result.summary).toContain('Generated min Open Scaffold');
     expect(result.summary).toContain('Next: edit MISSION.md');
