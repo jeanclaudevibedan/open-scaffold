@@ -9,6 +9,7 @@ const minFiles = [
   'MISSION.md',
   '.osc/RULES.md',
   '.osc/plans/WORKFLOW.md',
+  '.osc/plans/README.md',
   '.osc/plans/handoff-template.md',
   '.osc/plans/active/.gitkeep',
   '.osc/plans/backlog/.gitkeep',
