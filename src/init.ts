@@ -230,6 +230,20 @@ function formatSummary(tier: ScaffoldTier, target: string, files: string[]): str
   ].join('\n');
 }
 
+function rejectSymlinkedExistingPath(path: string): void {
+  let current = resolve(path);
+
+  while (!existsSync(current)) {
+    const parent = dirname(current);
+    if (parent === current) return;
+    current = parent;
+  }
+
+  if (lstatSync(current).isSymbolicLink()) {
+    throw new Error(`Refusing to write through symlinked path: ${current}`);
+  }
+}
+
 function rejectSymlinkedDestination(target: string, destination: string): void {
   const relative = relativePath(target, destination);
   const parts = relative.split(sep).filter(Boolean);
@@ -253,10 +267,7 @@ export function initializeScaffold(options: InitializeScaffoldOptions): Initiali
   const target = resolve(options.target);
   const files = [...tierFiles[options.tier]];
 
-  if (existsSync(target) && lstatSync(target).isSymbolicLink()) {
-    throw new Error('Refusing to write through symlinked path: .');
-  }
-
+  rejectSymlinkedExistingPath(target);
   mkdirSync(target, { recursive: true });
 
   for (const file of files) {

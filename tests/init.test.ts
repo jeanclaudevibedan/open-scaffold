@@ -72,6 +72,16 @@ describe('tiered scaffold initialization', () => {
     expect(existsSync(join(outside, '.osc/RULES.md'))).toBe(false);
   });
 
+  it('refuses symlinked target ancestors before creating directories', () => {
+    const parent = tempTarget();
+    const outside = tempTarget();
+    const link = join(parent, 'link');
+    symlinkSync(outside, link);
+
+    expect(() => initializeScaffold({ tier: 'min', target: join(link, 'project') })).toThrow(/Refusing to write through symlinked path:/);
+    expect(existsSync(join(outside, 'project'))).toBe(false);
+  });
+
   it('refuses to overwrite symlinked files even with force', () => {
     const target = tempTarget();
     const outside = tempTarget();
