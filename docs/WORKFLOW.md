@@ -6,6 +6,8 @@ A phase-to-tool reference for agent-orchestrated development. This file is the o
 
 Every task moves through a natural progression. You do not need to use every phase — small fixes skip straight to Execute. The phases exist so you know where you are and what to reach for.
 
+For first-use setup, start with the [Minimum Viable Scaffold](MINIMUM_VIABLE_SCAFFOLD.md): mission, one active plan, verification, evidence, and close.
+
 ### 1. Clarify (when the goal is fuzzy)
 
 Ask structured questions until the goal, constraints, and acceptance criteria are concrete. Don't start building until you can state in one sentence what "done" looks like.

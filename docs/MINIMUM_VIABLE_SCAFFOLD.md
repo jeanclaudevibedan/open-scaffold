@@ -1,0 +1,120 @@
+# Minimum Viable Scaffold
+
+Open Scaffold can look larger than it is because this repository also contains the product's own roadmap, tests, examples, release notes, and dogfood history. A fresh downstream project does not need to understand or keep every product-repo artifact on day one.
+
+The minimum viable scaffold is the smallest repo state that lets a human and an agent answer:
+
+```text
+What are we building?
+What is the current slice?
+How will we verify it?
+What evidence proves it closed?
+```
+
+## The five-step adoption path
+
+1. **Define mission** — run `./bootstrap.sh` or edit `MISSION.md` until the project-specific mission is real.
+2. **Create one active plan** — copy `.osc/plans/handoff-template.md` into `.osc/plans/active/<slug>.md` and fill the seven sections.
+3. **Execute and verify** — make the change, run the project test/check, then run `./verify.sh --standard`.
+4. **Record evidence** — add a short `.osc/releases/<date>-<slug>.md` note with summary, traceability, verification, and outcome.
+5. **Close the plan** — run `./close.sh <slug> --message "<what shipped>"` so the plan moves to `done/` and `MISSION.md` is stamped.
+
+Everything else is optional until the project needs it.
+
+## Core vs optional artifacts
+
+### Root-level files
+
+| Artifact | Minimum status | Why it exists | Day-one action |
+|---|---:|---|---|
+| `MISSION.md` | Required | Project direction, goals, non-goals, and changelog. | Replace template/product text with the downstream project's real mission. |
+| `.osc/` | Required | Scaffold namespace for plans, releases, runs, and research. | Keep the required subfolders below. |
+| `docs/` | Recommended | Deeper guidance beyond the README. | Keep the docs that match the project's maturity; label advanced protocols optional. |
+| `.github/` | Optional | Issue/PR templates and CI workflows. | Keep when using GitHub review/CI. |
+| `examples/` | Optional | Worked examples and smoke fixtures. | Keep only clearly labeled examples; do not confuse them with live project state. |
+| `README.md` | Recommended | Human landing page for the downstream project. | Make it describe the user's project, not Open Scaffold itself. |
+| `AGENTS.md` | Recommended | Agent operating instructions for tools that read AGENTS files. | Keep if agents will work in the repo; update project facts. |
+| `CLAUDE.md` | Recommended | Claude Code paired view of `AGENTS.md`. | Keep if Claude Code will work in the repo; mirror edits with `AGENTS.md`. |
+| `.gitignore` | Recommended | Keeps runtime/log/build artifacts out of git. | Keep and extend for project tooling. |
+| `verify.sh` | Required | Zero-dependency scaffold verification. | Run before claiming a meaningful slice done. |
+| `bootstrap.sh` | Recommended | Day-zero mission/directory bootstrap. | Use once; safe to keep. |
+| `close.sh` | Required | Moves plans to `done/` and stamps changelog. | Use for every shipped plan. |
+| `amend.sh` | Recommended | Captures legitimate plan changes without rewriting committed plans. | Use when scope changes. |
+| `delegate.sh` | Optional | Generates prompts from plans for manual/agent delegation. | Keep only if using prompt-based delegation. |
+| `ROADMAP.md` | Optional for tiny projects; recommended once work spans multiple slices. | Longer-term direction and milestones. | Start small or omit until needed. |
+| `LLM_QUICKSTART.md` | Optional | Extra agent quickstart. | Keep if useful; otherwise docs can point to `AGENTS.md`. |
+| `package.json`, `package-lock.json`, `tsconfig.json`, `src/`, `tests/`, `dist/` | Product/CLI implementation, not required for every downstream project. | Open Scaffold's own CLI/test harness or a Node-based downstream project. | Keep only if the downstream project uses this toolchain or needs the `osc` CLI from source. |
+| `LICENSE` | Recommended | Legal reuse terms. | Keep or replace with the downstream project's license. |
+
+### Required `.osc/` directories
+
+| Directory | Minimum status | Why it exists | Day-one state |
+|---|---:|---|---|
+| `.osc/plans/active/` | Required | Current work. | Empty except `.gitkeep` until the first plan is created. |
+| `.osc/plans/backlog/` | Required | Future work that is not active. | Empty or a tiny set of accepted future plans. |
+| `.osc/plans/done/` | Required | Completed plans. | Empty except `.gitkeep` in a blank downstream project. |
+| `.osc/plans/blocked/` | Required | Parked work waiting on input/dependency. | Empty except `.gitkeep`. |
+| `.osc/plans/handoff-template.md` | Required | Seven-section plan template. | Keep. |
+| `.osc/plans/WORKFLOW.md` | Required | Folder state machine. | Keep. |
+| `.osc/releases/` | Required | Evidence/release notes. | Keep `README.md`; add notes when slices close. |
+| `.osc/runs/` | Optional / forensic | Runtime/run packets and logs. | Usually ignored or empty until a run packet is created. Do not treat raw runs as public truth. |
+| `.osc/research/` | Optional / decision support | Research, drafts, issue imports, private-to-public staging. | Not required for first use; promote only curated conclusions. |
+| `.osc/specs/` | Optional | Larger specs before they become plans. | Use only when a plan is too small for the requirement shape. |
+| `.osc/state/` | Optional / local runtime state | Local state for tools. | Keep ignored unless explicitly promoted. |
+
+## Fresh downstream state vs maintainer repo state
+
+A blank downstream project should not inherit Open Scaffold's own product history as if it were the user's project.
+
+Use this rule:
+
+```text
+Template structure can be copied.
+Product history must be reset, removed, or clearly labeled as example material.
+```
+
+For a fresh downstream repo:
+
+- `MISSION.md` should describe the downstream project.
+- `.osc/plans/active/`, `done/`, `backlog/`, and `blocked/` should not contain Open Scaffold product plans unless they are explicitly examples.
+- `.osc/releases/` should not contain Open Scaffold's release history as live downstream truth.
+- `.osc-dev/` should not exist.
+- `examples/` may contain examples, but example artifacts must be clearly labeled and not confused with active project state.
+
+The lifecycle smoke at `examples/lifecycle-e2e-smoke/` is intentionally an example fixture, not the maintainer repo's live state.
+
+## Optional / advanced protocols
+
+| Protocol or concept | Status | Use when |
+|---|---:|---|
+| Amendments | Recommended once plans are committed | New information changes scope or acceptance criteria. |
+| Run packets | Optional / advanced | A harness, coordinator, or human lane needs a bounded execution package. |
+| Execution strategy in plans | Optional | Work can be decomposed into dependent/parallel groups. |
+| Glass cockpit events | Optional / integration | Discord/Slack/Telegram/GitHub comments need structured status and approval events. |
+| Runtime binding contract | Optional / adapter-specific | OMC, OMX, Claude Code, Codex, or another runtime consumes run packets. |
+| GitHub issue/PR traceability | Recommended for public/versioned work | The work should be reviewed or reconstructed through GitHub. |
+| `osc` CLI | Optional / richer tooling | Node is available and the project wants parsed status/run artifacts. Shell scripts remain the day-zero floor. |
+| `.osc/research/` | Optional / decision support | Research needs to be saved before a curated decision/release note exists. |
+
+## When Open Scaffold is overkill
+
+Skip the full scaffold when the task is:
+
+- a disposable one-off script;
+- a prototype you are comfortable throwing away;
+- a single-session change with no need for later reconstruction;
+- a private scratchpad where evidence and handoff do not matter.
+
+Use the scaffold when losing context would be expensive.
+
+## First-user checklist
+
+Before inviting an agent or teammate into a new downstream repo, check:
+
+- [ ] `MISSION.md` is project-specific.
+- [ ] `.osc/plans/active/` has one current plan before first verification.
+- [ ] `.osc/plans/done/` does not contain unrelated maintainer history.
+- [ ] `.osc/releases/` contains only downstream evidence or clearly labeled examples.
+- [ ] `./verify.sh --standard` passes.
+
+If those are true, the repo is minimally scaffolded.
