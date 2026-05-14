@@ -28,6 +28,7 @@ Explicit things this project is NOT trying to do. Legitimate scope discipline st
 One-line dated entries for every scope pivot. Format: `YYYY-MM-DD: <one-line pivot description + link to amendment file if applicable>`. Append entries in chronological order. Never rewrite history here.
 
 <!-- append YYYY-MM-DD entries below this line -->
+- 2026-05-14: closed 027-lifecycle-e2e-smoke-strategy — E2E smoke review strategy promoted
 - 2026-05-14: closed 026-vocabulary-compression — first-touch vocabulary compression shipped in PR #22
 - 2026-05-14: closed 022-sixty-second-demo — 60-second viewer demo shipped in PR #22
 - 2026-05-14: closed 018-readme-compression — first-touch adoption path shipped in PR #22
