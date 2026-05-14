@@ -8,7 +8,7 @@ The guide answers the post-smoke adoption question raised by the lifecycle E2E w
 
 ## Traceability
 
-- Plan: `.osc/plans/active/025-minimum-viable-scaffold.md` before close; `.osc/plans/done/025-minimum-viable-scaffold.md` after close.
+- Plan: `.osc/plans/backlog/025-minimum-viable-scaffold.md` before activation; `.osc/plans/done/025-minimum-viable-scaffold.md` after close.
 - Guide: `docs/MINIMUM_VIABLE_SCAFFOLD.md`.
 - Supporting proof: `docs/E2E_SMOKE.md` and `examples/lifecycle-e2e-smoke/`.
 - Pull request: pending at time of note creation.
