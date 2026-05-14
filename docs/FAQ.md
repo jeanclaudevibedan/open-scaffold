@@ -1,6 +1,6 @@
 # Extended FAQ — open-scaffold
 
-Questions that didn't make the cut for the main README but are still worth answering. For the core questions, see the [README](../README.md#-questions-youre-probably-asking).
+Questions that did not fit in the main README but are still worth answering.
 
 ---
 

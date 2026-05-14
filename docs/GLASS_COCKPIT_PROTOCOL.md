@@ -1,6 +1,6 @@
 # Glass Cockpit Protocol
 
-Open Scaffold treats operator surfaces as control glass, not truth. Discord, Slack, Telegram, GitHub comments, CLI dashboards, web UIs, and webhook-fed rooms can show status, ask questions, request approval, and publish progress. They should not become the only place the project remembers what happened.
+Open Scaffold treats operator surfaces — the places people watch, steer, and approve work — as control glass, not truth. Discord, Slack, Telegram, GitHub comments, CLI dashboards, web UIs, and webhook-fed rooms can show status, ask questions, request approval, and publish progress. They should not become the only place the project remembers what happened.
 
 This protocol defines a runtime-neutral event shape for private control rooms, team rooms, stakeholder rooms, and build-in-public streams.
 
