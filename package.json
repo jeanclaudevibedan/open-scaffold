@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build",
     "test": "vitest run",
     "smoke:e2e": "vitest run tests/e2e/lifecycle.test.ts",
     "osc": "tsx src/cli.ts"
