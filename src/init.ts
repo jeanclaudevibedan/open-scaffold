@@ -252,17 +252,25 @@ export function initializeScaffold(options: InitializeScaffoldOptions): Initiali
   ensureKnownTier(options.tier);
   const target = resolve(options.target);
   const files = [...tierFiles[options.tier]];
+
+  if (existsSync(target) && lstatSync(target).isSymbolicLink()) {
+    throw new Error('Refusing to write through symlinked path: .');
+  }
+
+  mkdirSync(target, { recursive: true });
+
+  for (const file of files) {
+    rejectSymlinkedDestination(target, join(target, file));
+  }
+
   const existing = files.filter((file) => existsSync(join(target, file)));
 
   if (existing.length > 0 && !options.force) {
     throw new Error(`Refusing to overwrite existing files: ${existing.join(', ')}. Re-run with --force only if you intend to replace them.`);
   }
 
-  mkdirSync(target, { recursive: true });
-
   for (const file of files) {
     const destination = join(target, file);
-    rejectSymlinkedDestination(target, destination);
     mkdirSync(dirname(destination), { recursive: true });
 
     const source = sourcePathFor(file);

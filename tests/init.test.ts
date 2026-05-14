@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mkdtempSync, mkdirSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { initializeScaffold, tierFiles } from '../src/init.js';
@@ -68,6 +68,8 @@ describe('tiered scaffold initialization', () => {
     symlinkSync(join(outside, '.osc'), join(target, '.osc'));
 
     expect(() => initializeScaffold({ tier: 'min', target })).toThrow(/Refusing to write through symlinked path: \.osc/);
+    expect(existsSync(join(target, 'MISSION.md'))).toBe(false);
+    expect(existsSync(join(outside, '.osc/RULES.md'))).toBe(false);
   });
 
   it('refuses to overwrite symlinked files even with force', () => {
