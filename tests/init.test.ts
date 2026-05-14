@@ -82,6 +82,16 @@ describe('tiered scaffold initialization', () => {
     expect(existsSync(join(outside, 'project'))).toBe(false);
   });
 
+  it('refuses dangling symlink destinations before writing outside target', () => {
+    const target = tempTarget();
+    const outside = tempTarget();
+    const outsideFile = join(outside, 'outside.md');
+    symlinkSync(outsideFile, join(target, 'MISSION.md'));
+
+    expect(() => initializeScaffold({ tier: 'min', target, force: true })).toThrow(/Refusing to write through symlinked path: MISSION\.md/);
+    expect(existsSync(outsideFile)).toBe(false);
+  });
+
   it('refuses to overwrite symlinked files even with force', () => {
     const target = tempTarget();
     const outside = tempTarget();

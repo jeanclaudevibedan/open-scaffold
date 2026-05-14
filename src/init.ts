@@ -1,4 +1,5 @@
 import { chmodSync, copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import type { Stats } from 'node:fs';
 import { dirname, join, relative as relativePath, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -230,17 +231,30 @@ function formatSummary(tier: ScaffoldTier, target: string, files: string[]): str
   ].join('\n');
 }
 
+function lstatIfPresent(path: string): Stats | null {
+  try {
+    return lstatSync(path);
+  } catch (error) {
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') return null;
+    throw error;
+  }
+}
+
 function rejectSymlinkedExistingPath(path: string): void {
   let current = resolve(path);
 
-  while (!existsSync(current)) {
+  while (true) {
+    const stats = lstatIfPresent(current);
+    if (stats !== null) {
+      if (stats.isSymbolicLink()) {
+        throw new Error(`Refusing to write through symlinked path: ${current}`);
+      }
+      return;
+    }
+
     const parent = dirname(current);
     if (parent === current) return;
     current = parent;
-  }
-
-  if (lstatSync(current).isSymbolicLink()) {
-    throw new Error(`Refusing to write through symlinked path: ${current}`);
   }
 }
 
@@ -249,13 +263,13 @@ function rejectSymlinkedDestination(target: string, destination: string): void {
   const parts = relative.split(sep).filter(Boolean);
   let current = target;
 
-  if (existsSync(current) && lstatSync(current).isSymbolicLink()) {
+  if (lstatIfPresent(current)?.isSymbolicLink()) {
     throw new Error('Refusing to write through symlinked path: .');
   }
 
   for (const part of parts) {
     current = join(current, part);
-    if (existsSync(current) && lstatSync(current).isSymbolicLink()) {
+    if (lstatIfPresent(current)?.isSymbolicLink()) {
       const symlinkRelative = current.slice(target.length + 1) || '.';
       throw new Error(`Refusing to write through symlinked path: ${symlinkRelative}`);
     }
