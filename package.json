@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
+    "smoke:e2e": "vitest run tests/e2e/lifecycle.test.ts",
     "osc": "tsx src/cli.ts"
   },
   "files": [

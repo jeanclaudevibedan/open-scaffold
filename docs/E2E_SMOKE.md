@@ -58,14 +58,22 @@ Prefer a deterministic test integrated with the existing Node/Vitest suite, back
 Suggested deliverables for the implementation PR:
 
 - `tests/e2e/lifecycle.test.ts` — drives the lifecycle and asserts artifacts;
-- `tests/fixtures/downstream-minimal/` or generated temp fixture files — public-safe tiny project state;
-- package script such as `npm run smoke:e2e` if useful;
+- `examples/lifecycle-e2e-smoke/` — public-safe tiny downstream project fixture;
+- `npm run smoke:e2e` — runs the lifecycle smoke;
 - `docs/E2E_SMOKE.md` updates with command examples;
 - `docs/EXAMPLES.md` link to the smoke;
 - `.osc/releases/<date>-lifecycle-e2e-smoke.md` evidence note;
 - a closed plan via `./close.sh` if the smoke ships.
 
-A shell wrapper can be added later for zero-dependency users. The first implementation can use Vitest because the repo already has Node-based tests and Vitest gives stronger assertions.
+A shell wrapper can be added later for zero-dependency users. The first implementation uses Vitest because the repo already has Node-based tests and Vitest gives stronger assertions.
+
+Run it from the repo root:
+
+```bash
+npm run smoke:e2e
+```
+
+The smoke copies `examples/lifecycle-e2e-smoke/` into a fresh temp directory, copies `verify.sh` and `close.sh` into that temp project, runs the tiny project's verification, writes an evidence note, closes the plan, and verifies the final scaffold state.
 
 ## Tiny fixture guidance
 

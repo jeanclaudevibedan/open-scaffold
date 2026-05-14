@@ -2,7 +2,13 @@
 
 Short examples for understanding Open Scaffold without reading every protocol page.
 
-For the next reproducible proof layer, see [Lifecycle E2E Smoke Strategy](E2E_SMOKE.md). It defines the local smoke test that should prove a fresh downstream project can move through mission → plan → verification → evidence → close without Hermes, Discord, or private infrastructure.
+For the next reproducible proof layer, see [Lifecycle E2E Smoke Strategy](E2E_SMOKE.md). It defines and links the local smoke test that proves a fresh downstream project can move through mission → plan → verification → evidence → close without Hermes, Discord, or private infrastructure.
+
+Run the smoke:
+
+```bash
+npm run smoke:e2e
+```
 
 ## 60-second viewer demo
 
