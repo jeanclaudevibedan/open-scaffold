@@ -19,6 +19,8 @@ describe('tiered scaffold initialization', () => {
     expect(readFileSync(join(target, 'MISSION.md'), 'utf8')).toContain('<!-- mission:unset -->');
     expect(readFileSync(join(target, '.osc/plans/WORKFLOW.md'), 'utf8')).toContain('Plan Workflow');
     expect(readFileSync(join(target, '.osc/plans/README.md'), 'utf8')).toContain('Amendments');
+    expect(readFileSync(join(target, '.osc/plans/README.md'), 'utf8')).not.toContain('amend.sh');
+    expect(readFileSync(join(target, '.osc/plans/README.md'), 'utf8')).toContain('lightweight fallback');
     expect(readFileSync(join(target, '.osc/RULES.md'), 'utf8')).not.toContain('amend.sh');
     expect(readFileSync(join(target, '.osc/RULES.md'), 'utf8')).not.toContain('docs/WORKFLOW.md');
     expect(readFileSync(join(target, '.osc/RULES.md'), 'utf8')).toContain('.osc/plans/WORKFLOW.md');

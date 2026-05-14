@@ -108,6 +108,24 @@ Re-read this file before any major action on project structure.
 `;
 }
 
+function minPlansReadmeTemplate(): string {
+  return `# Plans — Minimum Tier Amendments
+
+Plans in this directory and its stage subfolders (\`active/\`, \`backlog/\`, \`done/\`, \`blocked/\`) are **immutable** once committed. When new information changes a plan's goal, constraints, or acceptance criteria, do NOT edit the plan file in place.
+
+The minimum scaffold tier intentionally ships without the mechanical amendment helper. Use this lightweight fallback:
+
+1. Create a follow-up plan in the appropriate stage folder, or create \`<plan-slug>-amendment-<n>.md\` by hand beside the parent plan.
+2. Capture what changed, the new direction, and the impact on acceptance criteria.
+3. Add a one-line entry to \`MISSION.md\`'s changelog if the change is a real scope pivot.
+4. Run \`./verify.sh\` before claiming the work is complete.
+
+Use \`./close.sh <plan-slug>\` to move a completed plan to \`done/\`. See \`.osc/plans/WORKFLOW.md\` for the full stage-folder workflow.
+
+Upgrade to the standard scaffold tier when you want the mechanical amendment helper and richer workflow docs.
+`;
+}
+
 function minHandoffTemplate(): string {
   return `# Plan: <slug>
 
@@ -233,6 +251,8 @@ export function initializeScaffold(options: InitializeScaffoldOptions): Initiali
       writeFileSync(destination, file === 'MISSION.md' ? missionTemplate() : '');
     } else if (file === '.osc/RULES.md' && options.tier === 'min') {
       writeFileSync(destination, minRulesTemplate());
+    } else if (file === '.osc/plans/README.md' && options.tier === 'min') {
+      writeFileSync(destination, minPlansReadmeTemplate());
     } else if (file === '.osc/plans/handoff-template.md' && options.tier === 'min') {
       writeFileSync(destination, minHandoffTemplate());
     } else {
