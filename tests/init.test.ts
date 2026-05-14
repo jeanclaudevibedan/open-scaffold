@@ -18,6 +18,9 @@ describe('tiered scaffold initialization', () => {
     expect(result.filesCreated.sort()).toEqual([...tierFiles.min].sort());
     expect(readFileSync(join(target, 'MISSION.md'), 'utf8')).toContain('<!-- mission:unset -->');
     expect(readFileSync(join(target, '.osc/plans/WORKFLOW.md'), 'utf8')).toContain('Plan Workflow');
+    expect(readFileSync(join(target, '.osc/RULES.md'), 'utf8')).not.toContain('amend.sh');
+    expect(readFileSync(join(target, '.osc/RULES.md'), 'utf8')).not.toContain('docs/WORKFLOW.md');
+    expect(readFileSync(join(target, '.osc/RULES.md'), 'utf8')).toContain('.osc/plans/WORKFLOW.md');
     expect(readFileSync(join(target, 'verify.sh'), 'utf8')).toContain('open-scaffold compliance checker');
     expect(result.summary).toContain('Generated min Open Scaffold');
     expect(result.summary).toContain('Next: edit MISSION.md');

@@ -80,6 +80,33 @@ function missionTemplate(): string {
   return `# Mission\n\n<!-- mission:unset -->\n\nTODO: define mission.\n\nDescribe what this repository is trying to accomplish, the non-goals, and the owner-visible definition of done before starting substantial work.\n`;
 }
 
+function minRulesTemplate(): string {
+  return `# Open Scaffold — Rules (Minimum Tier)
+
+Re-read this file before any major action on project structure.
+
+## Non-Negotiables
+
+1. **Mission first.** Read \`MISSION.md\` before doing anything. If \`<!-- mission:unset -->\` is present, stop and define the mission.
+2. **Plans are immutable.** Never edit a plan file after creation. New information should become a follow-up plan or an upgrade to the standard scaffold tier.
+3. **Folder = status.** Plans live in \`active/\`, \`backlog/\`, \`done/\`, or \`blocked/\`. Move files, don't rename them. See \`.osc/plans/WORKFLOW.md\`.
+4. **Verify before claiming done.** Run \`./verify.sh\` against acceptance criteria. Use \`./close.sh\` to move plans to \`done/\`.
+5. **Check active/ first.** Before starting new work, check \`.osc/plans/active/\`. Continue in-flight work unless told otherwise.
+6. **One focus at a time.** Keep \`active/\` small (2–3 plans max). Finish or park before pulling from \`backlog/\`.
+
+## File Conventions
+
+- Plan files: \`NNN-slug.md\` (number is permanent ID, never changes)
+- All plans follow the 7-section schema in \`.osc/plans/handoff-template.md\`
+- This minimum tier intentionally omits advanced amendment/docs helpers; use the standard tier when mechanical amendment workflow is needed.
+
+## When In Doubt
+
+- Structure and stage questions → re-read this file and \`.osc/plans/WORKFLOW.md\`
+- Design rationale → capture a small plan or evidence note before expanding scope
+`;
+}
+
 function ensureKnownTier(tier: string): asserts tier is ScaffoldTier {
   if (!scaffoldTiers.includes(tier as ScaffoldTier)) {
     throw new Error(`Invalid tier: ${tier}. Expected one of: ${scaffoldTiers.join(', ')}`);
@@ -121,6 +148,8 @@ export function initializeScaffold(options: InitializeScaffoldOptions): Initiali
     const source = sourcePathFor(file);
     if (source === null) {
       writeFileSync(destination, file === 'MISSION.md' ? missionTemplate() : '');
+    } else if (file === '.osc/RULES.md' && options.tier === 'min') {
+      writeFileSync(destination, minRulesTemplate());
     } else {
       assertTemplateExists(file, source);
       copyFileSync(source, destination);
