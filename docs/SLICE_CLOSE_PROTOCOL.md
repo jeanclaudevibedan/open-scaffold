@@ -1,6 +1,6 @@
 # Slice Close Protocol
 
-Open Scaffold does not treat "the agent says it is done" as done. A slice closes only when the repo can show what was attempted, what evidence exists, what acceptance criteria passed or failed, what the operator decided, and what the next slice inherits.
+Open Scaffold does not treat "the agent says it is done" as done. Slice close — the evidence-backed closeout decision — happens only when the repo can show what was attempted, what evidence exists, what acceptance criteria passed or failed, what the operator decided, and what the next slice inherits.
 
 This protocol productizes the closed loop:
 

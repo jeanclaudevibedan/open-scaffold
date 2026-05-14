@@ -1,6 +1,6 @@
 # Runtime Binding Contract
 
-Open Scaffold core creates bounded run packages. Runtime bindings consume those packages and launch a chosen execution lane outside core. This document defines the contract between the repo-native Open Scaffold package and any coordinator, adapter, harness, agent, or human lane that executes it.
+Open Scaffold core creates bounded run packages. Runtime bindings — execution adapters for a chosen lane — consume those packages and launch outside core. This document defines the contract between the repo-native Open Scaffold package and any coordinator, adapter, harness, agent, or human lane that executes it.
 
 ## Executive rule
 
@@ -17,7 +17,7 @@ Postflight closes.
 
 ## What is a runtime binding?
 
-A runtime binding is the glue that turns a run packet into a concrete execution attempt.
+A runtime binding is the glue that turns a run packet — a repo-written execution package — into a concrete execution attempt.
 
 Examples:
 
