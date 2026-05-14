@@ -1,5 +1,5 @@
 import { chmodSync, copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, relative as relativePath, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const scaffoldTiers = ['min', 'standard', 'max'] as const;
@@ -231,8 +231,8 @@ function formatSummary(tier: ScaffoldTier, target: string, files: string[]): str
 }
 
 function rejectSymlinkedDestination(target: string, destination: string): void {
-  const relative = destination.slice(target.length + 1);
-  const parts = relative.split('/').filter(Boolean);
+  const relative = relativePath(target, destination);
+  const parts = relative.split(sep).filter(Boolean);
   let current = target;
 
   if (existsSync(current) && lstatSync(current).isSymbolicLink()) {
