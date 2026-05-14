@@ -112,7 +112,7 @@ Use the scaffold when losing context would be expensive.
 Before inviting an agent or teammate into a new downstream repo, check:
 
 - [ ] `MISSION.md` is project-specific.
-- [ ] `.osc/plans/active/` has zero or one current plan.
+- [ ] `.osc/plans/active/` has one current plan before first verification.
 - [ ] `.osc/plans/done/` does not contain unrelated maintainer history.
 - [ ] `.osc/releases/` contains only downstream evidence or clearly labeled examples.
 - [ ] `./verify.sh --standard` passes.
