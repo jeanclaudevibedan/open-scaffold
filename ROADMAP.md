@@ -344,6 +344,28 @@ Acceptance direction:
 - Any prototype starts with a fake/local adapter and dispatch receipt, not real autonomous mutation.
 - The final decision must state what Open Scaffold wants to be in one sentence.
 
+### Milestone 17 — Project wiki knowledge seed
+
+Status: next via `.osc/plans/active/029-project-wiki-knowledge-seed.md`; follows the completed project wiki skeleton in `.osc/plans/done/028-project-wiki-skeleton.md`.
+
+Goal: turn the `docs/wiki/` skeleton into a small, public-safe Open Scaffold body-of-work knowledge graph.
+
+Deliverables:
+
+- Seed 8-12 curated wiki pages across concepts, comparisons, and reusable query answers.
+- Prioritize durable project concepts: source-of-truth-first development, repo-native agent operating system, agent resumability, evidence-first development, human-in-the-loop governance, glass cockpit, run packets, and scaffold tiers.
+- Clarify boundaries through comparison pages such as Open Scaffold versus agent memory, README-driven development, and traditional SDLC.
+- Add query pages that help humans and agents answer what Open Scaffold is for, what to read first, and why the project matters.
+- Update `docs/wiki/index.md` and `docs/wiki/log.md` so the wiki remains navigable and traceable.
+
+Acceptance criteria:
+
+- `docs/wiki/` contains a coherent seed pack rather than only a schema/skeleton.
+- Every new page has schema-compatible frontmatter, owner-neutral public wording, and no private owner context.
+- Every new page links to at least two related wiki pages where possible.
+- The wiki explains compiled project knowledge; live task state, PR state, release evidence, and private context stay out of `docs/wiki/`.
+- `./verify.sh --strict`, `npm test`, `npm run build`, and `git diff --check` pass.
+
 ## Parking lot
 
 - MCP bridge for structured harness dispatch/status/artifact retrieval.
