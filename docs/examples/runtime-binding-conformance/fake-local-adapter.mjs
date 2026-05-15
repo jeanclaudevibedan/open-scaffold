@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, relative, resolve } from 'node:path';
+import { dirname, isAbsolute, relative, resolve } from 'node:path';
 
 function fail(message) {
   console.error(`Fake/local adapter refused package: ${message}`);
@@ -38,6 +38,20 @@ function relativeFromRepo(repoPath, path) {
   return rel === '' ? '.' : rel;
 }
 
+function safeArtifactPath(repoPath, artifactPath) {
+  const raw = requireString(artifactPath, 'artifacts.evidence[0]');
+  if (isAbsolute(raw)) {
+    fail('artifact path must stay under runtime.repoPath');
+  }
+  const repoRoot = resolve(repoPath);
+  const absolutePath = resolve(repoRoot, raw);
+  const rel = relative(repoRoot, absolutePath);
+  if (rel === '' || rel.startsWith('..') || isAbsolute(rel)) {
+    fail('artifact path must stay under runtime.repoPath');
+  }
+  return { raw, absolutePath };
+}
+
 const { runPacketPath, outPath } = parseArgs(process.argv.slice(2));
 const manifest = loadRunPacket(runPacketPath);
 
@@ -62,8 +76,11 @@ if (manifest?.executor?.spawning !== false) {
 }
 
 const receiptPath = outPath ?? resolve(dirname(runPacketPath), 'dispatch-receipt.json');
-const evidencePath = manifest?.artifacts?.evidence?.[0] ?? `.osc/runs/${runId}/fake-local-evidence.md`;
-const evidenceAbsolutePath = resolve(repoPath, evidencePath);
+const fallbackEvidencePath = `.osc/runs/${runId}/fake-local-evidence.md`;
+const { raw: evidencePath, absolutePath: evidenceAbsolutePath } = safeArtifactPath(
+  repoPath,
+  manifest?.artifacts?.evidence?.[0] ?? fallbackEvidencePath,
+);
 mkdirSync(dirname(receiptPath), { recursive: true });
 mkdirSync(dirname(evidenceAbsolutePath), { recursive: true });
 
