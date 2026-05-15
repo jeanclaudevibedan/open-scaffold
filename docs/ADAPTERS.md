@@ -2,6 +2,8 @@
 
 Open Scaffold is the runtime-neutral core. It owns the project contract: mission, roadmap, plans, amendments, verification, evidence, and run artifacts under `.osc/`.
 
+For the current OMC/OMX runtime selection surface and the minimum refreshed-adapter checklist, see [`docs/RUNTIME_SELECTION.md`](RUNTIME_SELECTION.md).
+
 This page uses precise language:
 
 - **Coordinators/orchestrators** decide what should happen next and may maintain or bridge package/task state.

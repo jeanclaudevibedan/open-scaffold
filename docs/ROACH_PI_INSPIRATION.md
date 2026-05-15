@@ -27,9 +27,6 @@
 
 ## Where autonomy belongs
 
-Autonomous spawning belongs in adapter repos:
-
-- [`open-scaffold-omc`](https://github.com/jeanclaudevibedan/open-scaffold-omc) for Claude Code + OMC (`.omc`/`osc-omc`) — **historical/unmigrated repository** reference under the older namespace.
-- [`open-scaffold-omx`](https://github.com/jeanclaudevibedan/open-scaffold-omx) for Codex CLI + OMX (`.omx`/`osc-omx`) — **historical/unmigrated repository** reference under the older namespace.
+Autonomous spawning belongs in runtime adapters or coordinators outside Open Scaffold core. The core should record runtime choice and evidence expectations; external OMC/OMX-style adapters can translate that package into concrete Claude Code or Codex execution.
 
 The generic repo produces the contract and artifacts. Adapters decide how to execute them.

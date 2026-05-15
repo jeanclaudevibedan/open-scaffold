@@ -24,7 +24,6 @@ Use these labels when public docs mention a tool whose availability or role coul
 | Claw / OpenClaw | Coordinator/orchestrator | Mentioned as a possible orchestrator/agent surface. Not bundled or required. |
 | OMC / oh-my-claudecode | Runtime lane / adapter candidate | Claude Code-oriented harness lane that can consume Open Scaffold run packets through an adapter outside core. |
 | OMX / oh-my-codex | Runtime lane / adapter candidate | Codex-oriented harness lane that can consume Open Scaffold run packets through an adapter outside core. |
-| `open-scaffold-omc` / `open-scaffold-omx` under `jeanclaudevibedan` | Historical/unmigrated repository | Public repositories exist at the older namespace. They are not core dependencies and should be relabeled if migrated. |
 | Command Center / private cockpit examples | Private deployment example | Owner-local dogfood evidence only. Do not copy private state, auth assumptions, or project-specific machinery into public core. |
 
 ## Writing rule

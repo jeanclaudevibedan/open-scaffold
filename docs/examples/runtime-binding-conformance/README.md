@@ -33,3 +33,12 @@ No Claude, Codex, OMC, OMX, GSD, or other runtime is launched.
 ```
 
 Future adapters can use this fixture as a minimum behavior target before adding runtime-specific launch mechanics.
+
+Supported conformance lanes:
+
+- `plain-agent` with no harness skill;
+- `human` / `manual` with no harness skill;
+- `omc-claude` with `/deep-interview`, `/ralplan`, `/team`, `/ralph`, or `/ultrawork`;
+- `omx-codex` with `$deep-interview`, `$ralplan`, `$team`, `$ralph`, `$ultrawork`, or `$ultragoal`.
+
+Supporting a lane here means the fake adapter can validate the package and write a receipt/evidence artifact for that lane. It still does not launch Claude Code, Codex, OMC, or OMX.

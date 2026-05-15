@@ -73,6 +73,7 @@ describe('run artifact generation', () => {
     expect(manifest.taskId).toBe('TASK-2026-0511-demo');
     expect(manifest.status).toBe('created');
     expect(manifest.executor).toMatchObject({ lane: 'omx-codex', harnessSkill: '$ralplan', spawning: false });
+    expect(manifest.runtimeSelection).toMatchObject({ runtime: null, workflow: null });
     expect(manifest.bindings).toMatchObject({ operatorSurface: 'discord', operatorThreadId: 'thread-456', githubIssue: '42' });
     expect(manifest.runtime).toMatchObject({ repoPath: '/tmp/demo-repo', worktreePath: '/tmp/demo-worktree', branch: 'feat/demo' });
     expect(manifest.sourceRefs).toContain('kanban:card-123');
@@ -114,6 +115,23 @@ describe('run artifact generation', () => {
 
     expect(manifest.packageQuality.executable).toBe(true);
     expect(manifest.packageQuality.blockers).toEqual([]);
+  });
+
+
+  it('records runtime preset and workflow selection for adapter dispatch', () => {
+    const root = tempRepo();
+
+    const run = createRunArtifacts(root, plan as any, 'run', {
+      runtime: 'omx',
+      workflow: 'plan',
+      executor: 'omx-codex',
+      harnessSkill: '$ralplan',
+    });
+
+    const manifest = JSON.parse(readFileSync(run.manifestPath, 'utf8'));
+
+    expect(manifest.runtimeSelection).toMatchObject({ runtime: 'omx', workflow: 'plan' });
+    expect(manifest.executor).toMatchObject({ lane: 'omx-codex', harnessSkill: '$ralplan', spawning: false });
   });
 
 });

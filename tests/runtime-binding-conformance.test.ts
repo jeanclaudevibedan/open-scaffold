@@ -184,6 +184,23 @@ describe('fake/local adapter conformance fixture', () => {
     }
   });
 
+  it('accepts documented OMC and OMX runtime lanes without launching them', () => {
+    for (const executor of [
+      { lane: 'omc-claude', harnessSkill: '/ralplan', spawning: false },
+      { lane: 'omx-codex', harnessSkill: '$ralplan', spawning: false },
+    ]) {
+      const { root, path } = tempRunPacket({ executor });
+      const receiptPath = join(root, '.osc/runs/demo/dispatch-receipt.json');
+
+      execFileSync('node', [adapter, path], { encoding: 'utf8' });
+      const receipt = JSON.parse(readFileSync(receiptPath, 'utf8'));
+
+      expect(receipt.spawned).toBe(false);
+      expect(receipt.runtime_backend).toBe('none');
+      expect(receipt.fixture).toMatchObject({ lane: executor.lane, harness_skill: executor.harnessSkill, adapter_spawned_runtime: false });
+    }
+  });
+
   it('refuses packets that omit the commit policy required by the receipt contract', () => {
     const { path } = tempRunPacket({ commitPolicy: undefined });
 
