@@ -12,7 +12,7 @@ Open Scaffold now has a public reference-label page for named coordinators, runt
 - Plan: `.osc/plans/done/020-reference-truth-audit.md`
 - Task: Hermes Kanban `t_57b3fbfc`
 - Branch: `docs/reference-truth-audit`
-- PR: pending
+- PR: [`#31`](https://github.com/graphanov/open-scaffold/pull/31)
 
 ## Changes
 
