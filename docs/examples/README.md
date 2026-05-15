@@ -1,12 +1,106 @@
-# Runtime binding examples
+# Examples
 
-This directory contains small examples that make Open Scaffold mechanics concrete without turning core into an agent runtime.
+Four worked example modes a fresh user or agent can read end-to-end. Each mode is a thin walkthrough that links to existing protocol docs and shipped fixtures rather than inventing new machinery.
 
-`runtime-binding-dry-run.mjs` is a dependency-free reference consumer for `.osc/runs/<run_id>/run.json`. It validates the minimum fields an external binding should inspect, prints the handoff summary, and exits without launching Claude, Codex, OMC, OMX, or any other runtime.
+The four modes:
 
-`runtime-binding-conformance/fake-local-adapter.mjs` is a fake/local adapter conformance fixture. It consumes a run packet, writes a dispatch receipt and evidence artifact, and exits without launching a real runtime.
+1. [Solo developer](#1-solo-developer) — one human, one repo, AI assist.
+2. [Team control-room](#2-team-control-room) — multiple humans/agents coordinating with the repo as truth.
+3. [GitHub-only workflow](#3-github-only-workflow) — issue → plan → PR → evidence with no chat coordinator.
+4. [Runtime harness handoff](#4-runtime-harness-handoff) — packaging work for an external runtime lane to execute.
 
-## Generate a run packet
+If you want one complete non-recursive example first, start with [`downstream-walkthrough.md`](downstream-walkthrough.md). It shows the full mission → plan → run packet → evidence → close loop on a tiny shell CLI that is not Open Scaffold itself.
+
+Open Scaffold core ships the protocol, the run packet schema, the verification scripts, and dry-run/conformance examples. It does not spawn agents, run a coordinator daemon, or own runtime credentials. Each mode below stays inside that boundary.
+
+For the labels used when these examples mention external coordinators, harnesses, or surfaces, see [`REFERENCE_TRUTH.md`](../REFERENCE_TRUTH.md).
+
+---
+
+## 1. Solo developer
+
+A single operator using AI assistance against one repo. Truth lives in `MISSION.md`, `.osc/plans/`, and evidence notes; chat sessions are disposable.
+
+Reading path:
+
+- [`README.md` Quickstart](../../README.md#quickstart) — initialize the scaffold, bootstrap a mission, write the first plan, run `./verify.sh`.
+- [`docs/EXAMPLES.md` 60-second viewer demo](../EXAMPLES.md#60-second-viewer-demo) — mission → plan → verification → evidence in four shell commands.
+- [`downstream-walkthrough.md`](downstream-walkthrough.md) — the same loop on Tiny Notes, a small non-Open-Scaffold project with concrete commands and expected outputs.
+- [`examples/lifecycle-e2e-smoke/`](../../examples/lifecycle-e2e-smoke/README.md) — boring downstream fixture that proves the loop on a non-Open-Scaffold project. Run it with `npm run smoke:e2e`.
+
+Loop in shell:
+
+```bash
+./bootstrap.sh                                    # define mission
+cp .osc/plans/handoff-template.md \
+   .osc/plans/active/my-first-task.md             # scoped plan
+# ... agent edits code against the plan ...
+./verify.sh --standard                            # methodology check
+# write .osc/releases/<date>-<slug>.md when done
+./close.sh my-first-task                          # move plan to done/
+```
+
+What this mode does **not** require: a chat surface, a coordinator, a runtime harness, or any private deployment.
+
+---
+
+## 2. Team control-room
+
+Multiple humans and/or agents coordinating around the same repo. A team room (Slack/Discord/Telegram/CLI dashboard) shows status and collects approvals; the repo still owns durable truth.
+
+Reading path:
+
+- [`docs/GLASS_COCKPIT_PROTOCOL.md`](../GLASS_COCKPIT_PROTOCOL.md) — event vocabulary for status, blockers, questions, approvals, evidence receipts, and PR links. See the **Team control room** mode for the multi-person variant.
+- [`docs/SLICE_CLOSE_PROTOCOL.md`](../SLICE_CLOSE_PROTOCOL.md) — evidence receipts, approval strength, and correction routing when more than one person signs off.
+- [`docs/TASK_RUN_MODEL.md`](../TASK_RUN_MODEL.md) — `task_id`, `run_id`, and `question_id` so cockpit messages, PRs, and evidence files can cross-reference.
+
+How the loop differs from solo:
+
+- Each plan binds to a `task_id` so multiple runs and reviewers can attach to the same work.
+- Cockpit events (status, blocker, question, approval) point back at a plan, run, evidence path, or PR — never at a chat thread alone.
+- Approvals land as evidence/PR review, not as chat reactions.
+
+Coordinators that can sit in front of this loop (issue trackers, Kanban tools, custom bots, or private deployment examples) are external by design. Open Scaffold core does not bundle, require, or authenticate against any of them.
+
+---
+
+## 3. GitHub-only workflow
+
+A team or solo operator who wants to keep all coordination on GitHub: Issues for intake, PRs for review, Releases or `.osc/releases/` for evidence. No separate chat coordinator.
+
+Reading path:
+
+- [`docs/GITHUB_WORKFLOW.md`](../GITHUB_WORKFLOW.md) — canonical chain from `ROADMAP.md` item or Issue to plan, run packet, branch, PR, CI/review, merge, and release/evidence note.
+- [`docs/SLICE_CLOSE_PROTOCOL.md`](../SLICE_CLOSE_PROTOCOL.md) — evidence-backed slice closure when the only operator surface is a PR thread.
+
+Minimal chain:
+
+```text
+GitHub Issue
+  -> .osc/plans/active/<slug>.md
+  -> branch
+  -> Pull Request
+  -> CI + reviewer approval
+  -> .osc/releases/<date>-<slug>.md (or GitHub Release)
+```
+
+Acceptance criteria live in the plan; the PR description references the plan and the evidence note. CI runs `./verify.sh` so methodology drift is mechanical, not subjective.
+
+What this mode does **not** require: a chat operator surface, a coordinator service, or a runtime harness. An agent that opens PRs from a branch is one valid executor; a human terminal is another.
+
+---
+
+## 4. Runtime harness handoff
+
+When a runtime lane (Claude Code, Codex, OMC, OMX, a custom adapter, or a human terminal) should execute a plan, Open Scaffold core packages the work into `.osc/runs/<run_id>/run.json`. Core does not launch the lane — `spawning: false` is the boundary that keeps the protocol portable.
+
+Reading path:
+
+- [`docs/RUNTIME_BINDING_CONTRACT.md`](../RUNTIME_BINDING_CONTRACT.md) — lifecycle/responsibilities for any binding that consumes a run packet.
+- [`docs/RUNTIME_HARNESS_DISPATCH.md`](../RUNTIME_HARNESS_DISPATCH.md) — dispatch hypotheses and adapter shape.
+- [`runtime-binding-conformance/README.md`](runtime-binding-conformance/README.md) — fake/local adapter conformance fixture.
+
+### Generate a run packet
 
 From a repository checkout with dependencies installed:
 
@@ -21,9 +115,9 @@ npm run osc -- run .osc/plans/done/013-binding-example.md \
   --commit-policy "dry-run verification only; no runtime launch"
 ```
 
-This writes a new `.osc/runs/<run_id>/run.json` package. Generic Open Scaffold only creates artifacts; it does not spawn the selected lane.
+This writes a new `.osc/runs/<run_id>/run.json` package. Generic Open Scaffold only creates the artifact; it does not spawn the selected lane.
 
-## Inspect the packet like an external binding
+### Inspect the packet like an external binding
 
 ```bash
 RUN_JSON="$(ls -td .osc/runs/*/run.json | head -1)"
@@ -37,7 +131,7 @@ Expected result:
 - states that no runtime was launched;
 - exits nonzero if the packet is not executable, has blockers, requests unsupported lanes, or violates the `spawning: false` boundary.
 
-## Fake/local adapter conformance
+### Fake/local adapter conformance
 
 To prove the receipt/evidence side of the boundary without a real runtime, run the fake/local adapter fixture:
 
@@ -54,10 +148,8 @@ Expected result:
 - writes a deterministic evidence artifact;
 - states that no runtime was launched, no credentials were read, and no network was required.
 
-See [`runtime-binding-conformance/README.md`](runtime-binding-conformance/README.md) for the fixture boundary.
+### Boundary
 
-## Boundary
+These examples are intentionally a **dry-run/conformance consumer**, not a launcher. Real runtime bindings, coordinators, bots, or humans may use the same `run.json` fields to launch work outside Open Scaffold core, attach runtime metadata, return evidence, and request approval.
 
-This example set is intentionally a **dry-run/conformance consumer**, not a launcher. Real runtime bindings, coordinators, bots, or humans may use the same `run.json` fields to launch work outside Open Scaffold core, attach runtime metadata, return evidence, and request approval.
-
-The examples are available from the repository checkout. They are not currently advertised as packaged npm executables or a stable adapter SDK.
+The fixtures are available from the repository checkout. They are not currently advertised as packaged npm executables or a stable adapter SDK.

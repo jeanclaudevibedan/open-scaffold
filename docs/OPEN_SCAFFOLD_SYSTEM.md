@@ -6,6 +6,16 @@ Open Scaffold is not an agent runtime. It is the repo-native operating system th
 
 Open Scaffold is a runtime-neutral repository protocol for agent-orchestrated development: mission, roadmap, plans, amendments, evidence, handoffs, verification gates, and publication traces as durable files.
 
+## Reader path
+
+This document is the full ontology. Most readers do not need every protocol page.
+
+- New here? Read the [README](../README.md), then [`docs/EXAMPLES.md`](EXAMPLES.md) for the 60-second viewer demo.
+- Wiring task/run identity into a coordinator or task system: [`docs/TASK_RUN_MODEL.md`](TASK_RUN_MODEL.md).
+- Writing an adapter that consumes `.osc/runs/<run_id>/run.json`: [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md), then [`docs/RUNTIME_HARNESS_DISPATCH.md`](RUNTIME_HARNESS_DISPATCH.md) for the public dispatch pattern and [`docs/SPAWNING_BOUNDARY.md`](SPAWNING_BOUNDARY.md) for the adapter/runtime boundary.
+- Closing a slice and producing audit-grade evidence: [`docs/SLICE_CLOSE_PROTOCOL.md`](SLICE_CLOSE_PROTOCOL.md).
+- Reading public mentions of named tools (Hermes, OMC, OMX, Discord, etc.): [`docs/REFERENCE_TRUTH.md`](REFERENCE_TRUTH.md) for the public/private/adapter labels.
+
 ## Layers
 
 ### 1. Open Scaffold core
