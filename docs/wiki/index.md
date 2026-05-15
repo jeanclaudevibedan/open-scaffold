@@ -1,7 +1,7 @@
 # Open Scaffold Project Wiki Index
 
 > Public-safe compiled knowledge for Open Scaffold as a body of work. This is not the task board, release log, or product reference.
-> Last updated: 2026-05-15 | Total pages: 14
+> Last updated: 2026-05-15 | Total pages: 17
 
 ## Meta / Operating Contracts
 
@@ -9,6 +9,8 @@
 
 ## Concepts
 
+- [[agent-runtime-selection]] — Proposed runtime-choice seam between scaffold tiers and execution lanes.
+- [[agentic-orchestration]] — Contested vision for multi-model, multi-runtime orchestration and evidence loops.
 - [[agent-resumability]] — How agents can re-enter work without relying on vanished chat context.
 - [[body-of-work-wiki]] — Why Open Scaffold has a scoped project wiki and what belongs here.
 - [[evidence-first-development]] — Why verification artifacts are part of the work.
@@ -20,6 +22,10 @@
 - [[source-of-truth-first-development]] — Durable project truth before trusted continuation.
 
 ## Entities
+
+## Summaries
+
+- [[runtime-orchestration-sparring-synthesis]] — Durable synthesis of runtime-selection and agentic-orchestration sparring for future product-market verification.
 
 ## Comparisons
 
