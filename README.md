@@ -129,19 +129,33 @@ cp .osc/plans/handoff-template.md .osc/plans/active/my-first-task.md
 
 Use `./verify.sh --standard` before calling a meaningful slice done.
 
-### 5. Create a run packet when a harness should execute it
+### 5. Select a runtime and create a run packet
 
-Open Scaffold core does not spawn agents. It packages work so a coordinator, adapter, or human can dispatch it:
+Open Scaffold core does not spawn agents. It packages work so a coordinator, adapter, or human can dispatch it.
+
+The runtime flow is:
+
+```text
+User selects runtime
+  -> Open Scaffold reads runtime profile
+  -> Open Scaffold creates the run packet
+  -> Adapter/coordinator launches the actual runtime
+  -> Runtime does the work
+  -> Evidence comes back into Open Scaffold
+```
+
+Example:
 
 ```bash
 npm run osc -- run .osc/plans/active/my-first-task.md \
   --task-id TASK-001 \
-  --executor plain-agent \
+  --runtime omx \
+  --workflow plan \
   --operator-surface github \
   --repo "$PWD"
 ```
 
-See [`docs/RUNTIME_BINDING_CONTRACT.md`](docs/RUNTIME_BINDING_CONTRACT.md) and [`docs/examples/runtime-binding-dry-run.mjs`](docs/examples/runtime-binding-dry-run.mjs).
+For custom runtimes, add a project-local profile in `.osc/runtimes/<id>.json`, then use `--runtime <id>`. See [`docs/RUNTIME_PROFILES.md`](docs/RUNTIME_PROFILES.md), [`docs/RUNTIME_BINDING_CONTRACT.md`](docs/RUNTIME_BINDING_CONTRACT.md), and [`docs/examples/runtime-binding-dry-run.mjs`](docs/examples/runtime-binding-dry-run.mjs).
 
 ---
 
@@ -184,7 +198,8 @@ The current focus comes from an independent two-lane review (2026-05-12) which f
 - [`MISSION.md`](MISSION.md) — product goals, non-goals, and scope changelog.
 - [`ROADMAP.md`](ROADMAP.md) — product direction and milestones.
 - [`docs/COMPARISON.md`](docs/COMPARISON.md) — honest orientation against adjacent AI workflow systems.
-- [`docs/RUNTIME_SELECTION.md`](docs/RUNTIME_SELECTION.md) — OMC/OMX runtime selection and adapter checklist.
+- [`docs/RUNTIME_SELECTION.md`](docs/RUNTIME_SELECTION.md) — runtime selection flow for OMC/OMX-style lanes.
+- [`docs/RUNTIME_PROFILES.md`](docs/RUNTIME_PROFILES.md) — built-in and project-local runtime profile contract.
 - [`.osc/RULES.md`](.osc/RULES.md) — compact operating rules.
 - [`.osc/plans/WORKFLOW.md`](.osc/plans/WORKFLOW.md) — how plans move through backlog, active, done, and blocked.
 - [`docs/WORKFLOW.md`](docs/WORKFLOW.md) — phase-to-tool guide.
