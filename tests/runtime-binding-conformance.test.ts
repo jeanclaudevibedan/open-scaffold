@@ -109,4 +109,16 @@ describe('fake/local adapter conformance fixture', () => {
       expect(String(error.stderr ?? '')).toContain('executor.harnessSkill is required for lane omx-codex');
     }
   });
+
+  it('refuses packets that omit the commit policy required by the receipt contract', () => {
+    const { path } = tempRunPacket({ commitPolicy: undefined });
+
+    try {
+      execFileSync('node', [adapter, path], { encoding: 'utf8', stdio: 'pipe' });
+      throw new Error('expected fake adapter to fail');
+    } catch (error: any) {
+      expect(error.status).toBe(1);
+      expect(String(error.stderr ?? '')).toContain('commitPolicy must be a non-empty string');
+    }
+  });
 });

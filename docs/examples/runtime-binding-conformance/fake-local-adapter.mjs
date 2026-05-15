@@ -94,6 +94,7 @@ if (manifest.schemaVersion !== 'open-scaffold.run.v1') {
 const runId = requireString(manifest.runId, 'runId');
 const planPath = requireString(manifest?.plan?.path, 'plan.path');
 const repoPath = requireString(manifest?.runtime?.repoPath, 'runtime.repoPath');
+const commitPolicy = requireString(manifest.commitPolicy, 'commitPolicy');
 const worktreePath = manifest?.runtime?.worktreePath ?? null;
 const branch = manifest?.runtime?.branch ?? null;
 const { lane, skill } = validateLaneAndHarness(manifest);
@@ -136,7 +137,7 @@ const receipt = {
   prompt_or_package_path: null,
   authority: {
     sandbox_policy: ['write_artifacts_only', 'commit_forbidden', 'push_forbidden', 'merge_forbidden', 'human_approval_required'],
-    commit_policy: manifest.commitPolicy,
+    commit_policy: commitPolicy,
     approval_policy: 'human_approval_required',
   },
   spawned: false,
