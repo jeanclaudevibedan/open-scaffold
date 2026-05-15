@@ -25,6 +25,7 @@ Examples:
 
 - a coordinator script that reads `.osc/runs/<run_id>/run.json` and starts an OMX `$ralplan` session;
 - an OMC-specific command that turns a plan into a Claude Code `/team` handoff;
+- a project-local runtime profile in `.osc/runtimes/<id>.json` that tells an adapter which lane/workflow/evidence contract to use;
 - a GitHub bot that assigns a plain agent to a branch and links the PR;
 - a human operator who reads the generated prompt package and performs the work manually.
 
