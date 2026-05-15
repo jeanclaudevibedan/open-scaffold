@@ -10,7 +10,7 @@ This page uses precise language:
 - **Task/state bridges** track live operational state.
 - **Operator surfaces** expose status and human interaction.
 
-For the full taxonomy, see [`docs/OPEN_SCAFFOLD_SYSTEM.md`](OPEN_SCAFFOLD_SYSTEM.md).
+For the full taxonomy, see [`docs/OPEN_SCAFFOLD_SYSTEM.md`](OPEN_SCAFFOLD_SYSTEM.md). For public/private/future tool availability labels, see [`docs/REFERENCE_TRUTH.md`](REFERENCE_TRUTH.md).
 
 ## Generic core: `graphanov/open-scaffold`
 
@@ -30,12 +30,12 @@ Responsibilities:
 
 Open Scaffold should be usable by any capable coordinator, orchestrator, or agent, including:
 
-- Hermes as a coordinator / stateful product-workflow surface.
-- Hermes Kanban/Nudge as coordination/control and live task lifecycle.
-- Claw / OpenClaw as autonomous coding or orchestration agents.
-- Claude Code, Codex, Gemini / Antigravity as base agent runtimes.
-- GitHub Issues as public task/intent state.
-- custom scripts, CI jobs, or future agent runtimes.
+- Hermes as a **private deployment example** of a coordinator / stateful product-workflow surface.
+- Hermes Kanban/Nudge as a **private deployment example** of coordination/control and live task lifecycle.
+- Claw / OpenClaw as **coordinator/orchestrator or agent examples**.
+- Claude Code, Codex, Gemini / Antigravity as **runtime lane examples**.
+- GitHub Issues as a **public example** of public task/intent state.
+- custom scripts, CI jobs, or future agent runtimes as **adapter candidates**.
 
 These tools may read and act on Open Scaffold state. They are not required dependencies of the core. When they invoke a runtime harness, they should dispatch a bounded package and receive result artifacts/status back into the source-of-truth chain.
 
@@ -44,7 +44,7 @@ These tools may read and act on Open Scaffold state. They are not required depen
 Base agent: Claude Code
 Harness family: OMC / oh-my-claudecode
 
-OMC is a Claude Code execution/orchestration lane. It is useful when Claude Code is the execution environment. It is not an Open Scaffold adapter in the same class as Hermes or Claw/OpenClaw.
+OMC is a **runtime lane / adapter candidate** for Claude Code execution/orchestration. It is useful when Claude Code is the execution environment. It is not an Open Scaffold adapter in the same class as a coordinator such as Hermes or an orchestrator/agent surface such as Claw/OpenClaw.
 
 Responsibilities when used with Open Scaffold:
 
@@ -60,7 +60,7 @@ Use OMC when the chosen execution lane is Claude Code plus OMC workflow skills.
 Base agent: Codex
 Harness family: OMX / oh-my-codex
 
-OMX is a Codex execution/orchestration lane. It is useful when Codex is the executor, reviewer, or planner lane. It is not automatically the runtime for Hermes or OMC; a coordinator must explicitly dispatch a bounded package into an OMX/Codex session.
+OMX is a **runtime lane / adapter candidate** for Codex execution/orchestration. It is useful when Codex is the executor, reviewer, or planner lane. It is not automatically the runtime for Hermes or OMC; a coordinator must explicitly dispatch a bounded package into an OMX/Codex session.
 
 Responsibilities when used with Open Scaffold:
 

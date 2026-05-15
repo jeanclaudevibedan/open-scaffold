@@ -1,5 +1,7 @@
 # Lifecycle E2E Smoke Strategy
 
+Named integrations in this strategy are staged examples. Use [`docs/REFERENCE_TRUTH.md`](REFERENCE_TRUTH.md) to distinguish public examples, private deployment examples, runtime lanes, adapter candidates, and operator surfaces.
+
 Open Scaffold needs one reproducible smoke test that proves the core lifecycle works before it claims success across Discord, Hermes, OMC, OMX, Codex, or any other integration surface.
 
 This page promotes the 2026-05-14 four-lane Claude Code review into a public implementation contract. The raw lane reports remain forensic run evidence under ignored `.osc/runs/`; this document captures the durable product decision.
@@ -95,7 +97,7 @@ The fixture exists to prove the lifecycle, not to demonstrate app ambition.
 - Project-specific verification passes.
 - Plan starts in `active/` and ends in `done/`.
 - Evidence note references plan and verification.
-- No private Daniel/Hermes/Discord state is required.
+- No private owner, Hermes, or Discord deployment state is required.
 
 ### Weak-pass
 
@@ -117,7 +119,7 @@ The implementation should include at least these checks:
 1. The temp project is created fresh for each run.
 2. Generated lifecycle artifacts are newer than the smoke start marker.
 3. The downstream mission does not equal Open Scaffold's maintainer mission.
-4. `.osc-dev/` and private Daniel paths are absent from the fixture.
+4. `.osc-dev/` and private owner-specific paths are absent from the fixture.
 5. Active plan exists before close and is absent after close.
 6. Done plan exists after close.
 7. Evidence/release note mentions the plan and verification command.

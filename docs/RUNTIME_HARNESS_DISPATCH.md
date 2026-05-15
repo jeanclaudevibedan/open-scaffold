@@ -2,7 +2,7 @@
 
 Open Scaffold core defines the portable contract for semi-autonomous work. It does **not** own the local control plane that launches agents. A coordinator or runtime-specific binding consumes `.osc/runs/<run_id>/run.json` and dispatches the selected harness.
 
-This page captures the pattern proven in Daniel's private Command Center with Hermes Kanban -> OMX `$ralplan`, then translates it into the public Open Scaffold model. The detailed adapter/binding responsibilities live in [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md).
+This page captures a **private deployment example**: an owner-local Command Center used Hermes Kanban -> OMX `$ralplan` to prove the dispatch shape. It translates that private dogfood pattern into the public Open Scaffold model; the private deployment is not required to adopt Open Scaffold. The detailed adapter/binding responsibilities live in [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md), and reference labels live in [`docs/REFERENCE_TRUTH.md`](REFERENCE_TRUTH.md).
 
 ## Executive rule
 
@@ -29,7 +29,7 @@ flowchart TD
     D -. "status/questions only" .-> H["Glass cockpit\nDiscord / Slack / Telegram / GitHub comments"]
     H -. "question_id -> run_id" .-> D
 
-    X["Daniel Command Center PR #4\nprivate bridge proved:\nKanban -> OMX -> run evidence"] --> Y["You are here in Open Scaffold\nproductizing the public contract/docs"]
+    X["Private deployment example\nowner-local bridge proved:\nKanban -> OMX -> run evidence"] --> Y["You are here in Open Scaffold\nproductizing the public contract/docs"]
     Y --> C
 
     classDef done fill:#DCFCE7,stroke:#16A34A,color:#052e16;
@@ -42,7 +42,7 @@ flowchart TD
 
 Current state:
 
-- The **private Command Center bridge** has been proven with Hermes Kanban dispatching a task into detached OMX `$ralplan` and preserving run evidence.
+- A **private deployment example** has proven Hermes Kanban dispatching a task into detached OMX `$ralplan` and preserving run evidence; it is dogfood evidence, not an adoption requirement.
 - Open Scaffold already has the generic `task_id` / `run_id` / `operator_surface` schema.
 - This Open Scaffold slice documents the bridge as a public, runtime-neutral dispatch pattern.
 - The next adapter/product step is an OMX/OMC binding that consumes `.osc/runs/<run_id>/run.json` and performs real launch/postflight outside core. The v1 public contract for this is [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md).
@@ -151,7 +151,7 @@ The exact launch mechanics — tmux, Codex auth, update prompts, hooks, watchdog
 
 Avoid:
 
-- putting Hermes Kanban, Discord bot state, or Daniel-specific auth setup inside Open Scaffold core;
+- putting private deployment state, Hermes Kanban state, Discord bot state, or owner-specific auth setup inside Open Scaffold core;
 - making Discord the task database;
 - letting OMX/OMC runtime state replace `.osc/runs` evidence;
 - dispatching a harness from vague prose without a run packet;
@@ -160,7 +160,7 @@ Avoid:
 
 ## Product implication
 
-Open Scaffold should productize the method, not Daniel's private cockpit. The public core should make every task/run/harness boundary clear enough that many coordinators can implement the launch layer:
+Open Scaffold should productize the method, not any private cockpit. The public core should make every task/run/harness boundary clear enough that many coordinators can implement the launch layer:
 
 ```text
 Open Scaffold core = WHAT/WHERE/PROOF

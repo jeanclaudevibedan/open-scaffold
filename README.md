@@ -141,12 +141,12 @@ See [`docs/RUNTIME_BINDING_CONTRACT.md`](docs/RUNTIME_BINDING_CONTRACT.md) and [
 
 Open Scaffold is not an agent runtime, Discord bot, PR reviewer, or task database. It is the repo protocol those tools can share.
 
-- **Coordinators / task state:** Hermes Kanban, GitHub Issues, Linear/Jira, or custom bots decide what should happen next.
-- **Runtime lanes:** Claude Code, Codex, Cursor, Gemini, OMC, OMX, Aider, or a human terminal can execute bounded work.
+- **Coordinators / task state:** GitHub Issues, Linear/Jira, custom bots, or private deployment examples such as Hermes Kanban decide what should happen next.
+- **Runtime lanes:** Claude Code, Codex, Cursor, Gemini, OMC, OMX, Aider, or a human terminal can execute bounded work outside Open Scaffold core.
 - **Operator surfaces:** Discord, Slack, Telegram, GitHub comments, or CLI dashboards can show status and collect approvals.
 - **Core truth:** mission, plans, amendments, run packets, evidence, decisions, and release notes stay in the repo.
 
-Full map: [`docs/OPEN_SCAFFOLD_SYSTEM.md`](docs/OPEN_SCAFFOLD_SYSTEM.md), [`docs/TASK_RUN_MODEL.md`](docs/TASK_RUN_MODEL.md), [`docs/GITHUB_WORKFLOW.md`](docs/GITHUB_WORKFLOW.md).
+Full map: [`docs/OPEN_SCAFFOLD_SYSTEM.md`](docs/OPEN_SCAFFOLD_SYSTEM.md), [`docs/TASK_RUN_MODEL.md`](docs/TASK_RUN_MODEL.md), [`docs/GITHUB_WORKFLOW.md`](docs/GITHUB_WORKFLOW.md), and [`docs/REFERENCE_TRUTH.md`](docs/REFERENCE_TRUTH.md).
 
 ---
 
@@ -174,6 +174,7 @@ It is overkill for one-off scripts, disposable prototypes, or tasks that fit in 
 - [`docs/SLICE_CLOSE_PROTOCOL.md`](docs/SLICE_CLOSE_PROTOCOL.md) — evidence-backed slice closure.
 - [`docs/GLASS_COCKPIT_PROTOCOL.md`](docs/GLASS_COCKPIT_PROTOCOL.md) — chat/control-room surfaces.
 - [`docs/FAQ.md`](docs/FAQ.md) — deeper explanations.
+- [`docs/REFERENCE_TRUTH.md`](docs/REFERENCE_TRUTH.md) — labels for public, private, future, and adapter tool references.
 
 ---
 

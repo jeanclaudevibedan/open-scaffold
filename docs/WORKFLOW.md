@@ -2,6 +2,8 @@
 
 A phase-to-tool reference for agent-orchestrated development. This file is the operational reference; `README.md` is the landing page. When in doubt about which tool to reach for, start here.
 
+Named coordinators, harnesses, and operator surfaces in this guide are examples. Use [`docs/REFERENCE_TRUTH.md`](REFERENCE_TRUTH.md) to distinguish public examples, private deployment examples, runtime lanes, adapter candidates, and operator surfaces.
+
 ## Development phases
 
 Every task moves through a natural progression. You do not need to use every phase — small fixes skip straight to Execute. The phases exist so you know where you are and what to reach for.
