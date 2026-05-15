@@ -329,7 +329,7 @@ function runtimes(args: string[]): void {
       console.error(`Unknown runtime profile: ${id}`);
       process.exit(2);
     }
-    console.log(JSON.stringify({ source: resolved.source, path: resolved.path ?? null, ...resolved.profile }, null, 2));
+    console.log(JSON.stringify({ ...resolved.profile, source: resolved.source, path: resolved.path ?? null }, null, 2));
     return;
   }
   console.error('Usage: osc runtimes list | osc runtimes show <id>');

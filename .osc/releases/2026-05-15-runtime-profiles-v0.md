@@ -42,7 +42,7 @@ Final verification before PR:
 git diff --check          -> passed
 ./verify.sh --strict      -> 10 pass, 0 fail, 0 warn
 npm run osc -- verify     -> PASS, 0 warnings
-npm test                  -> 8 test files passed, 70 tests passed
+npm test                  -> 8 test files passed, 72 tests passed
 npm run build             -> passed
 ```
 

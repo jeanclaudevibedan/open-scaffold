@@ -219,6 +219,9 @@ export function validateRuntimeProfile(value: unknown): { ok: true; profile: Run
 
   validateWorkflows(value.workflows, errors);
 
+  if (value.defaults !== undefined && !isRecord(value.defaults)) {
+    errors.push('defaults must be an object');
+  }
   if (isRecord(value.defaults)) {
     const workflow = value.defaults.workflow;
     if (workflow !== undefined && workflow !== null && !SUPPORTED_WORKFLOWS.includes(workflow as RuntimeWorkflow)) {

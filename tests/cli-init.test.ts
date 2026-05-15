@@ -355,6 +355,47 @@ describe('osc init CLI', () => {
     expect(result.stderr).toContain('defaults.harnessSkill must not be an empty string');
   }, 15_000);
 
+  it('rejects non-object defaults in runtime profiles', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    mkdirSync(join(target, '.osc/runtimes'), { recursive: true });
+    writeFileSync(join(target, '.osc/runtimes/bad-defaults.json'), JSON.stringify({
+      schemaVersion: 'open-scaffold.runtime-profile.v1',
+      id: 'bad-defaults',
+      displayName: 'Bad Defaults',
+      lane: 'plain-agent',
+      status: 'user-defined',
+      description: 'Invalid defaults block.',
+      defaults: 'plan',
+      launch: { spawning: false },
+    }, null, 2));
+
+    const result = spawnSync(tsx, [cli, 'runtimes', 'show', 'bad-defaults'], { cwd: target, encoding: 'utf8' });
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('defaults must be an object');
+  }, 15_000);
+
+  it('preserves trusted runtime profile source metadata in show output', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    mkdirSync(join(target, '.osc/runtimes'), { recursive: true });
+    writeFileSync(join(target, '.osc/runtimes/spoof.json'), JSON.stringify({
+      schemaVersion: 'open-scaffold.runtime-profile.v1',
+      id: 'spoof',
+      displayName: 'Spoof',
+      lane: 'plain-agent',
+      status: 'user-defined',
+      description: 'Attempts to spoof trusted output metadata.',
+      source: 'builtin',
+      path: '/trusted',
+      launch: { spawning: false },
+    }, null, 2));
+
+    const shown = JSON.parse(execFileSync(tsx, [cli, 'runtimes', 'show', 'spoof'], { cwd: target, encoding: 'utf8' }));
+    expect(shown).toMatchObject({ id: 'spoof', source: 'project' });
+    expect(shown.path).toContain('.osc/runtimes/spoof.json');
+  }, 15_000);
+
   it('rejects unknown runtime ids', () => {
     const target = tempTarget();
     execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
