@@ -138,7 +138,7 @@ export function validateScaffold(root = process.cwd(), options: ValidationOption
     if (traceability && !/(?:\.osc\/plans\/|\bissue\b|\btask\b|\broadmap\b)/i.test(traceability)) {
       warnings.push({ level: 'warn', code: 'release_note.traceability_missing_work_item', message: 'Release note Traceability section does not cite a plan, issue, task, or roadmap item', path: rel });
     }
-    if (traceability && !/(?:\bPR\s+#\d+\b|Pull request|Pull Request|GitHub Release|\bTag:\s*|\bBranch:\s*|pending owner review|pending Daniel review|no PR|not generated|not applicable)/i.test(text)) {
+    if (traceability && !/(?:\bPR\s+#\d+\b|Pull request|Pull Request|https:\/\/github\.com\/[^\s)]+\/pull\/\d+|GitHub Release|\bTag:\s*|\bBranch:\s*|pending owner review|pending Daniel review|no PR|not generated|not applicable)/i.test(text)) {
       warnings.push({ level: 'warn', code: 'release_note.traceability_missing_publication', message: 'Release note does not cite a PR, branch, tag, release, or explicit publication rationale', path: rel });
     }
 
