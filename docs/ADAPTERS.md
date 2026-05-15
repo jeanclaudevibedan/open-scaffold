@@ -32,7 +32,7 @@ Open Scaffold should be usable by any capable coordinator, orchestrator, or agen
 
 - Hermes as a **private deployment example** of a coordinator / stateful product-workflow surface.
 - Hermes Kanban/Nudge as a **private deployment example** of coordination/control and live task lifecycle.
-- Claw / OpenClaw as **runtime lane / coordinator examples**.
+- Claw / OpenClaw as **coordinator/orchestrator or agent examples**.
 - Claude Code, Codex, Gemini / Antigravity as **runtime lane examples**.
 - GitHub Issues as a **public example** of public task/intent state.
 - custom scripts, CI jobs, or future agent runtimes as **adapter candidates**.
@@ -44,7 +44,7 @@ These tools may read and act on Open Scaffold state. They are not required depen
 Base agent: Claude Code
 Harness family: OMC / oh-my-claudecode
 
-OMC is a **runtime lane / adapter candidate** for Claude Code execution/orchestration. It is useful when Claude Code is the execution environment. It is not an Open Scaffold adapter in the same class as a coordinator such as Hermes or an agent lane such as Claw/OpenClaw.
+OMC is a **runtime lane / adapter candidate** for Claude Code execution/orchestration. It is useful when Claude Code is the execution environment. It is not an Open Scaffold adapter in the same class as a coordinator such as Hermes or an orchestrator/agent surface such as Claw/OpenClaw.
 
 Responsibilities when used with Open Scaffold:
 
