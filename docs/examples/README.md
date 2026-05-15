@@ -1,8 +1,10 @@
-# Runtime binding dry-run example
+# Runtime binding examples
 
 This directory contains small examples that make Open Scaffold mechanics concrete without turning core into an agent runtime.
 
 `runtime-binding-dry-run.mjs` is a dependency-free reference consumer for `.osc/runs/<run_id>/run.json`. It validates the minimum fields an external binding should inspect, prints the handoff summary, and exits without launching Claude, Codex, OMC, OMX, or any other runtime.
+
+`runtime-binding-conformance/fake-local-adapter.mjs` is a fake/local adapter conformance fixture. It consumes a run packet, writes a dispatch receipt and evidence artifact, and exits without launching a real runtime.
 
 ## Generate a run packet
 
@@ -35,8 +37,27 @@ Expected result:
 - states that no runtime was launched;
 - exits nonzero if the packet is not executable, has blockers, requests unsupported lanes, or violates the `spawning: false` boundary.
 
+## Fake/local adapter conformance
+
+To prove the receipt/evidence side of the boundary without a real runtime, run the fake/local adapter fixture:
+
+```bash
+node docs/examples/runtime-binding-conformance/fake-local-adapter.mjs \
+  "$RUN_JSON" \
+  --out "$(dirname "$RUN_JSON")/dispatch-receipt.json"
+```
+
+Expected result:
+
+- exits `0` for an executable package;
+- writes `dispatch-receipt.json` using `open-scaffold.dispatch-receipt.v1`;
+- writes a deterministic evidence artifact;
+- states that no runtime was launched, no credentials were read, and no network was required.
+
+See [`runtime-binding-conformance/README.md`](runtime-binding-conformance/README.md) for the fixture boundary.
+
 ## Boundary
 
-This example is intentionally a **dry-run consumer**, not a launcher. Real runtime bindings, coordinators, bots, or humans may use the same `run.json` fields to launch work outside Open Scaffold core, attach runtime metadata, return evidence, and request approval.
+This example set is intentionally a **dry-run/conformance consumer**, not a launcher. Real runtime bindings, coordinators, bots, or humans may use the same `run.json` fields to launch work outside Open Scaffold core, attach runtime metadata, return evidence, and request approval.
 
-The example is available from the repository checkout. It is not currently advertised as a packaged npm executable or stable adapter SDK.
+The examples are available from the repository checkout. They are not currently advertised as packaged npm executables or a stable adapter SDK.
