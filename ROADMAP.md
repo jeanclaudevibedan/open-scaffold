@@ -233,6 +233,12 @@ Deliverables:
 - Keep real OMC/OMX launch behavior in external adapters or coordinators, not core.
 - Ensure adapter evidence returns to `.osc` run/release conventions.
 
+Runtime status after PR #36/#37:
+
+- Runtime selection and runtime profiles are shipped as a run-packet/profile layer, not as core spawning.
+- Backlog hypotheses `030-agent-runtime-selection-vision` and `031-agentic-orchestration-model-lab-vision` are not the next implementation queue. Their useful near-term conclusion has been narrowed to: keep Open Scaffold as the source-of-truth/control plane, let adapters/coordinators launch real runtimes, and require evidence before promoting model-lab or native-runtime claims.
+- Future runtime work should start from a specific adapter/evidence slice such as `osc runtimes check <id>` or a fake/local conformance proof, not from broad orchestration promises.
+
 ### Milestone 10 — Product packaging and releases
 
 Status: complete for the current readiness slice via `.osc/plans/done/010-product-packaging-release.md`, `.osc/releases/2026-05-15-packaging-release-readiness.md`, and `.osc/releases/2026-05-15-public-trust-readiness.md`. `v0.3.0` baseline release evidence exists at `.osc/releases/2026-05-12-v0.3.0-runtime-neutral-baseline.md`; npm-registry publishing remains parked until a fresh adoption signal.
@@ -378,6 +384,7 @@ Acceptance criteria:
 ## Parking lot
 
 - Deferred compliance-grade agentic OS / hashgraph-style regulated-SDLC exploration; reopen only through an explicit ADR/plan.
+- Runtime/model-lab hypotheses from `030` and `031`: future work only after adapter evidence, explicit safety design, and clear separation between Open Scaffold core, runtime adapters, and model evaluation.
 - MCP bridge for structured harness dispatch/status/artifact retrieval.
 - Repository-local task database option for users without Hermes Kanban/GitHub Issues.
 - Visual dashboard beyond Discord posts.

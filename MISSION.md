@@ -28,6 +28,7 @@ Explicit things this project is NOT trying to do. Legitimate scope discipline st
 One-line dated entries for every scope pivot. Format: `YYYY-MM-DD: <one-line pivot description + link to amendment file if applicable>`. Append entries in chronological order. Never rewrite history here.
 
 <!-- append YYYY-MM-DD entries below this line -->
+- 2026-05-16: closed 035-runtime-docs-simplification — runtime docs simplification and hypothesis reconciliation shipped
 - 2026-05-15: closed 034-runtime-profiles-v0 — runtime profiles v0 shipped with schema-backed built-in and project-local runtime selection
 - 2026-05-15: closed 009-runtime-harness-adapter-refresh — runtime adapter refresh audit and conformance lane coverage shipped
 - 2026-05-15: closed 019-comparison-page — comparison page shipped in public trust/readiness bundle

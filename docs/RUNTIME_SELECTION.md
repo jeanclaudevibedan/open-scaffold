@@ -1,8 +1,17 @@
-# Agentic runtime selection
+# Runtime selection
 
-Open Scaffold should let a user choose an agentic runtime lane without turning Open Scaffold core into that runtime.
+Runtime selection is the user-facing layer of Open Scaffold's runtime story. It answers one question: **which lane should this run packet target?**
 
-This page is the corrected scope for plan `009-runtime-harness-adapter-refresh`: not ownership cleanup for old adapter repositories, but a runtime-selection surface for OMC / oh-my-claudecode and OMX / oh-my-codex style execution.
+```text
+User selects runtime
+  -> Open Scaffold reads runtime profile
+  -> Open Scaffold creates the run packet
+  -> Adapter/coordinator launches the actual runtime
+  -> Runtime does the work
+  -> Evidence comes back into Open Scaffold
+```
+
+This page covers the first two Open Scaffold steps: `--runtime`, `--workflow`, and the run-packet fields they create. For profile schema and custom project-local runtimes, read [`RUNTIME_PROFILES.md`](RUNTIME_PROFILES.md). For the external adapter/coordinator contract, read [`RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md).
 
 ## Product intent
 
@@ -61,7 +70,7 @@ Runtime harness     = execute while alive
 Operator            = approve merge/publish gates
 ```
 
-Open Scaffold core owns the run-packet contract. Runtime-specific adapters own process launch, authentication, tmux/session lifecycle, hooks, and runtime logs. Runtime state is forensic until promoted into `.osc/runs`, tracked evidence docs, PRs, issues, or release notes.
+Open Scaffold core owns the run-packet contract. Runtime-specific adapters own process launch, authentication, tmux/session lifecycle, hooks, and runtime logs. Runtime state is forensic until promoted into `.osc/runs`, tracked evidence docs, PRs, issues, or release notes. This boundary is the same one enforced by runtime profiles and the binding contract; this page only describes the selection surface.
 
 ## Adapter checklist
 

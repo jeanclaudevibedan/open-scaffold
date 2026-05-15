@@ -1,15 +1,23 @@
 # Runtime Profiles
 
-Runtime profiles make Open Scaffold runtime selection declarative and extensible without making Open Scaffold core an installer, marketplace, or process supervisor.
+Runtime profiles are the configuration layer behind `--runtime`. They make runtime selection declarative and extensible without making Open Scaffold core an installer, marketplace, or process supervisor.
 
-A runtime profile is data. It tells Open Scaffold how a selected runtime lane should be recorded in a run packet. A coordinator or adapter may later consume that run packet and launch the real runtime outside core.
+A profile is data. It tells Open Scaffold how a selected runtime lane should be recorded in a run packet. A coordinator or adapter may later consume that run packet and launch the real runtime outside core.
 
 ```text
-Open Scaffold core = validate profile + package run intent + preserve evidence gates
-Runtime adapter     = translate run packet + launch selected runtime + return receipt/evidence
-Runtime harness     = execute while alive
-Operator            = approve commit/push/merge/publish gates
+User selects runtime
+  -> Open Scaffold reads runtime profile
+  -> Open Scaffold creates the run packet
+  -> Adapter/coordinator launches the actual runtime
+  -> Runtime does the work
+  -> Evidence comes back into Open Scaffold
 ```
+
+Layer map:
+
+- [`RUNTIME_SELECTION.md`](RUNTIME_SELECTION.md) — user-facing `--runtime` / `--workflow` choice.
+- `RUNTIME_PROFILES.md` — profile schema, built-ins, and project-local `.osc/runtimes/*.json`.
+- [`RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md) — adapter/coordinator responsibilities after the packet exists.
 
 ## Commands
 

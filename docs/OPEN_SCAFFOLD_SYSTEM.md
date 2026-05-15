@@ -12,8 +12,8 @@ This document is the full ontology. Most readers do not need every protocol page
 
 - New here? Read the [README](../README.md), then [`docs/EXAMPLES.md`](EXAMPLES.md) for the 60-second viewer demo.
 - Wiring task/run identity into a coordinator or task system: [`docs/TASK_RUN_MODEL.md`](TASK_RUN_MODEL.md).
-- Writing an adapter that consumes `.osc/runs/<run_id>/run.json`: [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md), [`docs/RUNTIME_PROFILES.md`](RUNTIME_PROFILES.md) for selectable runtime profile metadata, then [`docs/RUNTIME_HARNESS_DISPATCH.md`](RUNTIME_HARNESS_DISPATCH.md) for the public dispatch pattern and [`docs/SPAWNING_BOUNDARY.md`](SPAWNING_BOUNDARY.md) for the adapter/runtime boundary.
-- Closing a slice and producing audit-grade evidence: [`docs/SLICE_CLOSE_PROTOCOL.md`](SLICE_CLOSE_PROTOCOL.md).
+- Understanding runtime handoff progressively: [`docs/RUNTIME_SELECTION.md`](RUNTIME_SELECTION.md) for choosing a lane, [`docs/RUNTIME_PROFILES.md`](RUNTIME_PROFILES.md) for profile metadata, then [`docs/RUNTIME_BINDING_CONTRACT.md`](RUNTIME_BINDING_CONTRACT.md) and [`docs/SPAWNING_BOUNDARY.md`](SPAWNING_BOUNDARY.md) for adapter/runtime responsibilities.
+- Closing a slice and producing evidence: [`docs/SLICE_CLOSE_PROTOCOL.md`](SLICE_CLOSE_PROTOCOL.md).
 - Reading public mentions of named tools (Hermes, OMC, OMX, Discord, etc.): [`docs/REFERENCE_TRUTH.md`](REFERENCE_TRUTH.md) for the public/private/adapter labels.
 
 ## Layers
@@ -205,13 +205,13 @@ Multiple coordinators/runtimes can mutate the same worktree at once safely.
 A clean coordinator-to-runtime flow looks like this:
 
 ```text
-Open Scaffold roadmap/plan or external task card
-  -> coordinator chooses executor lane: OMC, OMX, plain agent, or manual
-  -> coordinator dispatches a bounded prompt/artifact/run packet
-  -> executor produces result artifact, diff, PR, status, or blocker
-  -> coordinator updates task state, asks the operator, or nudges next step
-  -> evidence and decisions are promoted back into Open Scaffold/GitHub
-  -> slice close records acceptance-gate status, approval strength, corrections, and next-slice inheritance
+User selects runtime
+  -> Open Scaffold reads runtime profile
+  -> Open Scaffold creates the run packet
+  -> Adapter/coordinator launches the actual runtime
+  -> Runtime does the work
+  -> Evidence comes back into Open Scaffold
+  -> Slice close records approval, corrections, or next-slice inheritance
 ```
 
 Rules:

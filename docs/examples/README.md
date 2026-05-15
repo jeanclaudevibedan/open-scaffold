@@ -96,8 +96,10 @@ When a runtime lane (Claude Code, Codex, OMC, OMX, a custom adapter, or a human 
 
 Reading path:
 
+- [`docs/RUNTIME_SELECTION.md`](../RUNTIME_SELECTION.md) — choosing `--runtime` and `--workflow`.
+- [`docs/RUNTIME_PROFILES.md`](../RUNTIME_PROFILES.md) — built-in and project-local runtime profile metadata.
 - [`docs/RUNTIME_BINDING_CONTRACT.md`](../RUNTIME_BINDING_CONTRACT.md) — lifecycle/responsibilities for any binding that consumes a run packet.
-- [`docs/RUNTIME_HARNESS_DISPATCH.md`](../RUNTIME_HARNESS_DISPATCH.md) — dispatch hypotheses and adapter shape.
+- [`runtime-profiles/company-review-bot.json`](runtime-profiles/company-review-bot.json) — example project-local profile.
 - [`runtime-binding-conformance/README.md`](runtime-binding-conformance/README.md) — fake/local adapter conformance fixture.
 
 ### Generate a run packet
@@ -107,7 +109,8 @@ From a repository checkout with dependencies installed:
 ```bash
 npm run osc -- run .osc/plans/done/013-binding-example.md \
   --task-id plan:013-binding-example-verification \
-  --executor plain-agent \
+  --runtime omx \
+  --workflow plan \
   --operator-surface cli \
   --repo "$PWD" \
   --worktree "$PWD" \
@@ -127,7 +130,7 @@ node docs/examples/runtime-binding-dry-run.mjs "$RUN_JSON"
 Expected result:
 
 - exits `0` for an executable package;
-- prints run id, plan path, executor lane, optional harness skill, repo/worktree/branch, and commit policy;
+- prints run id, plan path, executor lane, optional harness skill, operator surface, repo/worktree/branch, and commit policy;
 - states that no runtime was launched;
 - exits nonzero if the packet is not executable, has blockers, requests unsupported lanes, or violates the `spawning: false` boundary.
 
