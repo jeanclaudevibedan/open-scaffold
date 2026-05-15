@@ -60,6 +60,7 @@ const PROFILE_SCHEMA_VERSION = 'open-scaffold.runtime-profile.v1';
 const SUPPORTED_LANES: ExecutorLane[] = ['omc-claude', 'omx-codex', 'plain-agent', 'human', 'custom'];
 const SUPPORTED_WORKFLOWS: RuntimeWorkflow[] = ['interview', 'plan', 'team', 'loop', 'execute', 'goal', 'custom'];
 const SUPPORTED_STATUSES: RuntimeProfileStatus[] = ['builtin', 'adapter-candidate', 'user-defined'];
+const SUPPORTED_OPERATOR_SURFACES = ['discord', 'slack', 'telegram', 'github', 'cli', 'none', 'custom'];
 
 export const BUILT_IN_RUNTIME_PROFILES: RuntimeProfile[] = [
   {
@@ -225,6 +226,9 @@ export function validateRuntimeProfile(value: unknown): { ok: true; profile: Run
     }
     if (value.defaults.harnessSkill !== undefined && value.defaults.harnessSkill !== null && typeof value.defaults.harnessSkill !== 'string') {
       errors.push('defaults.harnessSkill must be a string or null');
+    }
+    if (value.defaults.operatorSurface !== undefined && value.defaults.operatorSurface !== null && !SUPPORTED_OPERATOR_SURFACES.includes(String(value.defaults.operatorSurface))) {
+      errors.push(`defaults.operatorSurface must be one of: ${SUPPORTED_OPERATOR_SURFACES.join(', ')}`);
     }
   }
 

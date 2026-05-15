@@ -315,6 +315,26 @@ describe('osc init CLI', () => {
     expect(result.stderr).toContain('workflows.plan must not be an empty string');
   }, 15_000);
 
+  it('rejects unsupported default operator surfaces in runtime profiles', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    mkdirSync(join(target, '.osc/runtimes'), { recursive: true });
+    writeFileSync(join(target, '.osc/runtimes/bad-surface.json'), JSON.stringify({
+      schemaVersion: 'open-scaffold.runtime-profile.v1',
+      id: 'bad-surface',
+      displayName: 'Bad Surface',
+      lane: 'plain-agent',
+      status: 'user-defined',
+      description: 'Invalid default operator surface.',
+      defaults: { operatorSurface: 'matrix' },
+      launch: { spawning: false },
+    }, null, 2));
+
+    const result = spawnSync(tsx, [cli, 'runtimes', 'show', 'bad-surface'], { cwd: target, encoding: 'utf8' });
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('defaults.operatorSurface must be one of');
+  }, 15_000);
+
   it('rejects unknown runtime ids', () => {
     const target = tempTarget();
     execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
