@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, mkdtempSync, mkdirSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { join, normalize, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const adapter = resolve('docs/examples/runtime-binding-conformance/fake-local-adapter.mjs');
@@ -47,7 +47,6 @@ describe('fake/local adapter conformance fixture', () => {
       working_directory: root,
       worktree_path: root,
       branch: 'main',
-      run_packet_path: '.osc/runs/demo/run.json',
       prompt_or_package_path: null,
       spawned: false,
       spawn_command_redacted: null,
@@ -59,6 +58,7 @@ describe('fake/local adapter conformance fixture', () => {
       fixture: { kind: 'conformance-fixture', lane: 'plain-agent', evidence_path: '.osc/runs/demo/evidence.md' },
     });
     expect(typeof receipt.receipt_id).toBe('string');
+    expect(normalize(receipt.run_packet_path)).toBe(normalize('.osc/runs/demo/run.json'));
     expect(existsSync(join(root, '.osc/runs/demo/evidence.md'))).toBe(true);
   });
 
