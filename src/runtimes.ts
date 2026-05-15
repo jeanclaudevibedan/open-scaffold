@@ -194,6 +194,9 @@ function validateWorkflows(value: unknown, errors: string[]): void {
     if (harnessSkill !== null && typeof harnessSkill !== 'string') {
       errors.push(`workflows.${workflow} must be a string or null`);
     }
+    if (typeof harnessSkill === 'string' && !harnessSkill.trim()) {
+      errors.push(`workflows.${workflow} must not be an empty string`);
+    }
   }
 }
 

@@ -191,7 +191,7 @@ describe('osc init CLI', () => {
       status: 'user-defined',
       description: 'Project-local review bot profile.',
       workflows: { plan: 'review-bot plan' },
-      defaults: { workflow: 'plan', harnessSkill: 'review-bot plan' },
+      defaults: { workflow: 'plan', harnessSkill: 'review-bot plan', operatorSurface: 'github' },
       install: { humanHint: 'Install through the project developer portal.', auto: false },
       launch: { owner: 'external-adapter', commandTemplate: 'review-bot run <run.json>', spawning: false },
       evidence: { receiptSchema: 'open-scaffold.dispatch-receipt.v1' },
@@ -204,6 +204,7 @@ describe('osc init CLI', () => {
 
     expect(manifest.runtimeSelection).toMatchObject({ runtime: 'review-bot', workflow: 'plan', profileId: 'review-bot', profileSource: 'project' });
     expect(manifest.executor).toMatchObject({ lane: 'plain-agent', harnessSkill: 'review-bot plan', spawning: false });
+    expect(manifest.bindings).toMatchObject({ operatorSurface: 'github' });
   }, 15_000);
 
   it('resolves project-local runtime profiles from --repo when launched outside that repo', () => {
@@ -292,6 +293,26 @@ describe('osc init CLI', () => {
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('install.auto must be false');
     expect(result.stderr).toContain('launch.spawning must be false');
+  }, 15_000);
+
+  it('rejects empty workflow command tokens in runtime profiles', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    mkdirSync(join(target, '.osc/runtimes'), { recursive: true });
+    writeFileSync(join(target, '.osc/runtimes/empty-workflow.json'), JSON.stringify({
+      schemaVersion: 'open-scaffold.runtime-profile.v1',
+      id: 'empty-workflow',
+      displayName: 'Empty Workflow',
+      lane: 'plain-agent',
+      status: 'user-defined',
+      description: 'Invalid empty workflow token.',
+      workflows: { plan: '' },
+      launch: { spawning: false },
+    }, null, 2));
+
+    const result = spawnSync(tsx, [cli, 'runtimes', 'show', 'empty-workflow'], { cwd: target, encoding: 'utf8' });
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('workflows.plan must not be an empty string');
   }, 15_000);
 
   it('rejects unknown runtime ids', () => {

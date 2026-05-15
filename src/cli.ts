@@ -91,6 +91,13 @@ function applyRuntimeSelection(options: RunArtifactOptions, root: string): void 
   if (!options.workflow && profile.defaults?.workflow) {
     options.workflow = profile.defaults.workflow;
   }
+  if (!options.operatorSurface && profile.defaults?.operatorSurface) {
+    if (!(OPERATOR_SURFACES as readonly string[]).includes(profile.defaults.operatorSurface)) {
+      console.error(`Runtime profile ${profile.id} has unsupported defaults.operatorSurface: ${profile.defaults.operatorSurface}`);
+      process.exit(1);
+    }
+    options.operatorSurface = profile.defaults.operatorSurface as OperatorSurface;
+  }
 
   if (options.workflow) {
     const expectedHarnessSkill = profile.workflows?.[options.workflow];
