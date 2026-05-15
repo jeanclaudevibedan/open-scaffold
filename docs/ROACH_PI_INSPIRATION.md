@@ -29,7 +29,7 @@
 
 Autonomous spawning belongs in adapter repos:
 
-- [`open-scaffold-omc`](https://github.com/jeanclaudevibedan/open-scaffold-omc) for Claude Code + OMC (`.omc`/`osc-omc`).
-- [`open-scaffold-omx`](https://github.com/jeanclaudevibedan/open-scaffold-omx) for Codex CLI + OMX (`.omx`/`osc-omx`).
+- [`open-scaffold-omc`](https://github.com/jeanclaudevibedan/open-scaffold-omc) for Claude Code + OMC (`.omc`/`osc-omc`) — **historical/unmigrated repository** reference under the older namespace.
+- [`open-scaffold-omx`](https://github.com/jeanclaudevibedan/open-scaffold-omx) for Codex CLI + OMX (`.omx`/`osc-omx`) — **historical/unmigrated repository** reference under the older namespace.
 
 The generic repo produces the contract and artifacts. Adapters decide how to execute them.

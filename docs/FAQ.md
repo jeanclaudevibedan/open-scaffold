@@ -6,7 +6,7 @@ Questions that did not fit in the main README but are still worth answering.
 
 ### Can I run this for 5 hours straight and come back to a finished product?
 
-> No. Anyone who says their framework does that is selling you something. What you *can* do: write a plan, hand it to an orchestrator or runtime harness — for example Hermes/Claw as the outer router, OMC with `/autopilot`/`/ralph` for Claude Code, or OMX with `$team`/`$ralph`/`$ultrawork` for Codex — and come back to mostly-done work that traces back to your acceptance criteria. The difference the scaffold makes is **recoverability** — because the plan is on disk, you can read what the agent did, compare against the ACs, and know exactly where to resume. Without it, a 5-hour run is a 5-hour black box.
+> No. Anyone who says their framework does that is selling you something. What you *can* do: write a plan, hand it to an orchestrator or runtime harness — for example a private coordinator deployment such as Hermes/Claw, OMC with `/autopilot`/`/ralph` for Claude Code, or OMX with `$team`/`$ralph`/`$ultrawork` for Codex — and come back to mostly-done work that traces back to your acceptance criteria. These are runtime lanes or private deployment examples, not Open Scaffold dependencies; see [`docs/REFERENCE_TRUTH.md`](REFERENCE_TRUTH.md). The difference the scaffold makes is **recoverability** — because the plan is on disk, you can read what the agent did, compare against the ACs, and know exactly where to resume. Without it, a 5-hour run is a 5-hour black box.
 
 ### Does this reduce token usage / cost?
 

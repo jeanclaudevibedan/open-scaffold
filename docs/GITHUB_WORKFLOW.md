@@ -66,7 +66,7 @@ osc run .osc/plans/active/<plan>.md \
   --branch feat/<slug>
 ```
 
-Generic Open Scaffold writes the package and does not spawn the runtime. A coordinator or adapter consumes the package and launches OMC, OMX, a plain agent, or a human lane. Use `--issue`/`--pr` for typed GitHub bindings and repeat `--source-ref` for additional freeform references.
+Generic Open Scaffold writes the package and does not spawn the runtime. A coordinator or adapter consumes the package and launches OMC, OMX, a plain agent, or a human lane. OMC/OMX are runtime lanes or adapter candidates, not Open Scaffold core dependencies; see [`docs/REFERENCE_TRUTH.md`](REFERENCE_TRUTH.md). Use `--issue`/`--pr` for typed GitHub bindings and repeat `--source-ref` for additional freeform references.
 
 ## Branch and PR policy
 

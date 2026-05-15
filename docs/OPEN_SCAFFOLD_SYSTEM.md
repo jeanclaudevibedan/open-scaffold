@@ -155,6 +155,8 @@ A mature Open Scaffold workflow should make GitHub artifacts traceable to roadma
 
 ## Correct boundary statements
 
+Use [`docs/REFERENCE_TRUTH.md`](REFERENCE_TRUTH.md) when deciding whether a named tool is a public example, private deployment example, adapter candidate, runtime lane, operator surface, or historical/unmigrated repository.
+
 Use these statements in product docs and agent prompts:
 
 ```text
