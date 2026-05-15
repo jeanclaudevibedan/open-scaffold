@@ -187,13 +187,13 @@ if (manifest?.executor?.spawning !== false) {
   fail('executor.spawning must be false; Open Scaffold core packages work while adapters own launch behavior');
 }
 
-const receiptPath = outPath ?? resolve(dirname(runPacketPath), 'dispatch-receipt.json');
+const defaultReceiptPath = `${dirname(runPacketRelativePath)}/dispatch-receipt.json`;
+const { absolutePath: receiptPath } = prepareSafeArtifactPath(repoPath, outPath ?? defaultReceiptPath);
 const fallbackEvidencePath = `.osc/runs/${runId}/fake-local-evidence.md`;
 const { raw: evidencePath, absolutePath: evidenceAbsolutePath } = prepareSafeArtifactPath(
   repoPath,
   manifest?.artifacts?.evidence?.[0] ?? fallbackEvidencePath,
 );
-mkdirSync(dirname(receiptPath), { recursive: true });
 
 const evidence = `# Fake/local adapter evidence\n\nRun ID: ${runId}\nTask ID: ${manifest.taskId ?? '(none)'}\nPlan: ${planPath}\nExecutor lane: ${lane}\nHarness skill: ${skill ?? '(none)'}\n\nThis evidence was written by the fake/local adapter conformance fixture.\nNo runtime was launched. No network access or credentials were required.\n`;
 writeFileSync(evidenceAbsolutePath, evidence);

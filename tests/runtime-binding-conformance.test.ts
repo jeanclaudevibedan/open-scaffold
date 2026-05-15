@@ -32,7 +32,7 @@ describe('fake/local adapter conformance fixture', () => {
     const { root, path } = tempRunPacket();
     const receiptPath = join(root, '.osc/runs/demo/dispatch-receipt.json');
 
-    const output = execFileSync('node', [adapter, path, '--out', receiptPath], { encoding: 'utf8' });
+    const output = execFileSync('node', [adapter, path, '--out', '.osc/runs/demo/dispatch-receipt.json'], { encoding: 'utf8' });
     const receipt = JSON.parse(readFileSync(receiptPath, 'utf8'));
 
     expect(output).toContain('Fake/local adapter conformance complete');
@@ -90,11 +90,27 @@ describe('fake/local adapter conformance fixture', () => {
     const { root, path } = tempRunPacket({ artifacts: { evidence: ['evidence.md'] } });
     const receiptPath = join(root, '.osc/runs/demo/dispatch-receipt.json');
 
-    execFileSync('node', [adapter, path, '--out', receiptPath], { encoding: 'utf8' });
+    execFileSync('node', [adapter, path, '--out', '.osc/runs/demo/dispatch-receipt.json'], { encoding: 'utf8' });
     const receipt = JSON.parse(readFileSync(receiptPath, 'utf8'));
 
     expect(receipt.artifacts).toEqual(['evidence.md']);
     expect(existsSync(join(root, 'evidence.md'))).toBe(true);
+  });
+
+  it('refuses dispatch receipt output paths outside the repository root', () => {
+    const { root, path } = tempRunPacket();
+    const outside = mkdtempSync(join(tmpdir(), 'osc-conformance-outside-receipt-'));
+    const outsideReceipt = join(outside, 'dispatch-receipt.json');
+
+    try {
+      execFileSync('node', [adapter, path, '--out', outsideReceipt], { encoding: 'utf8', stdio: 'pipe' });
+      throw new Error('expected fake adapter to fail');
+    } catch (error: any) {
+      expect(error.status).toBe(1);
+      expect(String(error.stderr ?? '')).toContain('artifact path must stay under runtime.repoPath');
+    }
+    expect(existsSync(outsideReceipt)).toBe(false);
+    expect(existsSync(join(root, '.osc/runs/demo/evidence.md'))).toBe(false);
   });
 
   it('refuses evidence paths that escape the repository root through symlinked directories', () => {
