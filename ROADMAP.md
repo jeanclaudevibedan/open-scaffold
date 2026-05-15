@@ -346,7 +346,7 @@ Acceptance direction:
 
 ### Milestone 17 — Project wiki knowledge seed
 
-Status: next via `.osc/plans/active/029-project-wiki-knowledge-seed.md`; follows the completed project wiki skeleton in `.osc/plans/done/028-project-wiki-skeleton.md`.
+Status: complete via `.osc/plans/done/029-project-wiki-knowledge-seed.md`, PR #28, and `.osc/releases/2026-05-15-project-wiki-knowledge-seed.md`; follows the completed project wiki skeleton in `.osc/plans/done/028-project-wiki-skeleton.md`.
 
 Goal: turn the `docs/wiki/` skeleton into a small, public-safe Open Scaffold body-of-work knowledge graph.
 
