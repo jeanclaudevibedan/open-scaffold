@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { lstatSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
 
 const SUPPORTED_LANES = new Map([
@@ -64,6 +64,19 @@ function prepareSafeArtifactPath(repoPath, artifactPath) {
   const realRepoRoot = realpathSync.native(repoRoot);
   const realArtifactDir = realpathSync.native(dirname(absolutePath));
   assertPathInside(realRepoRoot, realArtifactDir, 'artifact path must stay under runtime.repoPath');
+
+  try {
+    const artifactStat = lstatSync(absolutePath);
+    if (artifactStat.isSymbolicLink()) {
+      fail('artifact path must stay under runtime.repoPath');
+    }
+    const realArtifactPath = realpathSync.native(absolutePath);
+    assertPathInside(realRepoRoot, realArtifactPath, 'artifact path must stay under runtime.repoPath');
+  } catch (error) {
+    if (error?.code !== 'ENOENT') {
+      fail(`could not validate artifact path: ${error.message}`);
+    }
+  }
 
   return { raw, absolutePath };
 }

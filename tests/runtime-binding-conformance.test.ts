@@ -86,7 +86,7 @@ describe('fake/local adapter conformance fixture', () => {
     }
   });
 
-  it('refuses evidence paths that escape the repository root through symlinks', () => {
+  it('refuses evidence paths that escape the repository root through symlinked directories', () => {
     const { root, path } = tempRunPacket({ artifacts: { evidence: ['.osc/runs/link/evidence.md'] } });
     const outside = mkdtempSync(join(tmpdir(), 'osc-conformance-outside-'));
     symlinkSync(outside, join(root, '.osc/runs/link'), 'dir');
@@ -99,6 +99,23 @@ describe('fake/local adapter conformance fixture', () => {
       expect(String(error.stderr ?? '')).toContain('artifact path must stay under runtime.repoPath');
     }
     expect(existsSync(join(outside, 'evidence.md'))).toBe(false);
+  });
+
+  it('refuses evidence paths that escape the repository root through symlinked files', () => {
+    const { root, path } = tempRunPacket({ artifacts: { evidence: ['.osc/runs/demo/evidence.md'] } });
+    const outside = mkdtempSync(join(tmpdir(), 'osc-conformance-outside-'));
+    const outsideEvidence = join(outside, 'evidence.md');
+    writeFileSync(outsideEvidence, 'do not overwrite');
+    symlinkSync(outsideEvidence, join(root, '.osc/runs/demo/evidence.md'), 'file');
+
+    try {
+      execFileSync('node', [adapter, path], { encoding: 'utf8', stdio: 'pipe' });
+      throw new Error('expected fake adapter to fail');
+    } catch (error: any) {
+      expect(error.status).toBe(1);
+      expect(String(error.stderr ?? '')).toContain('artifact path must stay under runtime.repoPath');
+    }
+    expect(readFileSync(outsideEvidence, 'utf8')).toBe('do not overwrite');
   });
 
   it('refuses unsupported executor lanes', () => {
