@@ -14,6 +14,10 @@ Open Scaffold gives solo developers and small teams a lightweight way to keep AI
 
 Use it when AI work spans sessions, PRs, agents, or review gates — especially when you need proof without a documentation swamp.
 
+> **What it is:** a repo-native protocol (files, folders, helper scripts, a verification check) that any agent or orchestrator can operate on.
+>
+> **What it is not:** an agent runtime, a Discord bot, a daemon, a task database, a model ranker, or a code reviewer. Those live in tools you choose; the scaffold is what they read and write.
+
 ---
 
 ## The problem
@@ -37,6 +41,8 @@ Want the loop before the theory? Read [`docs/EXAMPLES.md`](docs/EXAMPLES.md#60-s
 ```text
 Mission -> plan -> verification -> evidence/status
 ```
+
+For a non-recursive version of the same loop, read the [downstream walkthrough](docs/examples/downstream-walkthrough.md): a tiny shell CLI carried through mission, plan, run packet, evidence, and close. For broader usage shapes — solo developer, team control-room, GitHub-only workflow, and runtime harness handoff — see the [examples index](docs/examples/README.md).
 
 ---
 
@@ -155,12 +161,18 @@ Full map: [`docs/OPEN_SCAFFOLD_SYSTEM.md`](docs/OPEN_SCAFFOLD_SYSTEM.md), [`docs
 Open Scaffold is useful when work needs to survive context loss:
 
 - multi-session AI-assisted development;
-- small-team or client delivery;
-- regulated or audit-sensitive work that needs lightweight evidence;
+- consulting and client delivery, where "what was asked, decided, and verified" must be reviewable later;
+- compliance or audit-sensitive work that wants lightweight, file-level evidence instead of a heavier governance stack;
 - multi-agent handoffs where chat history is not enough;
 - projects where "done" needs acceptance criteria and verification, not vibes.
 
-It is overkill for one-off scripts, disposable prototypes, or tasks that fit in a single clean session.
+It is overkill for one-off scripts, disposable prototypes, or tasks that fit in a single clean session. The scaffold is the substrate; it does not replace SOC 2, ISO, or formal audit tooling — it gives those processes durable repo artifacts to point at.
+
+---
+
+## Where the roadmap is going
+
+The current focus comes from an independent two-lane review (2026-05-12) which found the core thesis valid but the adoption gap real. Public roadmap priorities are: undeniable examples, adapter proof, packaging, and docs compression — not turning Open Scaffold core into an agent runtime. See the [review addendum](ROADMAP.md#independent-review-addendum--make-the-useful-parts-undeniable) for the milestone list.
 
 ---
 

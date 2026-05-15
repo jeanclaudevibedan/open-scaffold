@@ -180,7 +180,7 @@ Deliverables:
 Acceptance criteria:
 
 - At least one public PR demonstrates the full chain.
-- The PR can be understood without private Daniel Command Center context.
+- The PR can be understood without any owner-local cockpit context (private deployment examples remain examples, not adoption requirements).
 - Codex connector review is triggered or explicitly skipped with rationale.
 - The release notes explain what was learned from dogfooding.
 
@@ -209,9 +209,9 @@ Deliverables:
 
 ### Milestone 8 — User-facing examples
 
-Status: backlog via `.osc/plans/backlog/008-user-facing-examples.md`.
+Status: complete via `.osc/plans/done/008-user-facing-examples.md` and `.osc/releases/2026-05-15-adoption-example-path.md`.
 
-Goal: make Open Scaffold adoptable by people who have never seen Daniel's Command Center.
+Goal: make Open Scaffold adoptable by people who have never seen any owner-local cockpit (i.e. without depending on private deployment examples).
 
 Deliverables:
 
@@ -278,7 +278,7 @@ Deliverables:
 
 ### Milestone 13 — Non-scaffold downstream example
 
-Status: backlog via `.osc/plans/backlog/014-downstream-example-project.md`.
+Status: complete via `.osc/plans/done/014-downstream-example-project.md` and `.osc/releases/2026-05-15-adoption-example-path.md`.
 
 Goal: demonstrate Open Scaffold on one tiny project that is not Open Scaffold itself.
 
@@ -302,7 +302,7 @@ Deliverables:
 
 ### Milestone 15 — Docs compression and public positioning
 
-Status: backlog via `.osc/plans/backlog/016-docs-positioning-compression.md`.
+Status: complete for the current adoption-path slice via `.osc/plans/done/016-docs-positioning-compression.md` and `.osc/releases/2026-05-15-adoption-example-path.md`; future docs compression should return through a fresh plan after a new adoption signal.
 
 Goal: make the first-read path shorter while surfacing the strongest use cases: multi-session AI development, consulting/client delivery, compliance/audit traceability, and multi-agent handoff.
 
@@ -310,7 +310,7 @@ Deliverables:
 
 - Compress overlapping protocol explanations into a clearer reader path.
 - Add or improve the roadmap → issue/task → plan → run → PR → evidence diagram.
-- Remove or generalize private/Daniel-specific context in public docs.
+- Remove or generalize owner-local/private deployment context in public docs.
 - State honestly what exists today versus what is adapter/backlog work.
 
 ### Milestone 16 — Runtime strategy and native-runtime exploration
