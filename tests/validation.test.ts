@@ -218,6 +218,35 @@ Shipped.
     expect(result.warnings.map((w) => w.code)).not.toContain('release_note.traceability_missing_publication');
   });
 
+
+  it('accepts PR colon-number shorthand as publication evidence', () => {
+    const root = tempRepo();
+    writeFileSync(join(root, '.osc/plans/done/001-sample.md'), plan.replace('active', 'done'));
+    writeFileSync(join(root, '.osc/releases/2026-05-12-pr-colon.md'), `# Release / Evidence Note
+
+## Summary
+
+Did a thing.
+
+## Traceability
+
+- Plan: .osc/plans/done/001-sample.md
+- PR: #42
+
+## Verification
+
+- npm test -> pass
+
+## Outcome
+
+Shipped.
+`);
+
+    const result = validateScaffold(root);
+
+    expect(result.warnings.map((w) => w.code)).not.toContain('release_note.traceability_missing_publication');
+  });
+
   it('warns when release note Outcome body is empty or placeholder', () => {
     const root = tempRepo();
     writeFileSync(join(root, '.osc/plans/done/001-sample.md'), plan.replace('active', 'done'));
