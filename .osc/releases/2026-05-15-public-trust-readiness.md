@@ -54,5 +54,5 @@ Ready for final verification and owner review as one bundled public trust/readin
 
 ## Follow-up
 
-- Runtime harness adapter refresh remains in `.osc/plans/backlog/009-runtime-harness-adapter-refresh.md`.
+- Runtime harness adapter refresh moved forward later in `.osc/plans/done/009-runtime-harness-adapter-refresh.md`.
 - Runtime-selection and orchestration/model-lab hypotheses remain parked in `.osc/plans/backlog/030-agent-runtime-selection-vision.md` and `.osc/plans/backlog/031-agentic-orchestration-model-lab-vision.md` until adapter evidence advances.

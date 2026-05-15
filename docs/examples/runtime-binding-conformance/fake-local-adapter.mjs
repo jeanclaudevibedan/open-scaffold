@@ -5,6 +5,7 @@ import { dirname, isAbsolute, relative, resolve } from 'node:path';
 const SUPPORTED_LANES = new Map([
   ['human', { harnessSkills: [null] }],
   ['plain-agent', { harnessSkills: [null] }],
+  ['omc-claude', { harnessSkills: ['/deep-interview', '/ralplan', '/team', '/ralph', '/ultrawork'] }],
   ['omx-codex', { harnessSkills: ['$deep-interview', '$ralplan', '$team', '$ralph', '$ultrawork', '$ultragoal'] }],
 ]);
 

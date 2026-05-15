@@ -53,6 +53,6 @@ Ready for final verification and owner review as one bundled adoption-facing PR.
 
 ## Follow-up
 
-- Runtime adapter refresh remains in `.osc/plans/backlog/009-runtime-harness-adapter-refresh.md`.
+- Runtime adapter refresh moved forward later in `.osc/plans/done/009-runtime-harness-adapter-refresh.md`.
 - CLI validation upgrades remain in `.osc/plans/backlog/007-cli-validation-upgrades.md`.
 - Comparison page remains in `.osc/plans/backlog/019-comparison-page.md`.

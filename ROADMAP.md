@@ -222,14 +222,14 @@ Deliverables:
 
 ### Milestone 9 — Runtime harness adapter refresh
 
-Status: backlog via `.osc/plans/backlog/009-runtime-harness-adapter-refresh.md`.
+Status: complete via `.osc/plans/done/009-runtime-harness-adapter-refresh.md` and `.osc/releases/2026-05-15-runtime-adapter-refresh.md`.
 
 Goal: align OMC/OMX bindings with the public runtime binding contract while keeping runtime launch mechanics outside core.
 
 Deliverables:
 
-- Refresh `open-scaffold-omc` against current core contracts.
-- Refresh `open-scaffold-omx` against current core contracts.
+- Add a core runtime-selection surface for `omc` / `omx` presets that records executor lane and workflow in the run packet.
+- Keep real OMC/OMX launch behavior in external adapters or coordinators, not core.
 - Ensure adapter evidence returns to `.osc` run/release conventions.
 
 ### Milestone 10 — Product packaging and releases
@@ -338,7 +338,7 @@ Discovery tracks:
 Deferred research hypotheses:
 
 - Thin `osc spawn --adapter <name>` invocation.
-- Official adapter packages such as `open-scaffold-omx` / `open-scaffold-omc`.
+- Official runtime adapter packages, if created later, that consume Open Scaffold run packets without becoming core dependencies.
 - Separate Open Scaffold Runtime product.
 - Compliance-grade agentic OS / regulated-SDLC positioning.
 - Hashgraph-style or tamper-evident event graph for task/run/evidence/protocol evolution.

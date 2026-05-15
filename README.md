@@ -184,6 +184,7 @@ The current focus comes from an independent two-lane review (2026-05-12) which f
 - [`MISSION.md`](MISSION.md) — product goals, non-goals, and scope changelog.
 - [`ROADMAP.md`](ROADMAP.md) — product direction and milestones.
 - [`docs/COMPARISON.md`](docs/COMPARISON.md) — honest orientation against adjacent AI workflow systems.
+- [`docs/RUNTIME_SELECTION.md`](docs/RUNTIME_SELECTION.md) — OMC/OMX runtime selection and adapter checklist.
 - [`.osc/RULES.md`](.osc/RULES.md) — compact operating rules.
 - [`.osc/plans/WORKFLOW.md`](.osc/plans/WORKFLOW.md) — how plans move through backlog, active, done, and blocked.
 - [`docs/WORKFLOW.md`](docs/WORKFLOW.md) — phase-to-tool guide.

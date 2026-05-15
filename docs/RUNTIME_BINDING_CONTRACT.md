@@ -384,7 +384,7 @@ Operators stay in control.
 
 ## Dry-run and conformance examples
 
-For concrete, credential-free consumers of this contract, see [`docs/examples/runtime-binding-dry-run.mjs`](examples/runtime-binding-dry-run.mjs), [`docs/examples/runtime-binding-conformance/fake-local-adapter.mjs`](examples/runtime-binding-conformance/fake-local-adapter.mjs), and [`docs/examples/README.md`](examples/README.md).
+For concrete, credential-free consumers of this contract, see [`docs/examples/runtime-binding-dry-run.mjs`](examples/runtime-binding-dry-run.mjs), [`docs/examples/runtime-binding-conformance/fake-local-adapter.mjs`](examples/runtime-binding-conformance/fake-local-adapter.mjs), and [`docs/examples/README.md`](examples/README.md). For the current OMC/OMX runtime-selection surface and refreshed-adapter checklist, see [`docs/RUNTIME_SELECTION.md`](RUNTIME_SELECTION.md).
 
 The dry-run example reads a generated `.osc/runs/<run_id>/run.json`, validates the executable-package and `spawning: false` boundary, prints the handoff summary an external binding would use, and exits without launching any runtime.
 

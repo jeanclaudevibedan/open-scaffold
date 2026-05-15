@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { createRunArtifacts, type ArtifactMode, type ExecutorLane, type OperatorSurface, type RunArtifactOptions } from './artifacts.js';
+import { createRunArtifacts, type ArtifactMode, type ExecutorLane, type OperatorSurface, type RunArtifactOptions, type RuntimePreset, type RuntimeWorkflow } from './artifacts.js';
 import { initializeScaffold, scaffoldTiers, type ScaffoldTier } from './init.js';
 import { inspectScaffold, parsePlanFile, planToJson } from './scaffold.js';
 import { validateScaffold } from './validation.js';
@@ -24,6 +24,8 @@ Usage:
 Run binding options:
   --task-id <id>              Canonical task/card/issue id for this work item
   --source-ref <ref>          Additional source ref; repeatable
+  --runtime <preset>          omc | omx | plain | human | custom
+  --workflow <workflow>       interview | plan | team | loop | execute | goal | custom
   --executor <lane>           omc-claude | omx-codex | plain-agent | human | custom
   --harness-skill <skill>     e.g. /ralplan, $ralplan, /ralph, $ultrawork
   --repo <path>               Repository path for execution
@@ -49,11 +51,69 @@ function requireArg(args: string[], name: string): string {
 
 const EXECUTOR_LANES = ['omc-claude', 'omx-codex', 'plain-agent', 'human', 'custom'] as const;
 const OPERATOR_SURFACES = ['discord', 'slack', 'telegram', 'github', 'cli', 'none', 'custom'] as const;
+const RUNTIME_PRESETS = ['omc', 'omx', 'plain', 'human', 'custom'] as const;
+const RUNTIME_WORKFLOWS = ['interview', 'plan', 'team', 'loop', 'execute', 'goal', 'custom'] as const;
+
+const RUNTIME_EXECUTORS: Record<RuntimePreset, ExecutorLane> = {
+  omc: 'omc-claude',
+  omx: 'omx-codex',
+  plain: 'plain-agent',
+  human: 'human',
+  custom: 'custom',
+};
+
+const WORKFLOW_HARNESS_SKILLS: Record<'omc' | 'omx', Record<Exclude<RuntimeWorkflow, 'custom'>, string>> = {
+  omc: {
+    interview: '/deep-interview',
+    plan: '/ralplan',
+    team: '/team',
+    loop: '/ralph',
+    execute: '/ultrawork',
+    goal: '/ultrawork',
+  },
+  omx: {
+    interview: '$deep-interview',
+    plan: '$ralplan',
+    team: '$team',
+    loop: '$ralph',
+    execute: '$ultrawork',
+    goal: '$ultragoal',
+  },
+};
 
 function parseChoice<T extends readonly string[]>(value: string, choices: T, flag: string): T[number] {
   if ((choices as readonly string[]).includes(value)) return value as T[number];
   console.error(`Invalid value for ${flag}: ${value}. Expected one of: ${choices.join(', ')}`);
   process.exit(2);
+}
+
+function applyRuntimeSelection(options: RunArtifactOptions): void {
+  if (!options.runtime) return;
+  const selectedExecutor = RUNTIME_EXECUTORS[options.runtime];
+  if (options.executor && options.executor !== selectedExecutor) {
+    console.error(`--runtime ${options.runtime} maps to executor ${selectedExecutor}, but --executor ${options.executor} was also provided`);
+    process.exit(2);
+  }
+  options.executor = selectedExecutor;
+
+  if (!options.workflow && (options.runtime === 'omc' || options.runtime === 'omx')) {
+    options.workflow = 'plan';
+  }
+  if (options.workflow && (options.runtime === 'omc' || options.runtime === 'omx')) {
+    if (options.workflow === 'custom') {
+      if (!options.harnessSkill) {
+        console.error(`--runtime ${options.runtime} with --workflow custom requires --harness-skill`);
+        process.exit(2);
+      }
+      return;
+    }
+    const expectedHarnessSkill = WORKFLOW_HARNESS_SKILLS[options.runtime][options.workflow];
+    if (options.harnessSkill && options.harnessSkill !== expectedHarnessSkill) {
+      console.error(`--runtime ${options.runtime} with --workflow ${options.workflow} requires --harness-skill ${expectedHarnessSkill}, got ${options.harnessSkill}`);
+      process.exit(2);
+    }
+    options.harnessSkill = expectedHarnessSkill;
+  }
 }
 
 function parseRunOptions(args: string[]): { planPathArg: string; options: RunArtifactOptions } {
@@ -79,6 +139,14 @@ function parseRunOptions(args: string[]): { planPathArg: string; options: RunArt
         break;
       case '--source-ref':
         options.sourceRef = [...(options.sourceRef ?? []), takeValue(i, flag)];
+        i += 1;
+        break;
+      case '--runtime':
+        options.runtime = parseChoice(takeValue(i, flag), RUNTIME_PRESETS, flag) as RuntimePreset;
+        i += 1;
+        break;
+      case '--workflow':
+        options.workflow = parseChoice(takeValue(i, flag), RUNTIME_WORKFLOWS, flag) as RuntimeWorkflow;
         i += 1;
         break;
       case '--executor':
@@ -128,6 +196,7 @@ function parseRunOptions(args: string[]): { planPathArg: string; options: RunArt
     }
   }
 
+  applyRuntimeSelection(options);
   return { planPathArg, options };
 }
 

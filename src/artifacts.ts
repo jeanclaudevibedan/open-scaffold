@@ -5,12 +5,16 @@ import type { ParsedPlan } from './scaffold.js';
 export type ArtifactMode = 'delegate' | 'run' | 'review' | 'ultrareview';
 export type ExecutorLane = 'omc-claude' | 'omx-codex' | 'plain-agent' | 'human' | 'custom';
 export type OperatorSurface = 'discord' | 'slack' | 'telegram' | 'github' | 'cli' | 'none' | 'custom';
+export type RuntimePreset = 'omc' | 'omx' | 'plain' | 'human' | 'custom';
+export type RuntimeWorkflow = 'interview' | 'plan' | 'team' | 'loop' | 'execute' | 'goal' | 'custom';
 
 export interface RunArtifactOptions {
   taskId?: string;
   sourceRef?: string[];
   executor?: ExecutorLane;
   harnessSkill?: string;
+  runtime?: RuntimePreset;
+  workflow?: RuntimeWorkflow;
   repo?: string;
   worktree?: string;
   branch?: string;
@@ -153,6 +157,11 @@ export function createRunArtifacts(root: string, plan: ParsedPlan, mode: Artifac
       openQuestions: plan.openQuestions,
     },
     packageQuality: quality,
+    runtimeSelection: {
+      runtime: options.runtime ?? null,
+      workflow: options.workflow ?? null,
+      note: 'Runtime selection records the intended adapter lane. Open Scaffold core still does not spawn the runtime.',
+    },
     executor: {
       lane: options.executor ?? null,
       harnessSkill: options.harnessSkill ?? null,
