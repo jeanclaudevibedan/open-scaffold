@@ -196,7 +196,7 @@ Public roadmap commitments should stay legible: keep at most five planned/backlo
 
 ### Milestone 7 — CLI validation upgrades
 
-Status: backlog via `.osc/plans/backlog/007-cli-validation-upgrades.md`.
+Status: complete via `.osc/plans/done/007-cli-validation-upgrades.md` and `.osc/releases/2026-05-15-public-trust-readiness.md`.
 
 Goal: make stale-state and evidence drift mechanically visible.
 
@@ -234,7 +234,7 @@ Deliverables:
 
 ### Milestone 10 — Product packaging and releases
 
-Status: partially complete / deferred; `v0.3.0` baseline release evidence exists at `.osc/releases/2026-05-12-v0.3.0-runtime-neutral-baseline.md`, while remaining packaging polish is parked until the next adoption signal.
+Status: complete for the current readiness slice via `.osc/plans/done/010-product-packaging-release.md`, `.osc/releases/2026-05-15-packaging-release-readiness.md`, and `.osc/releases/2026-05-15-public-trust-readiness.md`. `v0.3.0` baseline release evidence exists at `.osc/releases/2026-05-12-v0.3.0-runtime-neutral-baseline.md`; npm-registry publishing remains parked until a fresh adoption signal.
 
 Goal: package the v1 protocol baseline as a public product release.
 

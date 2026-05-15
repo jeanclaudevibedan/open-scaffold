@@ -17,6 +17,7 @@ This note records the roadmap response, not an implementation release. The raw r
   - `.osc/plans/backlog/016-docs-positioning-compression.md`
 - Prior baseline: `.osc/releases/2026-05-12-v0.3.0-runtime-neutral-baseline.md`
 - Current branch when recorded: `fix/codex-pr10-verify-feedback`
+- Publication: roadmap addendum only; no PR/release was created for this evidence note.
 
 ## Verification
 

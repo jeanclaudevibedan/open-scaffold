@@ -16,7 +16,10 @@
   },
   "files": [
     "dist",
-    ".osc",
+    ".osc/RULES.md",
+    ".osc/plans",
+    ".osc/releases",
+    ".osc/specs",
     "docs",
     "AGENTS.md",
     "CLAUDE.md",

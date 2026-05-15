@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { validateScaffold } from '../src/validation.js';
@@ -100,5 +100,271 @@ Done.
 
     expect(result.ok).toBe(false);
     expect(result.failures.map((f) => f.code)).toContain('releases.dir_missing');
+  });
+
+  it('warns when release note Traceability section omits a plan path', () => {
+    const root = tempRepo();
+    writeFileSync(join(root, '.osc/plans/done/001-sample.md'), plan.replace('active', 'done'));
+    writeFileSync(join(root, '.osc/releases/2026-05-12-no-plan.md'), `# Release / Evidence Note
+
+## Summary
+
+Did a thing.
+
+## Traceability
+
+- PR: https://github.com/example/repo/pull/42
+
+## Verification
+
+- npm test -> pass
+
+## Outcome
+
+Shipped.
+`);
+
+    const result = validateScaffold(root);
+
+    expect(result.warnings.map((w) => w.code)).toContain('release_note.traceability_missing_plan');
+  });
+
+
+  it('warns when release note Traceability omits work item or publication anchors', () => {
+    const root = tempRepo();
+    writeFileSync(join(root, '.osc/plans/done/001-sample.md'), plan.replace('active', 'done'));
+    writeFileSync(join(root, '.osc/releases/2026-05-12-weak-traceability.md'), `# Release / Evidence Note
+
+## Summary
+
+Did a thing.
+
+## Traceability
+
+- Related note: local review.
+
+## Verification
+
+- npm test -> pass
+
+## Outcome
+
+Shipped.
+`);
+
+    const result = validateScaffold(root);
+    const codes = result.warnings.map((w) => w.code);
+
+    expect(codes).toContain('release_note.traceability_missing_work_item');
+    expect(codes).toContain('release_note.traceability_missing_publication');
+  });
+
+  it('accepts release note Traceability with plan and explicit pending publication rationale', () => {
+    const root = tempRepo();
+    writeFileSync(join(root, '.osc/plans/done/001-sample.md'), plan.replace('active', 'done'));
+    writeFileSync(join(root, '.osc/releases/2026-05-12-pending-publication.md'), `# Release / Evidence Note
+
+## Summary
+
+Did a thing.
+
+## Traceability
+
+- Plan: .osc/plans/done/001-sample.md
+- Publication: pending owner review.
+
+## Verification
+
+- npm test -> pass
+
+## Outcome
+
+Shipped.
+`);
+
+    const result = validateScaffold(root);
+    const codes = result.warnings.map((w) => w.code);
+
+    expect(codes).not.toContain('release_note.traceability_missing_work_item');
+    expect(codes).not.toContain('release_note.traceability_missing_publication');
+  });
+
+  it('warns when release note Outcome body is empty or placeholder', () => {
+    const root = tempRepo();
+    writeFileSync(join(root, '.osc/plans/done/001-sample.md'), plan.replace('active', 'done'));
+    writeFileSync(join(root, '.osc/releases/2026-05-12-empty-outcome.md'), `# Release / Evidence Note
+
+## Summary
+
+Did a thing.
+
+## Traceability
+
+- Plan: .osc/plans/done/001-sample.md
+- PR: #42
+
+## Verification
+
+- npm test -> pass
+
+## Outcome
+
+TODO
+`);
+
+    const result = validateScaffold(root);
+
+    expect(result.warnings.map((w) => w.code)).toContain('release_note.empty_outcome');
+  });
+
+  it('warns when release note Verification body is empty', () => {
+    const root = tempRepo();
+    writeFileSync(join(root, '.osc/plans/done/001-sample.md'), plan.replace('active', 'done'));
+    writeFileSync(join(root, '.osc/releases/2026-05-12-empty-verification.md'), `# Release / Evidence Note
+
+## Summary
+
+Did a thing.
+
+## Traceability
+
+- Plan: .osc/plans/done/001-sample.md
+- PR: #42
+
+## Verification
+
+## Outcome
+
+Shipped.
+`);
+
+    const result = validateScaffold(root);
+
+    expect(result.warnings.map((w) => w.code)).toContain('release_note.empty_verification');
+  });
+
+  it('warns when a plan slug exists in both active/ and done/', () => {
+    const root = tempRepo();
+    writeFileSync(join(root, '.osc/plans/active/001-sample.md'), plan);
+    writeFileSync(join(root, '.osc/plans/done/001-sample.md'), plan.replace('active', 'done'));
+
+    const result = validateScaffold(root);
+
+    expect(result.warnings.map((w) => w.code)).toContain('active_plan.duplicated_in_done');
+  });
+
+  it('warns when an active plan slug already has a matching release note', () => {
+    const root = tempRepo();
+    writeFileSync(join(root, '.osc/plans/active/001-sample.md'), plan);
+    writeFileSync(join(root, '.osc/releases/2026-05-12-001-sample.md'), `# Release / Evidence Note
+
+## Summary
+
+Did the sample.
+
+## Traceability
+
+- Plan: .osc/plans/active/001-sample.md
+- PR: #42
+
+## Verification
+
+- npm test -> pass
+
+## Outcome
+
+Shipped.
+`);
+
+    const result = validateScaffold(root);
+
+    expect(result.warnings.map((w) => w.code)).toContain('active_plan.has_release_note');
+  });
+
+
+  it('warns when an active plan is cited by a differently named release note', () => {
+    const root = tempRepo();
+    writeFileSync(join(root, '.osc/plans/active/001-sample.md'), plan);
+    writeFileSync(join(root, '.osc/releases/2026-05-12-bundled-release.md'), `# Release / Evidence Note
+
+## Summary
+
+Did the sample.
+
+## Traceability
+
+- Plan: .osc/plans/active/001-sample.md
+- PR: #42
+
+## Verification
+
+- npm test -> pass
+
+## Outcome
+
+Shipped.
+`);
+
+    const result = validateScaffold(root);
+
+    expect(result.warnings.map((w) => w.code)).toContain('active_plan.cited_by_release_note');
+  });
+
+  it('warns when an evidence receipt is missing required schema or approval fields', () => {
+    const root = tempRepo();
+    writeFileSync(join(root, '.osc/plans/done/001-sample.md'), plan.replace('active', 'done'));
+    mkdirSync(join(root, 'docs/evidence'), { recursive: true });
+    writeFileSync(join(root, 'docs/evidence/2026-05-12-sample.md'), `# Evidence
+
+\`\`\`yaml
+slice: sample
+plan: .osc/plans/done/001-sample.md
+acceptance_gate:
+  status: pass
+\`\`\`
+`);
+
+    const result = validateScaffold(root);
+
+    const codes = result.warnings.map((w) => w.code);
+    expect(codes).toContain('evidence_receipt.missing_schema');
+    expect(codes).toContain('evidence_receipt.missing_approval');
+  });
+
+  it('accepts an evidence receipt with schema and approval status', () => {
+    const root = tempRepo();
+    writeFileSync(join(root, '.osc/plans/done/001-sample.md'), plan.replace('active', 'done'));
+    mkdirSync(join(root, 'docs/evidence'), { recursive: true });
+    writeFileSync(join(root, 'docs/evidence/2026-05-12-sample.md'), `# Evidence
+
+\`\`\`yaml
+schema: open-scaffold.evidence.v1
+slice: sample
+plan: .osc/plans/done/001-sample.md
+acceptance_gate:
+  status: pass
+approval:
+  status: approved
+  approver: maintainer
+\`\`\`
+`);
+
+    const result = validateScaffold(root);
+
+    const codes = result.warnings.map((w) => w.code);
+    expect(codes).not.toContain('evidence_receipt.missing_schema');
+    expect(codes).not.toContain('evidence_receipt.missing_approval');
+  });
+
+  it('warns about stale active plans using configurable threshold', () => {
+    const root = tempRepo();
+    const activePath = join(root, '.osc/plans/active/001-sample.md');
+    writeFileSync(activePath, plan);
+    const oldTime = (Date.now() - 1000 * 60 * 60 * 24 * 90) / 1000;
+    utimesSync(activePath, oldTime, oldTime);
+
+    const result = validateScaffold(root, { staleDays: 30 });
+
+    expect(result.warnings.map((w) => w.code)).toContain('active_plan.stale');
   });
 });

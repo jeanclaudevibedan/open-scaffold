@@ -32,6 +32,8 @@ Weeks later nobody can reconstruct intent, acceptance criteria, verification evi
 
 Open Scaffold fixes that by making the repository the shared memory. Chat, Discord, terminals, GitHub comments, and agent transcripts can help operate the work, but durable truth lives in files and PRs.
 
+For the same idea in three diagrams (problem, loop, system boundary), see [`docs/WHY_OPEN_SCAFFOLD.md`](docs/WHY_OPEN_SCAFFOLD.md).
+
 ---
 
 ## 60-second demo
@@ -178,8 +180,10 @@ The current focus comes from an independent two-lane review (2026-05-12) which f
 
 ## Key docs
 
+- [`docs/WHY_OPEN_SCAFFOLD.md`](docs/WHY_OPEN_SCAFFOLD.md) — visual story: problem, loop, system boundary, fit.
 - [`MISSION.md`](MISSION.md) — product goals, non-goals, and scope changelog.
 - [`ROADMAP.md`](ROADMAP.md) — product direction and milestones.
+- [`docs/COMPARISON.md`](docs/COMPARISON.md) — honest orientation against adjacent AI workflow systems.
 - [`.osc/RULES.md`](.osc/RULES.md) — compact operating rules.
 - [`.osc/plans/WORKFLOW.md`](.osc/plans/WORKFLOW.md) — how plans move through backlog, active, done, and blocked.
 - [`docs/WORKFLOW.md`](docs/WORKFLOW.md) — phase-to-tool guide.
