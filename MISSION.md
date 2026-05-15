@@ -28,6 +28,9 @@ Explicit things this project is NOT trying to do. Legitimate scope discipline st
 One-line dated entries for every scope pivot. Format: `YYYY-MM-DD: <one-line pivot description + link to amendment file if applicable>`. Append entries in chronological order. Never rewrite history here.
 
 <!-- append YYYY-MM-DD entries below this line -->
+- 2026-05-15: closed 019-comparison-page — comparison page shipped in public trust/readiness bundle
+- 2026-05-15: closed 010-product-packaging-release — packaging readiness evidence shipped in public trust/readiness bundle
+- 2026-05-15: closed 007-cli-validation-upgrades — CLI validation upgrades shipped in public trust/readiness bundle
 - 2026-05-15: closed 021-identity-rename-audit — public identity audit completed in bundled adoption path
 - 2026-05-15: closed 016-docs-positioning-compression — first-read positioning compression shipped in bundled adoption path
 - 2026-05-15: closed 008-user-facing-examples — user-facing examples index shipped in bundled adoption path
