@@ -1,5 +1,7 @@
 # Runtime Binding Contract
 
+This is the execution boundary layer. Runtime selection chooses a lane; runtime profiles describe that lane; the binding contract says what an external adapter/coordinator must do with the run packet.
+
 Named harnesses in this contract, including OMC and OMX, are runtime lanes or adapter candidates rather than Open Scaffold core dependencies. Use [`docs/REFERENCE_TRUTH.md`](REFERENCE_TRUTH.md) for public/private/future reference labels.
 
 Open Scaffold core creates bounded run packages. Runtime bindings — execution adapters for a chosen lane — consume those packages and launch outside core. This document defines the contract between the repo-native Open Scaffold package and any coordinator, adapter, harness, agent, or human lane that executes it.
@@ -8,8 +10,7 @@ Open Scaffold core creates bounded run packages. Runtime bindings — execution 
 
 ```text
 Open Scaffold core packages.
-A coordinator decides.
-A binding launches.
+A coordinator/adapter launches outside core.
 A harness or human executes.
 Evidence returns.
 Postflight closes.

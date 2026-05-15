@@ -10,13 +10,26 @@
 
 </div>
 
-Open Scaffold gives solo developers and small teams a lightweight way to keep AI coding work traceable. It stores mission, roadmap, plans, run packets (execution packages), evidence, decisions, and handoff notes in the repo so humans and agents can see what was asked, changed, verified, and approved.
+Open Scaffold gives solo developers and small teams a lightweight way to keep AI coding work traceable. It stores mission, roadmap, plans, run packets, evidence, decisions, and handoff notes in the repo so humans and agents can see what was asked, changed, verified, and approved.
 
 Use it when AI work spans sessions, PRs, agents, or review gates — especially when you need proof without a documentation swamp.
 
-> **What it is:** a repo-native protocol (files, folders, helper scripts, a verification check) that any agent or orchestrator can operate on.
+> **What it is:** a repo-native source-of-truth protocol that packages work for humans, agents, coordinators, and runtime adapters.
 >
-> **What it is not:** an agent runtime, a Discord bot, a daemon, a task database, a model ranker, or a code reviewer. Those live in tools you choose; the scaffold is what they read and write.
+> **What it is not:** an agent runtime, Discord bot, daemon, task database, model ranker, or code reviewer. Those live in tools you choose; the scaffold is what they read and write.
+
+The runtime handoff is intentionally simple:
+
+```text
+User selects runtime
+  -> Open Scaffold reads runtime profile
+  -> Open Scaffold creates the run packet
+  -> Adapter/coordinator launches the actual runtime
+  -> Runtime does the work
+  -> Evidence comes back into Open Scaffold
+```
+
+Plain English: Open Scaffold keeps the work truth in the repo. You choose an agent runtime. Open Scaffold packages the work. A runtime adapter executes it outside core. Evidence comes back. Humans approve.
 
 ---
 
@@ -50,15 +63,15 @@ For a non-recursive version of the same loop, read the [downstream walkthrough](
 
 ## What you get
 
-- **Mission and roadmap** — `MISSION.md` and `ROADMAP.md` keep direction visible.
-- **Plans** — `.osc/plans/` holds small specs with context, goal, constraints, acceptance criteria, verification, and open questions.
-- **Amendments** — scope changes become add-on records instead of silent rewrites.
-- **Run packets** — `.osc/runs/<run_id>/run.json` can bind a plan to a task, branch, lane, surface, and evidence path.
-- **Evidence and releases** — `.osc/releases/` records what shipped, how it was verified, and what follows.
-- **Verification** — `./verify.sh` and `osc` catch missing mission, stale plans, broken amendments, and release/evidence drift.
-- **Agent entry points** — `AGENTS.md` and `CLAUDE.md` tell coding agents how to operate without fresh explanations.
+- **Direction:** `MISSION.md` and `ROADMAP.md` keep intent visible.
+- **Work specs:** `.osc/plans/` holds small, immutable plans with acceptance criteria.
+- **Change history:** amendments record scope changes without rewriting the original plan.
+- **Run packets:** `.osc/runs/<run_id>/run.json` packages a plan for a chosen runtime lane.
+- **Evidence:** `.osc/releases/` records what shipped, how it was verified, and what follows.
+- **Checks:** `./verify.sh` and `osc verify` catch stale state, broken evidence, and plan drift.
+- **Agent entry points:** `AGENTS.md` and `CLAUDE.md` tell coding agents how to operate without fresh explanations.
 
-Short version:
+The loop:
 
 ```text
 Roadmap or issue
@@ -155,7 +168,11 @@ npm run osc -- run .osc/plans/active/my-first-task.md \
   --repo "$PWD"
 ```
 
-For custom runtimes, add a project-local profile in `.osc/runtimes/<id>.json`, then use `--runtime <id>`. See [`docs/RUNTIME_PROFILES.md`](docs/RUNTIME_PROFILES.md), [`docs/RUNTIME_BINDING_CONTRACT.md`](docs/RUNTIME_BINDING_CONTRACT.md), and [`docs/examples/runtime-binding-dry-run.mjs`](docs/examples/runtime-binding-dry-run.mjs).
+For custom runtimes, add a project-local profile in `.osc/runtimes/<id>.json`, then use `--runtime <id>`. Read this in layers:
+
+1. [`docs/RUNTIME_SELECTION.md`](docs/RUNTIME_SELECTION.md) — choosing `--runtime` and `--workflow`;
+2. [`docs/RUNTIME_PROFILES.md`](docs/RUNTIME_PROFILES.md) — built-in and project-local runtime profiles;
+3. [`docs/RUNTIME_BINDING_CONTRACT.md`](docs/RUNTIME_BINDING_CONTRACT.md) — what an adapter/coordinator must do after the packet exists.
 
 ---
 
@@ -188,7 +205,9 @@ It is overkill for one-off scripts, disposable prototypes, or tasks that fit in 
 
 ## Where the roadmap is going
 
-The current focus comes from an independent two-lane review (2026-05-12) which found the core thesis valid but the adoption gap real. Public roadmap priorities are: undeniable examples, adapter proof, packaging, and docs compression — not turning Open Scaffold core into an agent runtime. See the [review addendum](ROADMAP.md#independent-review-addendum--make-the-useful-parts-undeniable) for the milestone list.
+The current product direction is: make the source-of-truth loop undeniable, then let external runtimes plug into it through profiles and adapters. Open Scaffold now supports runtime selection and runtime profiles, but core still does not install, spawn, supervise, or benchmark runtimes.
+
+Near-term roadmap work should improve clarity, adapter evidence, and validation. Real runtime launching, hosted registries, marketplace behavior, and model/task recommendations remain future hypotheses until separately designed and proven. See the [roadmap](ROADMAP.md) for the current milestone list.
 
 ---
 
