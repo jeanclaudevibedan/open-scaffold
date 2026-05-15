@@ -28,6 +28,7 @@ Explicit things this project is NOT trying to do. Legitimate scope discipline st
 One-line dated entries for every scope pivot. Format: `YYYY-MM-DD: <one-line pivot description + link to amendment file if applicable>`. Append entries in chronological order. Never rewrite history here.
 
 <!-- append YYYY-MM-DD entries below this line -->
+- 2026-05-15: closed 032-adapter-conformance-fixture — adapter conformance fixture shipped
 - 2026-05-15: amend 020-reference-truth-audit to permit the mechanical close stamp required by close.sh — see .osc/plans/done/020-reference-truth-audit-amendment-1.md
 - 2026-05-15: closed 020-reference-truth-audit — reference truth labels shipped for public/private/tool references
 - 2026-05-15: closed 024-roadmap-scope-discipline — roadmap scope discipline applied; public planned milestones capped and speculative compliance/hashgraph exploration deferred
