@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -86,6 +86,21 @@ describe('fake/local adapter conformance fixture', () => {
     }
   });
 
+  it('refuses evidence paths that escape the repository root through symlinks', () => {
+    const { root, path } = tempRunPacket({ artifacts: { evidence: ['.osc/runs/link/evidence.md'] } });
+    const outside = mkdtempSync(join(tmpdir(), 'osc-conformance-outside-'));
+    symlinkSync(outside, join(root, '.osc/runs/link'), 'dir');
+
+    try {
+      execFileSync('node', [adapter, path], { encoding: 'utf8', stdio: 'pipe' });
+      throw new Error('expected fake adapter to fail');
+    } catch (error: any) {
+      expect(error.status).toBe(1);
+      expect(String(error.stderr ?? '')).toContain('artifact path must stay under runtime.repoPath');
+    }
+    expect(existsSync(join(outside, 'evidence.md'))).toBe(false);
+  });
+
   it('refuses unsupported executor lanes', () => {
     const { path } = tempRunPacket({ executor: { lane: 'weird-lane', harnessSkill: null, spawning: false } });
 
@@ -119,6 +134,24 @@ describe('fake/local adapter conformance fixture', () => {
     } catch (error: any) {
       expect(error.status).toBe(1);
       expect(String(error.stderr ?? '')).toContain('commitPolicy must be a non-empty string');
+    }
+  });
+
+  it('refuses packets that still contain blocking open questions', () => {
+    const { path } = tempRunPacket({
+      plan: {
+        path: '.osc/plans/active/001-demo.md',
+        goal: 'Prove adapter conformance.',
+        openQuestions: ['BLOCKING: pick an execution lane first'],
+      },
+    });
+
+    try {
+      execFileSync('node', [adapter, path], { encoding: 'utf8', stdio: 'pipe' });
+      throw new Error('expected fake adapter to fail');
+    } catch (error: any) {
+      expect(error.status).toBe(1);
+      expect(String(error.stderr ?? '')).toContain('plan.openQuestions must not contain blocking questions before dispatch');
     }
   });
 });

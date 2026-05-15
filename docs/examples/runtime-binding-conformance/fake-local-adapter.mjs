@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
 
 const SUPPORTED_LANES = new Map([
@@ -44,18 +44,46 @@ function relativeFromRepo(repoPath, path) {
   return rel === '' ? '.' : rel;
 }
 
-function safeArtifactPath(repoPath, artifactPath) {
+function assertPathInside(root, path, message) {
+  const rel = relative(root, path);
+  if (rel === '' || rel.startsWith('..') || isAbsolute(rel)) {
+    fail(message);
+  }
+}
+
+function prepareSafeArtifactPath(repoPath, artifactPath) {
   const raw = requireString(artifactPath, 'artifacts.evidence[0]');
   if (isAbsolute(raw)) {
     fail('artifact path must stay under runtime.repoPath');
   }
   const repoRoot = resolve(repoPath);
   const absolutePath = resolve(repoRoot, raw);
-  const rel = relative(repoRoot, absolutePath);
-  if (rel === '' || rel.startsWith('..') || isAbsolute(rel)) {
-    fail('artifact path must stay under runtime.repoPath');
-  }
+  assertPathInside(repoRoot, absolutePath, 'artifact path must stay under runtime.repoPath');
+
+  mkdirSync(dirname(absolutePath), { recursive: true });
+  const realRepoRoot = realpathSync.native(repoRoot);
+  const realArtifactDir = realpathSync.native(dirname(absolutePath));
+  assertPathInside(realRepoRoot, realArtifactDir, 'artifact path must stay under runtime.repoPath');
+
   return { raw, absolutePath };
+}
+
+function hasBlockingOpenQuestions(openQuestions) {
+  if (!Array.isArray(openQuestions)) {
+    return false;
+  }
+  return openQuestions.some((question) => {
+    if (typeof question === 'string') {
+      return /\bblocking\b/i.test(question);
+    }
+    if (question && typeof question === 'object') {
+      return question.blocking === true
+        || question.required === true
+        || /\bblocking\b/i.test(String(question.status ?? ''))
+        || /\bblocking\b/i.test(String(question.severity ?? ''));
+    }
+    return false;
+  });
 }
 
 function normalizeLane(lane) {
@@ -105,18 +133,20 @@ if (manifest?.packageQuality?.executable !== true) {
 if (!Array.isArray(manifest?.packageQuality?.blockers) || manifest.packageQuality.blockers.length > 0) {
   fail('packageQuality.blockers must be an empty array before dispatch');
 }
+if (hasBlockingOpenQuestions(manifest?.plan?.openQuestions)) {
+  fail('plan.openQuestions must not contain blocking questions before dispatch');
+}
 if (manifest?.executor?.spawning !== false) {
   fail('executor.spawning must be false; Open Scaffold core packages work while adapters own launch behavior');
 }
 
 const receiptPath = outPath ?? resolve(dirname(runPacketPath), 'dispatch-receipt.json');
 const fallbackEvidencePath = `.osc/runs/${runId}/fake-local-evidence.md`;
-const { raw: evidencePath, absolutePath: evidenceAbsolutePath } = safeArtifactPath(
+const { raw: evidencePath, absolutePath: evidenceAbsolutePath } = prepareSafeArtifactPath(
   repoPath,
   manifest?.artifacts?.evidence?.[0] ?? fallbackEvidencePath,
 );
 mkdirSync(dirname(receiptPath), { recursive: true });
-mkdirSync(dirname(evidenceAbsolutePath), { recursive: true });
 
 const evidence = `# Fake/local adapter evidence\n\nRun ID: ${runId}\nTask ID: ${manifest.taskId ?? '(none)'}\nPlan: ${planPath}\nExecutor lane: ${lane}\nHarness skill: ${skill ?? '(none)'}\n\nThis evidence was written by the fake/local adapter conformance fixture.\nNo runtime was launched. No network access or credentials were required.\n`;
 writeFileSync(evidenceAbsolutePath, evidence);
