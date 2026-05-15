@@ -180,6 +180,33 @@ describe('fake/local adapter conformance fixture', () => {
     }
   });
 
+  it('refuses run packets outside the declared repository path', () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), 'osc-conformance-repo-'));
+    const runRoot = mkdtempSync(join(tmpdir(), 'osc-conformance-run-'));
+    mkdirSync(join(runRoot, '.osc/runs/demo'), { recursive: true });
+    const manifest = {
+      schemaVersion: 'open-scaffold.run.v1',
+      runId: 'demo-run',
+      taskId: 'task:demo',
+      plan: { path: '.osc/plans/active/001-demo.md', goal: 'Prove adapter conformance.' },
+      packageQuality: { executable: true, blockers: [] },
+      executor: { lane: 'plain-agent', harnessSkill: null, spawning: false },
+      runtime: { repoPath: repoRoot, worktreePath: repoRoot, branch: 'main' },
+      artifacts: { evidence: ['.osc/runs/demo/evidence.md'] },
+      commitPolicy: 'adapter fixture may write receipt only; no commit/push',
+    };
+    const path = join(runRoot, '.osc/runs/demo/run.json');
+    writeFileSync(path, JSON.stringify(manifest, null, 2));
+
+    try {
+      execFileSync('node', [adapter, path], { encoding: 'utf8', stdio: 'pipe' });
+      throw new Error('expected fake adapter to fail');
+    } catch (error: any) {
+      expect(error.status).toBe(1);
+      expect(String(error.stderr ?? '')).toContain('run packet path must stay under runtime.repoPath');
+    }
+  });
+
   it('refuses packets that still contain blocking open questions', () => {
     const { path } = tempRunPacket({
       plan: {

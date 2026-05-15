@@ -40,7 +40,11 @@ function parseArgs(argv) {
 }
 
 function relativeFromRepo(repoPath, path) {
-  const rel = relative(resolve(repoPath), resolve(path));
+  const repoRoot = resolve(repoPath);
+  const rel = relative(repoRoot, resolve(path));
+  if (rel.startsWith('..') || isAbsolute(rel)) {
+    fail('run packet path must stay under runtime.repoPath');
+  }
   return rel === '' ? '.' : rel;
 }
 
