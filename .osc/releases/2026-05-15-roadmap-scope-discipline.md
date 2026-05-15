@@ -8,7 +8,7 @@ The public roadmap now includes an explicit visibility rule: keep at most five p
 
 ## Traceability
 
-- Plan: `.osc/plans/active/024-roadmap-scope-discipline.md` before close; `.osc/plans/done/024-roadmap-scope-discipline.md` after close.
+- Plan: `.osc/plans/backlog/024-roadmap-scope-discipline.md` before activation; `.osc/plans/done/024-roadmap-scope-discipline.md` after close.
 - Research draft: `.osc/research/2026-05-14-roadmap-amendment-draft.md`.
 - Issue draft: `.osc/research/2026-05-14-issues/024-roadmap-scope-discipline-issue.md`.
 - Branch: `docs/roadmap-scope-discipline`.
