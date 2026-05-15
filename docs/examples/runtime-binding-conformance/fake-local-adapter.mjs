@@ -46,7 +46,7 @@ function relativeFromRepo(repoPath, path) {
 
 function assertPathInside(root, path, message) {
   const rel = relative(root, path);
-  if (rel === '' || rel.startsWith('..') || isAbsolute(rel)) {
+  if (rel.startsWith('..') || isAbsolute(rel)) {
     fail(message);
   }
 }
@@ -80,6 +80,9 @@ function prepareSafeArtifactPath(repoPath, artifactPath) {
   }
   const repoRoot = resolve(repoPath);
   const absolutePath = resolve(repoRoot, raw);
+  if (relative(repoRoot, absolutePath) === '') {
+    fail('artifact path must name a file under runtime.repoPath');
+  }
   assertPathInside(repoRoot, absolutePath, 'artifact path must stay under runtime.repoPath');
 
   const realRepoRoot = realpathSync.native(repoRoot);

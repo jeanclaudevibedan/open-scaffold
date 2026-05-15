@@ -86,6 +86,17 @@ describe('fake/local adapter conformance fixture', () => {
     }
   });
 
+  it('allows evidence files directly under the repository root', () => {
+    const { root, path } = tempRunPacket({ artifacts: { evidence: ['evidence.md'] } });
+    const receiptPath = join(root, '.osc/runs/demo/dispatch-receipt.json');
+
+    execFileSync('node', [adapter, path, '--out', receiptPath], { encoding: 'utf8' });
+    const receipt = JSON.parse(readFileSync(receiptPath, 'utf8'));
+
+    expect(receipt.artifacts).toEqual(['evidence.md']);
+    expect(existsSync(join(root, 'evidence.md'))).toBe(true);
+  });
+
   it('refuses evidence paths that escape the repository root through symlinked directories', () => {
     const { root, path } = tempRunPacket({ artifacts: { evidence: ['.osc/runs/link/evidence.md'] } });
     const outside = mkdtempSync(join(tmpdir(), 'osc-conformance-outside-'));
