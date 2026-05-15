@@ -53,7 +53,7 @@ function assertPathInside(root, path, message) {
 
 function assertExistingParentsInsideRepo(lexicalRepoRoot, realRepoRoot, targetDir) {
   const rel = relative(lexicalRepoRoot, targetDir);
-  const parts = rel.split('/').filter(Boolean);
+  const parts = rel.split(/[\\/]+/).filter(Boolean);
   let current = lexicalRepoRoot;
   for (const part of parts) {
     current = resolve(current, part);
