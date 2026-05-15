@@ -8,7 +8,8 @@ The public roadmap now includes an explicit visibility rule: keep at most five p
 
 ## Traceability
 
-- Plan: `.osc/plans/backlog/024-roadmap-scope-discipline.md` before activation; `.osc/plans/done/024-roadmap-scope-discipline.md` after close.
+- Plan: `.osc/plans/done/024-roadmap-scope-discipline.md`.
+- Lifecycle note: this PR promoted the plan from backlog, executed the roadmap cleanup, and closed it before owner review.
 - Source rationale: 2026-05-14 external review ingest, summarized in the plan context and this release note.
 - Branch: `docs/roadmap-scope-discipline`.
 - Kanban: `t_48170d97`.
