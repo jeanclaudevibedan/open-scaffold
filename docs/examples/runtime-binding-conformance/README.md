@@ -17,7 +17,7 @@ node docs/examples/runtime-binding-conformance/fake-local-adapter.mjs \
 Expected result:
 
 - exits `0` for an executable package with no blockers and `executor.spawning: false`;
-- writes `dispatch-receipt.json` with `schemaVersion: open-scaffold.dispatch-receipt.v1`;
+- writes `dispatch-receipt.json` with `schema_version: open-scaffold.dispatch-receipt.v1` and the minimum fields from `docs/SPAWNING_BOUNDARY.md`;
 - writes a deterministic evidence markdown file at the first `artifacts.evidence[]` path, or a default fake-local evidence path;
 - states that no runtime was launched, no credentials were read, and no network was required.
 

@@ -28,7 +28,7 @@ function tempRunPacket(overrides: Record<string, unknown> = {}) {
 }
 
 describe('fake/local adapter conformance fixture', () => {
-  it('consumes a run packet and writes a deterministic dispatch receipt without launching a runtime', () => {
+  it('consumes a run packet and writes a documented dispatch receipt without launching a runtime', () => {
     const { root, path } = tempRunPacket();
     const receiptPath = join(root, '.osc/runs/demo/dispatch-receipt.json');
 
@@ -37,13 +37,28 @@ describe('fake/local adapter conformance fixture', () => {
 
     expect(output).toContain('Fake/local adapter conformance complete');
     expect(receipt).toMatchObject({
-      schemaVersion: 'open-scaffold.dispatch-receipt.v1',
-      adapter: { id: 'fake-local', kind: 'conformance-fixture' },
-      run: { runId: 'demo-run', taskId: 'task:demo', lane: 'plain-agent' },
-      boundary: { coreSpawnedRuntime: false, networkRequired: false, credentialsRequired: false },
-      result: { status: 'completed', evidencePath: '.osc/runs/demo/evidence.md' },
+      schema_version: 'open-scaffold.dispatch-receipt.v1',
+      run_id: 'demo-run',
+      task_id: 'task:demo',
+      adapter_id: 'fake-local',
+      runtime_backend: 'none',
+      invoked_by: 'fake-local-adapter',
+      invoked_at: '1970-01-01T00:00:00.000Z',
+      working_directory: root,
+      worktree_path: root,
+      branch: 'main',
+      run_packet_path: '.osc/runs/demo/run.json',
+      prompt_or_package_path: null,
+      spawned: false,
+      spawn_command_redacted: null,
+      runtime_handle: null,
+      logs: [],
+      artifacts: ['.osc/runs/demo/evidence.md'],
+      status: 'dry_run',
+      failure: { code: null, message: null },
+      fixture: { kind: 'conformance-fixture', lane: 'plain-agent', evidence_path: '.osc/runs/demo/evidence.md' },
     });
-    expect(typeof receipt.receiptId).toBe('string');
+    expect(typeof receipt.receipt_id).toBe('string');
     expect(existsSync(join(root, '.osc/runs/demo/evidence.md'))).toBe(true);
   });
 
@@ -68,6 +83,30 @@ describe('fake/local adapter conformance fixture', () => {
     } catch (error: any) {
       expect(error.status).toBe(1);
       expect(String(error.stderr ?? '')).toContain('artifact path must stay under runtime.repoPath');
+    }
+  });
+
+  it('refuses unsupported executor lanes', () => {
+    const { path } = tempRunPacket({ executor: { lane: 'weird-lane', harnessSkill: null, spawning: false } });
+
+    try {
+      execFileSync('node', [adapter, path], { encoding: 'utf8', stdio: 'pipe' });
+      throw new Error('expected fake adapter to fail');
+    } catch (error: any) {
+      expect(error.status).toBe(1);
+      expect(String(error.stderr ?? '')).toContain('unsupported executor.lane weird-lane');
+    }
+  });
+
+  it('refuses runtime lanes that omit their required harness skill', () => {
+    const { path } = tempRunPacket({ executor: { lane: 'omx-codex', harnessSkill: null, spawning: false } });
+
+    try {
+      execFileSync('node', [adapter, path], { encoding: 'utf8', stdio: 'pipe' });
+      throw new Error('expected fake adapter to fail');
+    } catch (error: any) {
+      expect(error.status).toBe(1);
+      expect(String(error.stderr ?? '')).toContain('executor.harnessSkill is required for lane omx-codex');
     }
   });
 });
