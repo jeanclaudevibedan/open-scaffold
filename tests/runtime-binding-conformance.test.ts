@@ -205,6 +205,25 @@ describe('fake/local adapter conformance fixture', () => {
       expect(error.status).toBe(1);
       expect(String(error.stderr ?? '')).toContain('run packet path must stay under runtime.repoPath');
     }
+    expect(existsSync(join(repoRoot, '.osc/runs/demo/evidence.md'))).toBe(false);
+  });
+
+  it('refuses symlinked run packets that resolve outside the declared repository path', () => {
+    const { root, path } = tempRunPacket();
+    const outside = mkdtempSync(join(tmpdir(), 'osc-conformance-outside-run-'));
+    const outsideRunPacket = join(outside, 'run.json');
+    const symlinkedRunPacket = join(root, '.osc/runs/demo/symlinked-run.json');
+    writeFileSync(outsideRunPacket, readFileSync(path, 'utf8'));
+    symlinkSync(outsideRunPacket, symlinkedRunPacket, 'file');
+
+    try {
+      execFileSync('node', [adapter, symlinkedRunPacket], { encoding: 'utf8', stdio: 'pipe' });
+      throw new Error('expected fake adapter to fail');
+    } catch (error: any) {
+      expect(error.status).toBe(1);
+      expect(String(error.stderr ?? '')).toContain('run packet path must stay under runtime.repoPath');
+    }
+    expect(existsSync(join(root, '.osc/runs/demo/evidence.md'))).toBe(false);
   });
 
   it('refuses packets that still contain blocking open questions', () => {

@@ -45,6 +45,9 @@ function relativeFromRepo(repoPath, path) {
   if (rel.startsWith('..') || isAbsolute(rel)) {
     fail('run packet path must stay under runtime.repoPath');
   }
+  const realRepoRoot = realpathSync.native(repoRoot);
+  const realPath = realpathSync.native(path);
+  assertPathInside(realRepoRoot, realPath, 'run packet path must stay under runtime.repoPath');
   return rel === '' ? '.' : rel;
 }
 
@@ -169,6 +172,7 @@ const commitPolicy = requireString(manifest.commitPolicy, 'commitPolicy');
 const worktreePath = manifest?.runtime?.worktreePath ?? null;
 const branch = manifest?.runtime?.branch ?? null;
 const { lane, skill } = validateLaneAndHarness(manifest);
+const runPacketRelativePath = relativeFromRepo(repoPath, runPacketPath);
 
 if (manifest?.packageQuality?.executable !== true) {
   fail('packageQuality.executable must be true before dispatch');
@@ -206,7 +210,7 @@ const receipt = {
   working_directory: repoPath,
   worktree_path: worktreePath,
   branch,
-  run_packet_path: relativeFromRepo(repoPath, runPacketPath),
+  run_packet_path: runPacketRelativePath,
   prompt_or_package_path: null,
   authority: {
     sandbox_policy: ['write_artifacts_only', 'commit_forbidden', 'push_forbidden', 'merge_forbidden', 'human_approval_required'],
