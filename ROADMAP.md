@@ -188,6 +188,12 @@ Acceptance criteria:
 
 The v1 baseline proves the model. V2 should make it harder for agents to drift, easier for humans to adopt, and cleaner for runtime harnesses to bind without contaminating core.
 
+### Public roadmap visibility rule
+
+Status: adopted via `.osc/plans/done/024-roadmap-scope-discipline.md`, following the 2026-05-14 external review ingest.
+
+Public roadmap commitments should stay legible: keep at most five planned/backlog milestones visible ahead of the current focus. Completed milestones remain for provenance. Farther speculative ideas belong in the parking lot, research notes, or future ADRs until the owner explicitly promotes them.
+
 ### Milestone 7 — CLI validation upgrades
 
 Status: backlog via `.osc/plans/backlog/007-cli-validation-upgrades.md`.
@@ -228,7 +234,7 @@ Deliverables:
 
 ### Milestone 10 — Product packaging and releases
 
-Status: backlog via `.osc/plans/backlog/010-product-packaging-release.md`; `v0.3.0` baseline release evidence exists at `.osc/releases/2026-05-12-v0.3.0-runtime-neutral-baseline.md`.
+Status: partially complete / deferred; `v0.3.0` baseline release evidence exists at `.osc/releases/2026-05-12-v0.3.0-runtime-neutral-baseline.md`, while remaining packaging polish is parked until the next adoption signal.
 
 Goal: package the v1 protocol baseline as a public product release.
 
@@ -284,7 +290,7 @@ Deliverables:
 
 ### Milestone 14 — CLI and packaging UX
 
-Status: backlog via `.osc/plans/backlog/015-cli-packaging-ux.md`.
+Status: complete for the current tiered-init slice via `.osc/plans/done/015-cli-packaging-ux.md` and `.osc/releases/2026-05-14-tiered-scaffold-init.md`; further packaging/CLI polish returns through a fresh plan only after a new adoption signal.
 
 Goal: reduce day-one friction with first-class `osc` commands and an install path that does not require users to reason about shell helpers first.
 
@@ -309,9 +315,9 @@ Deliverables:
 
 ### Milestone 16 — Runtime strategy and native-runtime exploration
 
-Status: complete via `.osc/plans/done/017-runtime-strategy-native-runtime-exploration.md`, PR #17 research synthesis, PR #18 spawning boundary, and `.osc/releases/2026-05-14-runtime-strategy-boundary.md`.
+Status: complete / deferred via `.osc/plans/done/017-runtime-strategy-native-runtime-exploration.md`, PR #17 research synthesis, PR #18 spawning boundary, `.osc/releases/2026-05-14-runtime-strategy-boundary.md`, and the 2026-05-14 external review ingest. Compliance-grade agentic OS and hashgraph-style regulated-SDLC expansion are deferred from the public near-term roadmap.
 
-Goal: decide, with evidence, whether Open Scaffold should remain a runtime-neutral launch checklist/dispatch contract/black-box recorder, add a thin opt-in `osc spawn` adapter invoker, or eventually grow a native runtime as a distinct product layer.
+Goal: preserve the current runtime boundary decision without advertising speculative enterprise/compliance expansion as a near-term product commitment.
 
 Current stance:
 
@@ -329,20 +335,22 @@ Discovery tracks:
 5. **MVP options** — no-spawn, thin `osc spawn`, adapter package, local daemon, hosted coordinator, or full native runtime.
 6. **Adoption impact** — whether spawning makes Open Scaffold meaningfully easier to try, or whether it confuses the runtime-neutral promise.
 
-Candidate outcomes:
+Deferred research hypotheses:
 
-- Keep core non-spawning and improve docs/examples only.
-- Add an explicit thin `osc spawn --adapter <name>` that invokes configured local commands and records dispatch receipts.
-- Move runtime launching into official adapter packages such as `open-scaffold-omx` / `open-scaffold-omc`.
-- Create a separate Open Scaffold Runtime product that consumes `.osc` packets without bloating core.
-- Decide that native runtime ownership is strategically wrong and document why.
+- Thin `osc spawn --adapter <name>` invocation.
+- Official adapter packages such as `open-scaffold-omx` / `open-scaffold-omc`.
+- Separate Open Scaffold Runtime product.
+- Compliance-grade agentic OS / regulated-SDLC positioning.
+- Hashgraph-style or tamper-evident event graph for task/run/evidence/protocol evolution.
+
+These remain research hypotheses, not planned product scope. Rationale: scope discipline from the 2026-05-14 external review ingest; public v0.3/v0.4 roadmap should make adoption and evidence mechanics undeniable before advertising speculative enterprise expansion.
 
 Acceptance direction:
 
 - No implementation before a written decision.
 - No hidden runtime/provider coupling in core.
 - Any prototype starts with a fake/local adapter and dispatch receipt, not real autonomous mutation.
-- The final decision must state what Open Scaffold wants to be in one sentence.
+- Any compliance-grade OS/hashgraph exploration must be reopened through an explicit ADR/plan before returning to the public near-term roadmap.
 
 ### Milestone 17 — Project wiki knowledge seed
 
@@ -368,6 +376,7 @@ Acceptance criteria:
 
 ## Parking lot
 
+- Deferred compliance-grade agentic OS / hashgraph-style regulated-SDLC exploration; reopen only through an explicit ADR/plan.
 - MCP bridge for structured harness dispatch/status/artifact retrieval.
 - Repository-local task database option for users without Hermes Kanban/GitHub Issues.
 - Visual dashboard beyond Discord posts.
