@@ -167,6 +167,30 @@ describe('osc init CLI', () => {
     expect(manifest.executor).toMatchObject({ lane: 'omx-codex', harnessSkill: '$custom', spawning: false });
   }, 15_000);
 
+  it('honors explicit null workflow mappings as supported workflows without inferred harness skills', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    const planPath = writeRuntimeSelectionPlan(target, 'Demo null workflow mapping.');
+    mkdirSync(join(target, '.osc/runtimes'), { recursive: true });
+    writeFileSync(join(target, '.osc/runtimes/no-harness.json'), JSON.stringify({
+      schemaVersion: 'open-scaffold.runtime-profile.v1',
+      id: 'no-harness',
+      displayName: 'No Harness',
+      lane: 'plain-agent',
+      status: 'user-defined',
+      description: 'Supports plan workflow without inferred harness skill.',
+      workflows: { plan: null },
+      launch: { spawning: false },
+    }, null, 2));
+
+    execFileSync(tsx, [cli, 'run', planPath, '--runtime', 'no-harness', '--workflow', 'plan', '--repo', target], { cwd: target, encoding: 'utf8' });
+    const runsDir = join(target, '.osc/runs');
+    const runId = readdirSync(runsDir).sort().at(-1);
+    const manifest = JSON.parse(readFileSync(join(runsDir, runId!, 'run.json'), 'utf8'));
+    expect(manifest.runtimeSelection).toMatchObject({ runtime: 'no-harness', workflow: 'plan', profileId: 'no-harness', profileSource: 'project' });
+    expect(manifest.executor).toMatchObject({ lane: 'plain-agent', harnessSkill: null, spawning: false });
+  }, 15_000);
+
   it('lists and shows runtime profiles with source labels', () => {
     const target = tempTarget();
     execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
@@ -293,6 +317,27 @@ describe('osc init CLI', () => {
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('install.auto must be false');
     expect(result.stderr).toContain('launch.spawning must be false');
+  }, 15_000);
+
+  it('rejects non-object install and launch blocks in runtime profiles', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    mkdirSync(join(target, '.osc/runtimes'), { recursive: true });
+    writeFileSync(join(target, '.osc/runtimes/bad-blocks.json'), JSON.stringify({
+      schemaVersion: 'open-scaffold.runtime-profile.v1',
+      id: 'bad-blocks',
+      displayName: 'Bad Blocks',
+      lane: 'plain-agent',
+      status: 'user-defined',
+      description: 'Invalid install and launch blocks.',
+      install: 'portal',
+      launch: [],
+    }, null, 2));
+
+    const result = spawnSync(tsx, [cli, 'runtimes', 'show', 'bad-blocks'], { cwd: target, encoding: 'utf8' });
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('install must be an object');
+    expect(result.stderr).toContain('launch must be an object');
   }, 15_000);
 
   it('rejects empty workflow command tokens in runtime profiles', () => {

@@ -238,8 +238,14 @@ export function validateRuntimeProfile(value: unknown): { ok: true; profile: Run
     }
   }
 
+  if (value.install !== undefined && !isRecord(value.install)) {
+    errors.push('install must be an object');
+  }
   if (isRecord(value.install) && value.install.auto !== undefined && value.install.auto !== false) {
     errors.push('install.auto must be false; Open Scaffold core does not execute runtime installers in v0');
+  }
+  if (value.launch !== undefined && !isRecord(value.launch)) {
+    errors.push('launch must be an object');
   }
   if (isRecord(value.launch) && value.launch.spawning !== undefined && value.launch.spawning !== false) {
     errors.push('launch.spawning must be false; Open Scaffold core does not spawn runtimes in v0');

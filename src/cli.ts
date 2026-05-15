@@ -100,13 +100,16 @@ function applyRuntimeSelection(options: RunArtifactOptions, root: string): void 
   }
 
   if (options.workflow) {
-    const expectedHarnessSkill = profile.workflows?.[options.workflow];
-    if (expectedHarnessSkill) {
+    const hasWorkflowMapping = Boolean(profile.workflows && Object.prototype.hasOwnProperty.call(profile.workflows, options.workflow));
+    const expectedHarnessSkill = hasWorkflowMapping ? profile.workflows?.[options.workflow] : undefined;
+    if (typeof expectedHarnessSkill === 'string') {
       if (options.harnessSkill && options.harnessSkill !== expectedHarnessSkill) {
         console.error(`--runtime ${options.runtime} with --workflow ${options.workflow} requires --harness-skill ${expectedHarnessSkill}, got ${options.harnessSkill}`);
         process.exit(2);
       }
       options.harnessSkill = expectedHarnessSkill;
+    } else if (hasWorkflowMapping) {
+      // Explicit null mapping means the workflow is supported but has no inferred harness skill.
     } else if (profile.defaults?.harnessSkill && options.workflow === profile.defaults.workflow && !options.harnessSkill) {
       options.harnessSkill = profile.defaults.harnessSkill;
     } else if (profile.defaults?.harnessSkill && !options.harnessSkill) {
