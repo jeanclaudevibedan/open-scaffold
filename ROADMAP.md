@@ -229,6 +229,7 @@ Goal: align OMC/OMX bindings with the public runtime binding contract while keep
 Deliverables:
 
 - Add a core runtime-selection surface for `omc` / `omx` presets that records executor lane and workflow in the run packet.
+- Promote runtime selection into schema-backed runtime profiles, including built-in OMC/OMX/plain/human/custom profiles and project-local `.osc/runtimes/*.json` custom profiles.
 - Keep real OMC/OMX launch behavior in external adapters or coordinators, not core.
 - Ensure adapter evidence returns to `.osc` run/release conventions.
 

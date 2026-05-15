@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
@@ -112,7 +112,7 @@ describe('osc init CLI', () => {
     expect(runId).toBeTruthy();
     const manifest = JSON.parse(readFileSync(join(runsDir, runId!, 'run.json'), 'utf8'));
 
-    expect(manifest.runtimeSelection).toMatchObject({ runtime: 'omx', workflow: 'plan' });
+    expect(manifest.runtimeSelection).toMatchObject({ runtime: 'omx', workflow: 'plan', profileId: 'omx', profileSource: 'builtin' });
     expect(manifest.executor).toMatchObject({ lane: 'omx-codex', harnessSkill: '$ralplan', spawning: false });
   }, 15_000);
 
@@ -128,7 +128,7 @@ describe('osc init CLI', () => {
     expect(runId).toBeTruthy();
     const manifest = JSON.parse(readFileSync(join(runsDir, runId!, 'run.json'), 'utf8'));
 
-    expect(manifest.runtimeSelection).toMatchObject({ runtime: 'omx', workflow: 'plan' });
+    expect(manifest.runtimeSelection).toMatchObject({ runtime: 'omx', workflow: 'plan', profileId: 'omx', profileSource: 'builtin' });
     expect(manifest.executor).toMatchObject({ lane: 'omx-codex', harnessSkill: '$ralplan', spawning: false });
   }, 15_000);
 
@@ -145,6 +145,95 @@ describe('osc init CLI', () => {
 
     expect(result.status).toBe(2);
     expect(result.stderr).toContain('--runtime omx with --workflow plan requires --harness-skill $ralplan');
+  }, 15_000);
+
+  it('lists and shows runtime profiles with source labels', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+
+    const list = execFileSync(tsx, [cli, 'runtimes', 'list'], { cwd: target, encoding: 'utf8' });
+    expect(list).toContain('omx\tbuiltin\tomx-codex\tadapter-candidate');
+
+    const shown = JSON.parse(execFileSync(tsx, [cli, 'runtimes', 'show', 'omx'], { cwd: target, encoding: 'utf8' }));
+    expect(shown).toMatchObject({ id: 'omx', source: 'builtin', lane: 'omx-codex' });
+  }, 15_000);
+
+  it('uses a project-local runtime profile in run packets', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    const planPath = writeRuntimeSelectionPlan(target, 'Demo custom runtime profile.');
+    mkdirSync(join(target, '.osc/runtimes'), { recursive: true });
+    writeFileSync(join(target, '.osc/runtimes/review-bot.json'), JSON.stringify({
+      schemaVersion: 'open-scaffold.runtime-profile.v1',
+      id: 'review-bot',
+      displayName: 'Review Bot',
+      lane: 'plain-agent',
+      status: 'user-defined',
+      description: 'Project-local review bot profile.',
+      workflows: { plan: 'review-bot plan' },
+      defaults: { workflow: 'plan', harnessSkill: 'review-bot plan' },
+      install: { humanHint: 'Install through the project developer portal.', auto: false },
+      launch: { owner: 'external-adapter', commandTemplate: 'review-bot run <run.json>', spawning: false },
+      evidence: { receiptSchema: 'open-scaffold.dispatch-receipt.v1' },
+    }, null, 2));
+
+    execFileSync(tsx, [cli, 'run', planPath, '--runtime', 'review-bot', '--repo', target], { cwd: target, encoding: 'utf8' });
+    const runsDir = join(target, '.osc/runs');
+    const runId = readdirSync(runsDir).sort().at(-1);
+    const manifest = JSON.parse(readFileSync(join(runsDir, runId!, 'run.json'), 'utf8'));
+
+    expect(manifest.runtimeSelection).toMatchObject({ runtime: 'review-bot', workflow: 'plan', profileId: 'review-bot', profileSource: 'project' });
+    expect(manifest.executor).toMatchObject({ lane: 'plain-agent', harnessSkill: 'review-bot plan', spawning: false });
+  }, 15_000);
+
+  it('rejects project profiles that override reserved built-in ids', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    mkdirSync(join(target, '.osc/runtimes'), { recursive: true });
+    writeFileSync(join(target, '.osc/runtimes/omx.json'), JSON.stringify({
+      schemaVersion: 'open-scaffold.runtime-profile.v1',
+      id: 'omx',
+      displayName: 'Fake OMX',
+      lane: 'custom',
+      status: 'user-defined',
+      description: 'Should not override built-in OMX.',
+      launch: { spawning: false },
+    }, null, 2));
+
+    const result = spawnSync(tsx, [cli, 'runtimes', 'list'], { cwd: target, encoding: 'utf8' });
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('uses reserved built-in id: omx');
+  }, 15_000);
+
+  it('rejects runtime profiles that try to enable spawning or installer execution', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    mkdirSync(join(target, '.osc/runtimes'), { recursive: true });
+    writeFileSync(join(target, '.osc/runtimes/spawner.json'), JSON.stringify({
+      schemaVersion: 'open-scaffold.runtime-profile.v1',
+      id: 'spawner',
+      displayName: 'Spawner',
+      lane: 'custom',
+      status: 'user-defined',
+      description: 'Unsafe profile.',
+      install: { auto: true },
+      launch: { spawning: true },
+    }, null, 2));
+
+    const result = spawnSync(tsx, [cli, 'runtimes', 'show', 'spawner'], { cwd: target, encoding: 'utf8' });
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('install.auto must be false');
+    expect(result.stderr).toContain('launch.spawning must be false');
+  }, 15_000);
+
+  it('rejects unknown runtime ids', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    const planPath = writeRuntimeSelectionPlan(target, 'Demo unknown runtime rejection.');
+
+    const result = spawnSync(tsx, [cli, 'run', planPath, '--runtime', 'missing-runtime', '--repo', target], { cwd: target, encoding: 'utf8' });
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain('Unknown runtime profile: missing-runtime');
   }, 15_000);
 
 });

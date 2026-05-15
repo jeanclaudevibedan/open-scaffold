@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createRunArtifacts, type ArtifactMode, type ExecutorLane, type OperatorSurface, type RunArtifactOptions, type RuntimePreset, type RuntimeWorkflow } from './artifacts.js';
 import { initializeScaffold, scaffoldTiers, type ScaffoldTier } from './init.js';
+import { loadRuntimeProfiles, resolveRuntimeProfile } from './runtimes.js';
 import { inspectScaffold, parsePlanFile, planToJson } from './scaffold.js';
 import { validateScaffold } from './validation.js';
 
@@ -20,6 +21,8 @@ Usage:
   osc ultrareview <plan-path> [run binding options]
   osc verify
   osc doctor
+  osc runtimes list
+  osc runtimes show <id>
 
 Run binding options:
   --task-id <id>              Canonical task/card/issue id for this work item
@@ -51,35 +54,7 @@ function requireArg(args: string[], name: string): string {
 
 const EXECUTOR_LANES = ['omc-claude', 'omx-codex', 'plain-agent', 'human', 'custom'] as const;
 const OPERATOR_SURFACES = ['discord', 'slack', 'telegram', 'github', 'cli', 'none', 'custom'] as const;
-const RUNTIME_PRESETS = ['omc', 'omx', 'plain', 'human', 'custom'] as const;
 const RUNTIME_WORKFLOWS = ['interview', 'plan', 'team', 'loop', 'execute', 'goal', 'custom'] as const;
-
-const RUNTIME_EXECUTORS: Record<RuntimePreset, ExecutorLane> = {
-  omc: 'omc-claude',
-  omx: 'omx-codex',
-  plain: 'plain-agent',
-  human: 'human',
-  custom: 'custom',
-};
-
-const WORKFLOW_HARNESS_SKILLS: Record<'omc' | 'omx', Record<Exclude<RuntimeWorkflow, 'custom'>, string>> = {
-  omc: {
-    interview: '/deep-interview',
-    plan: '/ralplan',
-    team: '/team',
-    loop: '/ralph',
-    execute: '/ultrawork',
-    goal: '/ultrawork',
-  },
-  omx: {
-    interview: '$deep-interview',
-    plan: '$ralplan',
-    team: '$team',
-    loop: '$ralph',
-    execute: '$ultrawork',
-    goal: '$ultragoal',
-  },
-};
 
 function parseChoice<T extends readonly string[]>(value: string, choices: T, flag: string): T[number] {
   if ((choices as readonly string[]).includes(value)) return value as T[number];
@@ -87,32 +62,49 @@ function parseChoice<T extends readonly string[]>(value: string, choices: T, fla
   process.exit(2);
 }
 
-function applyRuntimeSelection(options: RunArtifactOptions): void {
+function applyRuntimeSelection(options: RunArtifactOptions, root: string): void {
   if (!options.runtime) return;
-  const selectedExecutor = RUNTIME_EXECUTORS[options.runtime];
-  if (options.executor && options.executor !== selectedExecutor) {
-    console.error(`--runtime ${options.runtime} maps to executor ${selectedExecutor}, but --executor ${options.executor} was also provided`);
+  let resolved: ReturnType<typeof resolveRuntimeProfile>;
+  let available: string[] = [];
+  try {
+    const profiles = loadRuntimeProfiles(root);
+    available = profiles.map((entry) => entry.profile.id);
+    resolved = profiles.find((entry) => entry.profile.id === options.runtime) ?? null;
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
+  if (!resolved) {
+    console.error(`Unknown runtime profile: ${options.runtime}. Available runtimes: ${available.join(', ') || '(none)'}`);
     process.exit(2);
   }
-  options.executor = selectedExecutor;
 
-  if (!options.workflow && (options.runtime === 'omc' || options.runtime === 'omx')) {
-    options.workflow = 'plan';
+  const { profile, source } = resolved;
+  if (options.executor && options.executor !== profile.lane) {
+    console.error(`--runtime ${options.runtime} maps to executor ${profile.lane}, but --executor ${options.executor} was also provided`);
+    process.exit(2);
   }
-  if (options.workflow && (options.runtime === 'omc' || options.runtime === 'omx')) {
-    if (options.workflow === 'custom') {
-      if (!options.harnessSkill) {
-        console.error(`--runtime ${options.runtime} with --workflow custom requires --harness-skill`);
+  options.executor = profile.lane;
+  options.runtimeProfileId = profile.id;
+  options.runtimeProfileSource = source;
+
+  if (!options.workflow && profile.defaults?.workflow) {
+    options.workflow = profile.defaults.workflow;
+  }
+
+  if (options.workflow) {
+    const expectedHarnessSkill = profile.workflows?.[options.workflow];
+    if (expectedHarnessSkill) {
+      if (options.harnessSkill && options.harnessSkill !== expectedHarnessSkill) {
+        console.error(`--runtime ${options.runtime} with --workflow ${options.workflow} requires --harness-skill ${expectedHarnessSkill}, got ${options.harnessSkill}`);
         process.exit(2);
       }
-      return;
+      options.harnessSkill = expectedHarnessSkill;
+    } else if (profile.defaults?.harnessSkill && !options.harnessSkill) {
+      options.harnessSkill = profile.defaults.harnessSkill;
     }
-    const expectedHarnessSkill = WORKFLOW_HARNESS_SKILLS[options.runtime][options.workflow];
-    if (options.harnessSkill && options.harnessSkill !== expectedHarnessSkill) {
-      console.error(`--runtime ${options.runtime} with --workflow ${options.workflow} requires --harness-skill ${expectedHarnessSkill}, got ${options.harnessSkill}`);
-      process.exit(2);
-    }
-    options.harnessSkill = expectedHarnessSkill;
+  } else if (profile.defaults?.harnessSkill && !options.harnessSkill) {
+    options.harnessSkill = profile.defaults.harnessSkill;
   }
 }
 
@@ -142,7 +134,7 @@ function parseRunOptions(args: string[]): { planPathArg: string; options: RunArt
         i += 1;
         break;
       case '--runtime':
-        options.runtime = parseChoice(takeValue(i, flag), RUNTIME_PRESETS, flag) as RuntimePreset;
+        options.runtime = takeValue(i, flag) as RuntimePreset;
         i += 1;
         break;
       case '--workflow':
@@ -196,7 +188,7 @@ function parseRunOptions(args: string[]): { planPathArg: string; options: RunArt
     }
   }
 
-  applyRuntimeSelection(options);
+  applyRuntimeSelection(options, process.cwd());
   return { planPathArg, options };
 }
 
@@ -298,6 +290,42 @@ function createArtifacts(args: string[], mode: ArtifactMode): void {
   console.log('  Note: generic open-scaffold did not spawn a runtime; dispatch via your coordinator or harness adapter.');
 }
 
+function runtimes(args: string[]): void {
+  const [subcommand, id] = args;
+  if (subcommand === 'list') {
+    try {
+      for (const entry of loadRuntimeProfiles(process.cwd())) {
+        console.log(`${entry.profile.id}\t${entry.source}\t${entry.profile.lane}\t${entry.profile.status}\t${entry.profile.displayName}`);
+      }
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+    return;
+  }
+  if (subcommand === 'show') {
+    if (!id) {
+      console.error('Missing required argument: runtime id');
+      process.exit(2);
+    }
+    let resolved: ReturnType<typeof resolveRuntimeProfile>;
+    try {
+      resolved = resolveRuntimeProfile(process.cwd(), id);
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+    if (!resolved) {
+      console.error(`Unknown runtime profile: ${id}`);
+      process.exit(2);
+    }
+    console.log(JSON.stringify({ source: resolved.source, path: resolved.path ?? null, ...resolved.profile }, null, 2));
+    return;
+  }
+  console.error('Usage: osc runtimes list | osc runtimes show <id>');
+  process.exit(2);
+}
+
 function main(): void {
   const [command, ...args] = process.argv.slice(2);
   switch (command) {
@@ -341,6 +369,9 @@ function main(): void {
     case 'doctor':
       status(false);
       console.log('Doctor: generic CLI is installed; adapters must be checked in their own repos.');
+      return;
+    case 'runtimes':
+      runtimes(args);
       return;
     default:
       console.error(`Unknown command: ${command}`);

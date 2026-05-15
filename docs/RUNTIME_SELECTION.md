@@ -89,3 +89,5 @@ This slice does not:
 - make model/orchestration-lab claims.
 
 The practical next step after this core selection surface is a separate runtime adapter package or coordinator integration that reads the package and performs the launch outside core.
+
+For schema-backed runtime profiles, built-in profile ids, and project-local custom profiles, see [`RUNTIME_PROFILES.md`](RUNTIME_PROFILES.md). Runtime profiles are data-only in v0: they let users select and document an adapter lane, but they do not install or spawn the runtime from core.

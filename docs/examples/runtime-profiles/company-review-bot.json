@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "open-scaffold.runtime-profile.v1",
+  "id": "company-review-bot",
+  "displayName": "Company Review Bot",
+  "lane": "plain-agent",
+  "status": "user-defined",
+  "description": "Example project-local profile for a company-owned review bot.",
+  "links": {
+    "homepage": "https://internal.example.com/review-bot"
+  },
+  "workflows": {
+    "plan": "company-review-bot plan",
+    "execute": "company-review-bot run"
+  },
+  "defaults": {
+    "workflow": "plan",
+    "harnessSkill": "company-review-bot plan",
+    "operatorSurface": "none"
+  },
+  "install": {
+    "humanHint": "Install through the internal developer portal. Open Scaffold core does not execute this install.",
+    "auto": false
+  },
+  "launch": {
+    "owner": "external-adapter",
+    "commandTemplate": "company-review-bot run <run.json>",
+    "expectedAdapterId": null,
+    "spawning": false
+  },
+  "evidence": {
+    "receiptSchema": "open-scaffold.dispatch-receipt.v1",
+    "expectedPaths": [".osc/runs/<run_id>/dispatch-receipt.json"]
+  },
+  "compatibility": {
+    "minScaffoldSchema": "open-scaffold.run.v1"
+  },
+  "lastReviewed": "2026-05-15",
+  "notes": "Example only. User-defined runtime profiles are adapter contracts, not certified runtime support."
+}
