@@ -190,7 +190,7 @@ The v1 baseline proves the model. V2 should make it harder for agents to drift, 
 
 ### Public roadmap visibility rule
 
-Status: adopted via `.osc/plans/active/024-roadmap-scope-discipline.md`, following the 2026-05-14 external review ingest.
+Status: adopted via `.osc/plans/done/024-roadmap-scope-discipline.md`, following the 2026-05-14 external review ingest.
 
 Public roadmap commitments should stay legible: keep at most five planned/backlog milestones visible ahead of the current focus. Completed milestones remain for provenance. Farther speculative ideas belong in the parking lot, research notes, or future ADRs until the owner explicitly promotes them.
 
