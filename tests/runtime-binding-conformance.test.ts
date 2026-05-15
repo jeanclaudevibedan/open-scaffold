@@ -101,6 +101,21 @@ describe('fake/local adapter conformance fixture', () => {
     expect(existsSync(join(outside, 'evidence.md'))).toBe(false);
   });
 
+  it('does not create nested directories through a symlinked artifact parent', () => {
+    const { root, path } = tempRunPacket({ artifacts: { evidence: ['.osc/runs/link/nested/evidence.md'] } });
+    const outside = mkdtempSync(join(tmpdir(), 'osc-conformance-outside-'));
+    symlinkSync(outside, join(root, '.osc/runs/link'), 'dir');
+
+    try {
+      execFileSync('node', [adapter, path], { encoding: 'utf8', stdio: 'pipe' });
+      throw new Error('expected fake adapter to fail');
+    } catch (error: any) {
+      expect(error.status).toBe(1);
+      expect(String(error.stderr ?? '')).toContain('artifact path must stay under runtime.repoPath');
+    }
+    expect(existsSync(join(outside, 'nested'))).toBe(false);
+  });
+
   it('refuses evidence paths that escape the repository root through symlinked files', () => {
     const { root, path } = tempRunPacket({ artifacts: { evidence: ['.osc/runs/demo/evidence.md'] } });
     const outside = mkdtempSync(join(tmpdir(), 'osc-conformance-outside-'));

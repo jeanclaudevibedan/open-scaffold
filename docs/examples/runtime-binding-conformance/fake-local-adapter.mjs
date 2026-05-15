@@ -51,6 +51,28 @@ function assertPathInside(root, path, message) {
   }
 }
 
+function assertExistingParentsInsideRepo(lexicalRepoRoot, realRepoRoot, targetDir) {
+  const rel = relative(lexicalRepoRoot, targetDir);
+  const parts = rel.split('/').filter(Boolean);
+  let current = lexicalRepoRoot;
+  for (const part of parts) {
+    current = resolve(current, part);
+    try {
+      const stat = lstatSync(current);
+      if (stat.isSymbolicLink()) {
+        fail('artifact path must stay under runtime.repoPath');
+      }
+      const realCurrent = realpathSync.native(current);
+      assertPathInside(realRepoRoot, realCurrent, 'artifact path must stay under runtime.repoPath');
+    } catch (error) {
+      if (error?.code === 'ENOENT') {
+        return;
+      }
+      fail(`could not validate artifact path: ${error.message}`);
+    }
+  }
+}
+
 function prepareSafeArtifactPath(repoPath, artifactPath) {
   const raw = requireString(artifactPath, 'artifacts.evidence[0]');
   if (isAbsolute(raw)) {
@@ -60,8 +82,9 @@ function prepareSafeArtifactPath(repoPath, artifactPath) {
   const absolutePath = resolve(repoRoot, raw);
   assertPathInside(repoRoot, absolutePath, 'artifact path must stay under runtime.repoPath');
 
-  mkdirSync(dirname(absolutePath), { recursive: true });
   const realRepoRoot = realpathSync.native(repoRoot);
+  assertExistingParentsInsideRepo(repoRoot, realRepoRoot, dirname(absolutePath));
+  mkdirSync(dirname(absolutePath), { recursive: true });
   const realArtifactDir = realpathSync.native(dirname(absolutePath));
   assertPathInside(realRepoRoot, realArtifactDir, 'artifact path must stay under runtime.repoPath');
 
