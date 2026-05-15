@@ -4,7 +4,7 @@ created: 2026-05-15
 updated: 2026-05-15
 type: concept
 tags: [open-scaffold, evidence, governance, workflow]
-sources: [docs/SLICE_CLOSE_PROTOCOL.md, docs/VERIFICATION.md, ROADMAP.md]
+sources: [docs/SLICE_CLOSE_PROTOCOL.md, docs/WORKFLOW.md, ROADMAP.md]
 confidence: high
 contested: false
 ---
