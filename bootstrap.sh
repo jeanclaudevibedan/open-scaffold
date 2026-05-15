@@ -158,5 +158,12 @@ if [ -x "$ROOT/verify.sh" ]; then
   "$ROOT/verify.sh" --quick || true
 fi
 
-# 4. Point the human at the cheat-sheet
-printf '\nBootstrap complete.\nRead: %s\n' "$ROOT/docs/WORKFLOW.md"
+# 4. Point the human at an available cheat-sheet
+if [ -f "$ROOT/docs/WORKFLOW.md" ]; then
+  NEXT_READ="$ROOT/docs/WORKFLOW.md"
+elif [ -f "$ROOT/.osc/plans/WORKFLOW.md" ]; then
+  NEXT_READ="$ROOT/.osc/plans/WORKFLOW.md"
+else
+  NEXT_READ="$ROOT/.osc/RULES.md"
+fi
+printf '\nBootstrap complete.\nRead: %s\n' "$NEXT_READ"

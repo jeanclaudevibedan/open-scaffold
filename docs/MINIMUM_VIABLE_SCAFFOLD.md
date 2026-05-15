@@ -13,6 +13,17 @@ What evidence proves it closed?
 
 ## The five-step adoption path
 
+Start by generating the tier that fits the repo:
+
+```bash
+npx open-scaffold init --tier min --target <repo>
+# or: --tier standard / --tier max
+```
+
+Use `min` for the smallest durable loop, `standard` for the recommended day-one repo, and `max` only when the project already needs GitHub/runtime/glass-cockpit protocol docs. The command writes only local files and refuses to overwrite existing files by default.
+
+Then follow the loop:
+
 1. **Define mission** — run `./bootstrap.sh` or edit `MISSION.md` until the project-specific mission is real.
 2. **Create one active plan** — copy `.osc/plans/handoff-template.md` into `.osc/plans/active/<slug>.md` and fill the seven sections.
 3. **Execute and verify** — make the change, run the project test/check, then run `./verify.sh --standard`.
@@ -93,7 +104,7 @@ The lifecycle smoke at `examples/lifecycle-e2e-smoke/` is intentionally an examp
 | Glass cockpit events | Optional / integration | Discord/Slack/Telegram/GitHub comments need structured status and approval events. |
 | Runtime binding contract | Optional / adapter-specific | OMC, OMX, Claude Code, Codex, or another runtime consumes run packets. |
 | GitHub issue/PR traceability | Recommended for public/versioned work | The work should be reviewed or reconstructed through GitHub. |
-| `osc` CLI | Optional / richer tooling | Node is available and the project wants parsed status/run artifacts. Shell scripts remain the day-zero floor. |
+| `osc` CLI | Optional / richer tooling | Node is available and the project wants parsed status/run artifacts or tiered initialization. Shell scripts remain the day-zero floor. |
 | `.osc/research/` | Optional / decision support | Research needs to be saved before a curated decision/release note exists. |
 
 ## When Open Scaffold is overkill

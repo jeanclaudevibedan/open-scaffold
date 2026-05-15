@@ -2,6 +2,7 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createRunArtifacts, type ArtifactMode, type ExecutorLane, type OperatorSurface, type RunArtifactOptions } from './artifacts.js';
+import { initializeScaffold, scaffoldTiers, type ScaffoldTier } from './init.js';
 import { inspectScaffold, parsePlanFile, planToJson } from './scaffold.js';
 import { validateScaffold } from './validation.js';
 
@@ -9,6 +10,8 @@ function printHelp(): void {
   console.log(`osc — Open Scaffold CLI
 
 Usage:
+  osc init --tier <min|standard|max> --target <dir> [--force]
+  osc init --min|--standard|--max --target <dir> [--force]
   osc status [--json]
   osc plan <plan-path>
   osc delegate <plan-path> [run binding options]
@@ -128,6 +131,72 @@ function parseRunOptions(args: string[]): { planPathArg: string; options: RunArt
   return { planPathArg, options };
 }
 
+function parseInitOptions(args: string[]): { tier: ScaffoldTier; target: string; force: boolean } {
+  let tier: ScaffoldTier | undefined;
+  let target: string | undefined;
+  let force = false;
+
+  function takeValue(index: number, flag: string): string {
+    const value = args[index + 1];
+    if (!value || value.startsWith('--')) {
+      console.error(`Missing value for ${flag}`);
+      process.exit(2);
+    }
+    return value;
+  }
+
+  for (let i = 0; i < args.length; i += 1) {
+    const flag = args[i];
+    switch (flag) {
+      case '--tier':
+        tier = parseChoice(takeValue(i, flag), scaffoldTiers, flag) as ScaffoldTier;
+        i += 1;
+        break;
+      case '--min':
+        tier = 'min';
+        break;
+      case '--standard':
+        tier = 'standard';
+        break;
+      case '--max':
+        tier = 'max';
+        break;
+      case '--target':
+        target = takeValue(i, flag);
+        i += 1;
+        break;
+      case '--force':
+        force = true;
+        break;
+      default:
+        console.error(`Unknown option for init: ${flag}`);
+        printHelp();
+        process.exit(2);
+    }
+  }
+
+  if (!tier) {
+    console.error('Missing required option: --tier <min|standard|max>');
+    process.exit(2);
+  }
+  if (!target) {
+    console.error('Missing required option: --target <dir>');
+    process.exit(2);
+  }
+  return { tier, target, force };
+}
+
+function init(args: string[]): void {
+  const options = parseInitOptions(args);
+  try {
+    const result = initializeScaffold(options);
+    console.log(result.summary);
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
+}
+
 function status(json: boolean): void {
   const state = inspectScaffold(process.cwd());
   if (json) {
@@ -168,6 +237,9 @@ function main(): void {
     case '--help':
     case 'help':
       printHelp();
+      return;
+    case 'init':
+      init(args);
       return;
     case 'status':
       status(args.includes('--json'));

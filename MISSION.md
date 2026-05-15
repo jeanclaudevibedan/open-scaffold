@@ -28,6 +28,8 @@ Explicit things this project is NOT trying to do. Legitimate scope discipline st
 One-line dated entries for every scope pivot. Format: `YYYY-MM-DD: <one-line pivot description + link to amendment file if applicable>`. Append entries in chronological order. Never rewrite history here.
 
 <!-- append YYYY-MM-DD entries below this line -->
+- 2026-05-15: closed 028-project-wiki-skeleton — project wiki skeleton shipped
+- 2026-05-14: closed 015-cli-packaging-ux — Added tiered scaffold initialization for min, standard, and max downstream repo setup.
 - 2026-05-14: closed 025-minimum-viable-scaffold — minimum viable scaffold guide shipped
 - 2026-05-14: closed 023-worked-downstream-example — lifecycle E2E smoke fixture shipped
 - 2026-05-14: closed 027-lifecycle-e2e-smoke-strategy — E2E smoke review strategy promoted
