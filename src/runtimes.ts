@@ -227,6 +227,9 @@ export function validateRuntimeProfile(value: unknown): { ok: true; profile: Run
     if (value.defaults.harnessSkill !== undefined && value.defaults.harnessSkill !== null && typeof value.defaults.harnessSkill !== 'string') {
       errors.push('defaults.harnessSkill must be a string or null');
     }
+    if (typeof value.defaults.harnessSkill === 'string' && !value.defaults.harnessSkill.trim()) {
+      errors.push('defaults.harnessSkill must not be an empty string');
+    }
     if (value.defaults.operatorSurface !== undefined && value.defaults.operatorSurface !== null && !SUPPORTED_OPERATOR_SURFACES.includes(String(value.defaults.operatorSurface))) {
       errors.push(`defaults.operatorSurface must be one of: ${SUPPORTED_OPERATOR_SURFACES.join(', ')}`);
     }
