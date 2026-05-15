@@ -147,6 +147,26 @@ describe('osc init CLI', () => {
     expect(result.stderr).toContain('--runtime omx with --workflow plan requires --harness-skill $ralplan');
   }, 15_000);
 
+  it('rejects unmapped workflows for runtime profiles unless harness skill is explicit', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    const planPath = writeRuntimeSelectionPlan(target, 'Demo unmapped workflow rejection.');
+
+    const result = spawnSync(tsx, [cli, 'run', planPath, '--runtime', 'omx', '--workflow', 'custom', '--repo', target], {
+      cwd: target,
+      encoding: 'utf8',
+    });
+
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain('--runtime omx does not define workflow custom');
+
+    execFileSync(tsx, [cli, 'run', planPath, '--runtime', 'omx', '--workflow', 'custom', '--harness-skill', '$custom', '--repo', target], { cwd: target, encoding: 'utf8' });
+    const runsDir = join(target, '.osc/runs');
+    const runId = readdirSync(runsDir).sort().at(-1);
+    const manifest = JSON.parse(readFileSync(join(runsDir, runId!, 'run.json'), 'utf8'));
+    expect(manifest.executor).toMatchObject({ lane: 'omx-codex', harnessSkill: '$custom', spawning: false });
+  }, 15_000);
+
   it('lists and shows runtime profiles with source labels', () => {
     const target = tempTarget();
     execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
@@ -203,6 +223,27 @@ describe('osc init CLI', () => {
     const result = spawnSync(tsx, [cli, 'runtimes', 'list'], { cwd: target, encoding: 'utf8' });
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('uses reserved built-in id: omx');
+  }, 15_000);
+
+  it('rejects duplicate project runtime profile ids', () => {
+    const target = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    mkdirSync(join(target, '.osc/runtimes'), { recursive: true });
+    const profile = {
+      schemaVersion: 'open-scaffold.runtime-profile.v1',
+      id: 'dupe-agent',
+      displayName: 'Dupe Agent',
+      lane: 'plain-agent',
+      status: 'user-defined',
+      description: 'Duplicate id fixture.',
+      launch: { spawning: false },
+    };
+    writeFileSync(join(target, '.osc/runtimes/a.json'), JSON.stringify(profile, null, 2));
+    writeFileSync(join(target, '.osc/runtimes/b.json'), JSON.stringify(profile, null, 2));
+
+    const result = spawnSync(tsx, [cli, 'runtimes', 'list'], { cwd: target, encoding: 'utf8' });
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('Duplicate project runtime profile id: dupe-agent');
   }, 15_000);
 
   it('rejects runtime profiles that try to enable spawning or installer execution', () => {

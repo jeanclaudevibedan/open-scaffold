@@ -100,8 +100,11 @@ function applyRuntimeSelection(options: RunArtifactOptions, root: string): void 
         process.exit(2);
       }
       options.harnessSkill = expectedHarnessSkill;
-    } else if (profile.defaults?.harnessSkill && !options.harnessSkill) {
+    } else if (profile.defaults?.harnessSkill && options.workflow === profile.defaults.workflow && !options.harnessSkill) {
       options.harnessSkill = profile.defaults.harnessSkill;
+    } else if (profile.defaults?.harnessSkill && !options.harnessSkill) {
+      console.error(`--runtime ${options.runtime} does not define workflow ${options.workflow}; provide --harness-skill explicitly or choose a supported workflow`);
+      process.exit(2);
     }
   } else if (profile.defaults?.harnessSkill && !options.harnessSkill) {
     options.harnessSkill = profile.defaults.harnessSkill;

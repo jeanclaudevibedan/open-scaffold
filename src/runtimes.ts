@@ -242,6 +242,7 @@ function readProjectProfiles(root: string): ResolvedRuntimeProfile[] {
   const dir = join(root, '.osc', 'runtimes');
   if (!existsSync(dir)) return [];
   const profiles: ResolvedRuntimeProfile[] = [];
+  const seenProjectIds = new Set<string>();
   for (const entry of readdirSync(dir).sort()) {
     if (!entry.endsWith('.json')) continue;
     const path = join(dir, entry);
@@ -258,6 +259,10 @@ function readProjectProfiles(root: string): ResolvedRuntimeProfile[] {
     if (RESERVED_RUNTIME_PROFILE_IDS.has(validation.profile.id)) {
       throw new Error(`Project runtime profile ${path} uses reserved built-in id: ${validation.profile.id}`);
     }
+    if (seenProjectIds.has(validation.profile.id)) {
+      throw new Error(`Duplicate project runtime profile id: ${validation.profile.id}`);
+    }
+    seenProjectIds.add(validation.profile.id);
     profiles.push({ profile: validation.profile, source: 'project', path });
   }
   return profiles;
