@@ -191,7 +191,7 @@ function parseRunOptions(args: string[]): { planPathArg: string; options: RunArt
     }
   }
 
-  applyRuntimeSelection(options, process.cwd());
+  applyRuntimeSelection(options, options.repo ? resolve(options.repo) : process.cwd());
   return { planPathArg, options };
 }
 

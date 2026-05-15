@@ -206,6 +206,33 @@ describe('osc init CLI', () => {
     expect(manifest.executor).toMatchObject({ lane: 'plain-agent', harnessSkill: 'review-bot plan', spawning: false });
   }, 15_000);
 
+  it('resolves project-local runtime profiles from --repo when launched outside that repo', () => {
+    const target = tempTarget();
+    const coordinator = tempTarget();
+    execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
+    const planPath = writeRuntimeSelectionPlan(target, 'Demo external coordinator runtime profile resolution.');
+    mkdirSync(join(target, '.osc/runtimes'), { recursive: true });
+    writeFileSync(join(target, '.osc/runtimes/external-agent.json'), JSON.stringify({
+      schemaVersion: 'open-scaffold.runtime-profile.v1',
+      id: 'external-agent',
+      displayName: 'External Agent',
+      lane: 'plain-agent',
+      status: 'user-defined',
+      description: 'Project-local profile resolved through --repo.',
+      workflows: { plan: 'external-agent plan' },
+      defaults: { workflow: 'plan', harnessSkill: 'external-agent plan' },
+      launch: { owner: 'external-adapter', commandTemplate: 'external-agent run <run.json>', spawning: false },
+    }, null, 2));
+
+    execFileSync(tsx, [cli, 'run', planPath, '--runtime', 'external-agent', '--repo', target], { cwd: coordinator, encoding: 'utf8' });
+    const runsDir = join(coordinator, '.osc/runs');
+    const runId = readdirSync(runsDir).sort().at(-1);
+    const manifest = JSON.parse(readFileSync(join(runsDir, runId!, 'run.json'), 'utf8'));
+
+    expect(manifest.runtimeSelection).toMatchObject({ runtime: 'external-agent', workflow: 'plan', profileId: 'external-agent', profileSource: 'project' });
+    expect(manifest.executor).toMatchObject({ lane: 'plain-agent', harnessSkill: 'external-agent plan', spawning: false });
+  }, 15_000);
+
   it('rejects project profiles that override reserved built-in ids', () => {
     const target = tempTarget();
     execFileSync(tsx, [cli, 'init', '--standard', '--target', target], { encoding: 'utf8' });
