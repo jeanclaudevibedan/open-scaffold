@@ -61,6 +61,13 @@ active
 - <which groups are suitable for parallel agents or separate terminal sessions>
 - <which groups must wait for earlier groups to complete>
 
+## Implementation Architecture Coverage
+
+<!-- Optional. Include when the slice affects architecture, evidence, runtime boundaries, authority, or adoption trust. -->
+
+- Strengthens: <workflow design | data access | authority | evaluation | audit trails | recovery/ownership>
+- Boundary: <what remains outside this slice: runtime enforcement, credentials, system-of-record permissions, compliance certification, model benchmarking, production rollback, etc.>
+
 ## Acceptance criteria
 
 - [ ] <testable bullet — something a verifier can check mechanically or with a clear yes/no>
